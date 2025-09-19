@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.teamcode.pedroPathing;
 
+import com.bylazar.configurables.annotations.Configurable;
+import com.pedropathing.control.FilteredPIDFCoefficients;
+import com.pedropathing.control.PIDFCoefficients;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.follower.FollowerConstants;
 import com.pedropathing.ftc.FollowerBuilder;
@@ -11,9 +14,19 @@ import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+@Configurable
 public class Constants {
     public static FollowerConstants followerConstants = new FollowerConstants()
-            .mass(4);
+            .mass(5.3)
+            .forwardZeroPowerAcceleration(-46.66171759)
+            .lateralZeroPowerAcceleration(-60.26349909)
+            .useSecondaryTranslationalPIDF(true)
+            .useSecondaryHeadingPIDF(true)
+            .translationalPIDFCoefficients(new PIDFCoefficients(0.11, 0, 0.0125, 0))
+            .secondaryTranslationalPIDFCoefficients(new PIDFCoefficients(0.12, 0, 0.01, 0.02))
+            .headingPIDFCoefficients(new PIDFCoefficients(0.5, 0, 0.03, 0.01))
+            .secondaryHeadingPIDFCoefficients(new PIDFCoefficients(1.5, 0, 0.05, 0.01))
+            .drivePIDFCoefficients(new FilteredPIDFCoefficients(0.011, 0, 0.00005, 0.6,0.01));
 
     public static MecanumConstants driveConstants = new MecanumConstants()
             .maxPower(1)
@@ -24,7 +37,9 @@ public class Constants {
             .leftFrontMotorDirection(DcMotorSimple.Direction.REVERSE)
             .leftRearMotorDirection(DcMotorSimple.Direction.REVERSE)
             .rightFrontMotorDirection(DcMotorSimple.Direction.FORWARD)
-            .rightRearMotorDirection(DcMotorSimple.Direction.FORWARD);
+            .rightRearMotorDirection(DcMotorSimple.Direction.FORWARD)
+            .xVelocity(86.9340296)
+            .yVelocity(61.83983845);
 
     public static TwoWheelConstants localizerConstants = new TwoWheelConstants()
             .forwardEncoder_HardwareMapName("rightFront")
@@ -38,6 +53,8 @@ public class Constants {
             )
             .forwardPodY(-1.625)
             .strafePodX(-7)
+            .forwardTicksToInches(0.001996046)
+            .strafeTicksToInches(0.001992387)
             .forwardEncoderDirection(Encoder.FORWARD);
 
     public static PathConstraints pathConstraints = new PathConstraints(0.99, 100, 1, 1);
