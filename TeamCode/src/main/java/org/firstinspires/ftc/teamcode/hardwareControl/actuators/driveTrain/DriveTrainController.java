@@ -1,16 +1,13 @@
 package org.firstinspires.ftc.teamcode.hardwareControl.actuators.driveTrain;
 
+import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.Path;
 import com.pedropathing.paths.PathBuilder;
 import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-
-import com.pedropathing.follower.Follower;
-
-
-import org.firstinspires.ftc.teamcode.hardwareConfig.actuators.driveTrain.Constants;
+import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 
 public class DriveTrainController {
