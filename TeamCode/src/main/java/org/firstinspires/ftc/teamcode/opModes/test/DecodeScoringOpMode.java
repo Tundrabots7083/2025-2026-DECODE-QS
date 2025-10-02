@@ -10,8 +10,8 @@ import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTree
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTree.FrontZoneScoringBehaviorTree;
 
 
-@Autonomous(name="BT Specimen Scoring", group="specimens")
-public class SpecimenScoringOpMode extends LinearOpMode
+@Autonomous(name="BT Front zone Scoring", group="test")
+public class DecodeScoringOpMode extends LinearOpMode
 {
     FrontZoneScoringBehaviorTree behaviorTree = null;
     private long count =0;
@@ -21,7 +21,7 @@ public class SpecimenScoringOpMode extends LinearOpMode
     public void runOpMode()
     {
 
-        telemetry.addData("SpecimenScoringOpMode", "runOpMode started");
+        telemetry.addData("DecodeScoringOpMode", "runOpMode started");
         telemetry.update();
         initialize(this);
         waitForStart();
@@ -30,17 +30,17 @@ public class SpecimenScoringOpMode extends LinearOpMode
         while (opModeIsActive())
         {
             count++;
-          //  telemetry.addData("SpecimenScoringOpMode000", "runOpMode while started count: %d", count);
+          //  telemetry.addData("DecodeScoringOpMode000", "runOpMode while started count: %d", count);
           //  telemetry.update();
             Status result = this.behaviorTree.tick();
 
 
-            telemetry.addData("SpecimenScoringOpMode", "Behavior tree result: %s",result);
+            telemetry.addData("DecodeScoringOpMode", "Behavior tree result: %s",result);
             telemetry.update();
 
 
             if(result == Status.SUCCESS){
-                telemetry.addData("SpecimenScoringOpMode", "runOpMode success");
+                telemetry.addData("DecodeScoringOpMode", "runOpMode success");
                 telemetry.update();
                 requestOpModeStop();
             }
@@ -50,7 +50,7 @@ public class SpecimenScoringOpMode extends LinearOpMode
 
 
     private void initialize(LinearOpMode opMode){
-        this.behaviorTree = new FrontZoneScoringBehaviorTree(this);
+        this.behaviorTree = new FrontZoneScoringBehaviorTree(opMode);
     }
 
 

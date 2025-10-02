@@ -18,15 +18,12 @@ public class MoveToShootingPosition implements ActionFunction {
     protected Status lastStatus = Status.FAILURE;
 
     /// TODO: set the right poses
-    private final Pose scorePose = new Pose(28, 63, Math.toRadians(0));
-    private final Pose ctrlPt1 = new Pose(30.3, 42.6, Math.toRadians(0));
-    private final Pose ctrlPt2 = new Pose(64.5, 37.7, Math.toRadians(0));
-    private final Pose moveSample2Pose = new Pose(61, 24, Math.toRadians(0));
-    private final Pose moveSample2StagingPose = new Pose(17, 16.5, Math.toRadians(0));
-    private final Pose ctrlPt3 = new Pose(31.7, 24.3, Math.toRadians(0));
+    private final Pose startPose = new Pose(56.000, 8.000, Math.toRadians(0));
+    private final Pose ctrlPt1 = new Pose(67.309, 18.293, Math.toRadians(0));
+    private final Pose ctrlPt2 = new Pose(77.394, 34.007, Math.toRadians(0));
+    private final Pose shootingPose = new Pose(54.410, 36.586, Math.toRadians(0));
 
-
-    PathChain moveSample2;
+    PathChain moveToShootingPose;
     boolean started = false;
 
 
@@ -37,24 +34,15 @@ public class MoveToShootingPosition implements ActionFunction {
     }
 
     private void init() {
-        moveSample2 = driveTrainController.pathBuilder()
+        moveToShootingPose = driveTrainController.pathBuilder()
                 .addPath(
                         new BezierCurve(
-                                scorePose,
+                                startPose,
                                 ctrlPt1,
                                 ctrlPt2,
-                                moveSample2Pose
+                                shootingPose
                         )
                 )
-                .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(0))
-                .addPath(
-                        new BezierCurve(
-                                moveSample2Pose,
-                                ctrlPt3,
-                                moveSample2StagingPose
-                        )
-                )
-                .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(0))
                 .build();
 
     }
@@ -67,7 +55,7 @@ public class MoveToShootingPosition implements ActionFunction {
         }
         /// TODO: put code here to move the robot from current position to push sample2 in staging area
         if (!started) {
-            driveTrainController.followPath(moveSample2, true);
+            driveTrainController.followPath(moveToShootingPose, true);
             started = true;
             status = Status.RUNNING;
         } else {
