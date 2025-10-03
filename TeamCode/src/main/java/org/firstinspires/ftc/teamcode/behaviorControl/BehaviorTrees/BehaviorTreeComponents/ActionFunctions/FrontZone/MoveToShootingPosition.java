@@ -18,10 +18,10 @@ public class MoveToShootingPosition implements ActionFunction {
     protected Status lastStatus = Status.FAILURE;
 
     /// TODO: set the right poses
-    private final Pose startPose = new Pose(56.000, 8.000, Math.toRadians(0));
-    private final Pose ctrlPt1 = new Pose(67.309, 18.293, Math.toRadians(0));
-    private final Pose ctrlPt2 = new Pose(77.394, 34.007, Math.toRadians(0));
-    private final Pose shootingPose = new Pose(54.410, 36.586, Math.toRadians(0));
+    private final Pose startPose = new Pose(56.000, 8.000, Math.toRadians(90));
+    private final Pose ctrlPt1 = new Pose(67.309, 18.293);
+    private final Pose ctrlPt2 = new Pose(77.394, 34.007);
+    private final Pose shootingPose = new Pose(54.410, 36.586, Math.toRadians(180));
 
     PathChain moveToShootingPose;
     boolean started = false;
@@ -43,6 +43,7 @@ public class MoveToShootingPosition implements ActionFunction {
                                 shootingPose
                         )
                 )
+                .setLinearHeadingInterpolation(startPose.getHeading(), shootingPose.getHeading())
                 .build();
 
     }
