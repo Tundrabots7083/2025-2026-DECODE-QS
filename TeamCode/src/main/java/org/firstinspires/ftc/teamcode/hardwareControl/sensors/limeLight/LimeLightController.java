@@ -5,18 +5,12 @@ import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.LLStatus;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 import org.firstinspires.ftc.teamcode.hardwareConfig.baseConstants.LimeLightConstants;
-import org.firstinspires.ftc.teamcode.hardwareConfig.baseConstants.MotorConstants;
 import org.firstinspires.ftc.teamcode.hardwareConfig.sensors.limeLight.LimeLight01Constants;
-import org.firstinspires.ftc.vision.VisionPortal;
-import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
-import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
 import java.util.List;
 
@@ -80,6 +74,12 @@ public class LimeLightController  {
     // Example method
     public Pose3D getCurrentRobotPose(){
         LLStatus status = limelight.getStatus();
+        telemetry.addData("Name", "%s",
+                status.getName());
+        telemetry.addData("LL", "Temp: %.1fC, CPU: %.1f%%, FPS: %d",
+                status.getTemp(), status.getCpu(),(int)status.getFps());
+        telemetry.addData("Pipeline", "Index: %d, Type: %s",
+                status.getPipelineIndex(), status.getPipelineType());
 
         LLResult result = limelight.getLatestResult();
         if (result.isValid()) {
@@ -93,6 +93,12 @@ public class LimeLightController  {
 
 public   List<LLResultTypes.FiducialResult> getFiducialResults(){
     LLStatus status = limelight.getStatus();
+    telemetry.addData("Name", "%s",
+            status.getName());
+    telemetry.addData("LL", "Temp: %.1fC, CPU: %.1f%%, FPS: %d",
+            status.getTemp(), status.getCpu(),(int)status.getFps());
+    telemetry.addData("Pipeline", "Index: %d, Type: %s",
+            status.getPipelineIndex(), status.getPipelineType());
 
     LLResult result = limelight.getLatestResult();
     if (result.isValid()) {
