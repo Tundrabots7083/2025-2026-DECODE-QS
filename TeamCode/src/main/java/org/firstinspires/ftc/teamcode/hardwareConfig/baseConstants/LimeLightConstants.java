@@ -1,5 +1,5 @@
 package org.firstinspires.ftc.teamcode.hardwareConfig.baseConstants;
 
-public class WebCamConstants {
+public class LimeLightConstants {
     public static String name;
 }
