@@ -6,10 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-
-import java.util.Arrays;
-import java.util.List;
-
+import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Common.PauseAction;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.FrontZone.MoveToShootingPosition;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.Action;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.BehaviorTree;
@@ -17,9 +14,12 @@ import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTree
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.Node;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.Sequence;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.Status;
-import org.firstinspires.ftc.teamcode.hardwareControl.actuators.intake.IntakeController;
 import org.firstinspires.ftc.teamcode.hardwareControl.actuators.driveTrain.DriveTrainController;
+import org.firstinspires.ftc.teamcode.hardwareControl.actuators.intake.IntakeController;
 import org.firstinspires.ftc.teamcode.hardwareControl.actuators.shooter.ShooterController;
+
+import java.util.Arrays;
+import java.util.List;
 
 
 public class FrontZoneScoringBehaviorTree {
@@ -56,13 +56,13 @@ public class FrontZoneScoringBehaviorTree {
     private void Init() {
         this.blackBoard = BlackBoard.getInstance(telemetry);
         this.blackBoard.reset();
-/*
+
         /// Drive Train
         this.driveTrainController = DriveTrainController.getInstance();
         this.driveTrainController.reset();
         this.driveTrainController.initialize(hardwareMap, startingPose);
         /// End Drivetrain
-*/
+
         /// Shooter
         this.shooterController = ShooterController.getInstance();
 
@@ -85,7 +85,8 @@ public class FrontZoneScoringBehaviorTree {
 
         this.root = new Sequence(
                 Arrays.asList(
-                        new Action(new MoveToShootingPosition(telemetry, driveTrainController), telemetry)
+                        new Action(new MoveToShootingPosition(telemetry, driveTrainController), telemetry),
+                        new Action(new PauseAction(2000, telemetry, this.opMode), telemetry)
                 ),telemetry);
 
         this.tree = new BehaviorTree(root, blackBoard);
@@ -103,7 +104,7 @@ public class FrontZoneScoringBehaviorTree {
 
         // Run the behavior tree
         Status result = tree.tick();
-        telemetry.addData("ScoreSpecimensBehaviorTree", "Run - Behavior tree result: %s",result);
+        telemetry.addData("FrontZoneScoringBehaviorTree", "Run - Behavior tree result: %s",result);
         telemetry.update();
 
         return result;
