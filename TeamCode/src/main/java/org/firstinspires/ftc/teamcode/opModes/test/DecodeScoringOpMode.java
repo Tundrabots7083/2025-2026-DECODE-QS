@@ -21,8 +21,8 @@ public class DecodeScoringOpMode extends LinearOpMode
     public void runOpMode()
     {
 
-        telemetry.addData("DecodeScoringOpMode", "runOpMode started");
-        telemetry.update();
+//        telemetry.addData("DecodeScoringOpMode", "runOpMode started");
+//        telemetry.update();
         initialize(this);
         waitForStart();
 
@@ -35,8 +35,8 @@ public class DecodeScoringOpMode extends LinearOpMode
             Status result = this.behaviorTree.tick();
 
 
-            telemetry.addData("DecodeScoringOpMode", "Behavior tree result: %s",result);
-            telemetry.update();
+//            telemetry.addData("DecodeScoringOpMode", "Behavior tree result: %s",result);
+//            telemetry.update();
 
 
             if(result == Status.SUCCESS){
