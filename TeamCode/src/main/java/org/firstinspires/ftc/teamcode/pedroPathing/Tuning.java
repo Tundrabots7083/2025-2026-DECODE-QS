@@ -93,6 +93,8 @@ public class Tuning extends SelectableOpMode {
         poseHistory = follower.getPoseHistory();
 
         telemetryM = PanelsTelemetry.INSTANCE.getTelemetry();
+
+        Drawing.init();
     }
 
     @Override
