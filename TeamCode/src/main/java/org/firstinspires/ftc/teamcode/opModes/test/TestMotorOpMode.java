@@ -96,7 +96,7 @@ public class TestMotorOpMode extends LinearOpMode
            // testMotor.setPower(motorPower);
 
 //            double currentPosition =shoulderController.getCurrentPosition();
-//            shoulderController.moveToTargetPosition(this.targetAngle);
+//            shoulderController.spinToTargetVelocity(this.targetAngle);
 //
 //            Telemetry for debugging
 //            telemetry.addData("Target Angle", targetAngle);
