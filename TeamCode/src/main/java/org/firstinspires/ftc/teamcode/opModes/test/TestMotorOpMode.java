@@ -1,134 +1,90 @@
 package org.firstinspires.ftc.teamcode.opModes.test;
 
+import com.bylazar.configurables.annotations.Configurable;
+import com.bylazar.telemetry.JoinedTelemetry;
+import com.bylazar.telemetry.PanelsTelemetry;
+import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DistanceSensor;
-import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-
-import org.firstinspires.ftc.teamcode.hardwareControl.sensors.intakeDistanceSensor.IntakeDistanceSensorController;
 import org.firstinspires.ftc.teamcode.hardwareControl.actuators.shooter.ShooterController;
-import org.firstinspires.ftc.teamcode.hardwareControl.sensors.frontLeftCamera.FrontLeftCameraController;
 
-@Autonomous(name="TestMotor/servo", group="specimens")
-public class TestMotorOpMode extends LinearOpMode
-{
+import java.util.List;
 
-    private DcMotorEx testMotor;
+@Configurable
+@Autonomous(name = "Test Shooter", group = "test")
+public class TestMotorOpMode extends LinearOpMode {
 
-    private Servo servo;
-
-    public static double motorTargetPosition =1000;
-    public static double motorPower =0.1;
-    public static DcMotorEx.Direction motorDirection= DcMotorEx.Direction.FORWARD;
+    public static double velocityTargetPosition = 50;
     ShooterController shooterController;
-    IntakeDistanceSensorController frontDistanceSensorController;
-    FrontLeftCameraController frontLeftCameraController;
 
-    double startAngle;
-    double targetAngle = 90.00;
+    private long lastTime = System.nanoTime();
 
+    JoinedTelemetry joinedTelemetry = new JoinedTelemetry(telemetry, PanelsTelemetry.INSTANCE.getFtcTelemetry());
 
+    private long count = 0;
 
-    public static double servoPosition =0;
-    public static Servo.Direction servoDirection= Servo.Direction.FORWARD;
+    // All lynx module hubs
+    public List<LynxModule> allHubs;
 
-
-
-    private DistanceSensor distanceSensor;
-
-    private long count=0;
 
 
     @Override
-    public void runOpMode()
-    {
+    public void runOpMode() {
 
-        telemetry.clearAll();
-        telemetry.addData("TestMotorOpMode", "runOpMode started");
-        telemetry.update();
+        // Enable bulk reads. This is almost always the "correct" answer, and can speed up loop
+        // times. We will be managing the bulk read caches manually, which requires each OpMode
+        // to clear the cache at the start of each loop.
+        allHubs = hardwareMap.getAll(LynxModule.class);
+        for (LynxModule hub : allHubs) {
+            hub.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
+        }
+
+        joinedTelemetry.addData("TestMotorOpMode", "runOpMode started");
+        joinedTelemetry.update();
         waitForStart();
-        /// Shoulder
-//        this.shoulderController = ShoulderController.getInstance();
-//
-//        this.shoulderController.reset();
-//        this.shoulderController.initialize(hardwareMap, telemetry, this);
-        /// End Shoulder
 
-        /// Front Distance Sensor
-        frontDistanceSensorController = IntakeDistanceSensorController.getInstance();
-        frontDistanceSensorController.initialize(hardwareMap, telemetry, this);
+        /// Shooter
+        this.shooterController = ShooterController.getInstance();
 
-        /// End Front Distance Sensor
+        this.shooterController.reset();
+        this.shooterController.initialize(hardwareMap, joinedTelemetry, this);
+        /// End Shooter
 
-        /// Front Left Camera
-        frontLeftCameraController =FrontLeftCameraController.getInstance();
-        frontLeftCameraController.initialize(hardwareMap, telemetry, this);
+        while (opModeIsActive()) {
+            shooterController.spinToTargetVelocity(velocityTargetPosition);
 
-        /// End Front Left Camera
-/*
-        testMotor =  hardwareMap.get(DcMotorEx.class, "testMotor");
-        testMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        testMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        testMotor.setDirection(motorDirection);
+            long currentTime = System.nanoTime();
+            double loopTimeMs = (currentTime - lastTime) / 1e6;
+            lastTime = currentTime;
 
+            joinedTelemetry.addData("Loop Time (ms)", loopTimeMs);
 
-        servo = hardwareMap.get(Servo.class, "testServo");
-
-        distanceSensor = hardwareMap.get(DistanceSensor.class, "testDistance");
-*/
-        while (opModeIsActive())
-        {
             count++;
-            telemetry.addData("TestMotorOpMode", "runOpMode while started count: %d",count);
-            telemetry.update();
+            joinedTelemetry.addData("Test Shoulder", "runOpMode while started count: %d", count);
+            joinedTelemetry.addData("CurrentVelocity", shooterController.getCurrentVelocity());
+            joinedTelemetry.addData("TargetVelocity", velocityTargetPosition);
+            joinedTelemetry.addData("Encoder Position", shooterController.getCurrentPosition());
+            joinedTelemetry.update();
 
-            // Get current encoder position
-           // double currentPosition = testMotor.getCurrentPosition();
 
-            // Calculate motor power using PIDF
-           // double power = pidfController.calculate(targetPosition, currentPosition);
-
-            // Apply power to motor
-            //motor.setPower(power);
-           // testMotor.setPower(motorPower);
-
-//            double currentPosition =shoulderController.getCurrentPosition();
-//            shoulderController.spinToTargetVelocity(this.targetAngle);
+//            double currentPosition =shooterController.getCurrentPosition();
+//            shooterController.spinToTargetVelocity(this.targetAngle);
 //
 //            Telemetry for debugging
-//            telemetry.addData("Target Angle", targetAngle);
-//            telemetry.addData("Current Angle", currentPosition);
-//            telemetry.addData("Power", motorPower);
-//            telemetry.update();
+//            joinedTelemetry.addData("Target Angle", targetAngle);
+//            joinedTelemetry.addData("Current Angle", currentPosition);
+//            joinedTelemetry.addData("Power", motorPower);
+//            joinedTelemetry.update();
+
+            // Clear the bulk cache for each Lynx module hub. This must be performed once per loop
+            // as the bulk read caches are being handled manually.
+            for (LynxModule hub : allHubs) {
+                hub.clearBulkCache();
+            }
 //
-            /// Front Distance Sensor
-
-            frontDistanceSensorController.getCurrentDistance();
-            /// End Front Distance Sensor
-
-            /// Front left camera
-            frontLeftCameraController.getCurrentDetections();
-
-            /// End Front Left Camera
-
-
-
-
-           // servo.setDirection(Servo.Direction.FORWARD);
-           // servo.setPosition(servoPosition);
-
-           // telemetry.addData("Distance (CM)", this.getDistance(DistanceUnit.CM));
-           // telemetry.addData("Distance (IN)", this.getDistance(DistanceUnit.INCH));
-           // telemetry.update();
-
         }
     }
 
-    public double getDistance(DistanceUnit du){
-        return this.distanceSensor.getDistance(du);
-    }
-
 }
+

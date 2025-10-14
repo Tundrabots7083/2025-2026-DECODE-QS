@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.hardwareControl.actuators.shooter;
 
 
+import com.bylazar.configurables.annotations.Configurable;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -14,19 +15,20 @@ import org.firstinspires.ftc.teamcode.hardwareConfig.baseConstants.MotorConstant
 import org.firstinspires.ftc.teamcode.hardwareConfig.baseConstants.PIDFControllerConstants;
 import org.firstinspires.ftc.teamcode.hardwareControl.actuators.common.PIDFController;
 
-
+@Configurable
 public class ShooterController {
 
      private DcMotorEx shooterMotor;
 
     private double START_VELOCITY;
     private double TOLERABLE_ERROR;
+    private double lastPower = 0;
+    private double targetVelocity;
 
-    public static double Kp = 0.01;
-    public static double Ki = 0.001;
+    public static double Kp = 0.02;
+    public static double Ki = 0.0;
     public static double Kd = 0.0;
-    public static double Kf = 0.0;
-    public static double targetVelocity;
+    public static double Kf = 0.0121;
 
 
     /// motion control
@@ -114,32 +116,33 @@ public class ShooterController {
         }
     }
 
+    public double getCurrentPosition() {
+        return shooterMotor.getCurrentPosition();
+    }
+
 
     /**
      * Gets the velocity of the shooter motor
      * @return returns rotations per minute
      */
     public double getCurrentVelocity() {
-        return shooterMotor.getVelocity(AngleUnit.DEGREES) / 6;
+        return -shooterMotor.getVelocity(AngleUnit.DEGREES) / 6;
     }
 
     public void spinToTargetVelocity(double newTargetVelocity){
         targetVelocity = newTargetVelocity;
 
         // Get current encoder position
-        currentVelocity = this.getCurrentVelocity();
+        currentVelocity = getCurrentVelocity();
 
         // Calculate motor pidPower using PIDF
         double pidPower = pidfController.calculate(targetVelocity, currentVelocity);
 
-        // Apply pidPower to motor
-        shooterMotor.setPower(pidPower);
-
-
-        telemetry.addData("ShoulderController Target velocity", newTargetVelocity);
-        telemetry.addData("ShoulderController Current velocity", currentVelocity);
-        telemetry.addData("ShoulderController power", pidPower);
-        telemetry.update();
+        if ((lastPower == 0.0) || (Math.abs(pidPower - lastPower) >= 0.005)) {
+            // Apply pidPower to motor
+            shooterMotor.setPower(pidPower);
+            telemetry.addData("Set Power to PID", pidPower);
+        }
 
     }
 
