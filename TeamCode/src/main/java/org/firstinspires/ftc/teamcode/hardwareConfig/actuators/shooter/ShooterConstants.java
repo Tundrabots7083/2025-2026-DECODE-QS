@@ -10,7 +10,7 @@ import org.firstinspires.ftc.teamcode.hardwareConfig.baseConstants.ShooterConsta
 
 public class ShooterConstants {
         static {
-                ShooterConstantsBase.frontMotorName = "frontShooterMotor";
+                ShooterConstantsBase.frontMotorName = "rightRear";
                 ShooterConstantsBase.rearMotorName = "frontShooterMotor";
                 ShooterConstantsBase.motorConfigurationType = "clone";
                 ShooterConstantsBase.ticksPerRev= 1993.6; // gobilda ticks 84 rpm// 537.7; // gobilda ticks per rev for 312 rpm //1397.1; // gobuilda ticks per rev for 60 rpm;
@@ -24,12 +24,8 @@ public class ShooterConstants {
                 ShooterConstantsBase.targetPosition =0;
                 ShooterConstantsBase.tolerableError=0.7; //in degrees
                 ShooterConstantsBase.FRONT_Kp=0.3;  //to be tuned for the PID controller
-                ShooterConstantsBase.FRONT_Ki=0;
-                ShooterConstantsBase.FRONT_Kd=0;
                 ShooterConstantsBase.FRONT_feedforward=0.3;
                 ShooterConstantsBase.REAR_Kp=0.3;
-                ShooterConstantsBase.REAR_Ki=0;
-                ShooterConstantsBase.REAR_Kd=0;
                 ShooterConstantsBase.REAR_feedforward=0.3;
 
 

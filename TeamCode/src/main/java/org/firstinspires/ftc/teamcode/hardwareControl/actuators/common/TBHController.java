@@ -71,8 +71,6 @@ public class TBHController {
     public void reset() {
         lastError = 0.0;
         isFirstCross = true;
-        driveAtZero = 0.0;
-        power = 0.0;
     }
 
     /**

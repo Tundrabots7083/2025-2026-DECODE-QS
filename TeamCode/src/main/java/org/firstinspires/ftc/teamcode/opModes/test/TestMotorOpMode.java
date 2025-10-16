@@ -67,22 +67,11 @@ public class TestMotorOpMode extends LinearOpMode {
             joinedTelemetry.addData("Encoder Position", shooterController.getCurrentPosition());
             joinedTelemetry.update();
 
-
-//            double currentPosition =shooterController.getCurrentPosition();
-//            shooterController.spinToTargetVelocity(this.targetAngle);
-//
-//            Telemetry for debugging
-//            joinedTelemetry.addData("Target Angle", targetAngle);
-//            joinedTelemetry.addData("Current Angle", currentPosition);
-//            joinedTelemetry.addData("Power", motorPower);
-//            joinedTelemetry.update();
-
             // Clear the bulk cache for each Lynx module hub. This must be performed once per loop
             // as the bulk read caches are being handled manually.
             for (LynxModule hub : allHubs) {
                 hub.clearBulkCache();
             }
-//
         }
     }
 

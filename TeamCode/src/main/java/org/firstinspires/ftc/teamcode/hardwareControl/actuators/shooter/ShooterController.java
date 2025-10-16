@@ -10,10 +10,11 @@ import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigu
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.hardwareConfig.actuators.shooter.ShooterConstants;
-import org.firstinspires.ftc.teamcode.hardwareConfig.actuators.shooter.ShooterPIDFControllerConstants;
+import org.firstinspires.ftc.teamcode.hardwareConfig.actuators.shooter.ShooterTBHControllerConstants;
 import org.firstinspires.ftc.teamcode.hardwareConfig.baseConstants.MotorConstants;
 import org.firstinspires.ftc.teamcode.hardwareConfig.baseConstants.PIDFControllerConstants;
-import org.firstinspires.ftc.teamcode.hardwareControl.actuators.common.PIDFController;
+import org.firstinspires.ftc.teamcode.hardwareConfig.baseConstants.ShooterConstantsBase;
+import org.firstinspires.ftc.teamcode.hardwareControl.actuators.common.TBHController;
 
 @Configurable
 public class ShooterController {
@@ -26,13 +27,11 @@ public class ShooterController {
     private double targetVelocity;
 
     public static double Kp = 0.02;
-    public static double Ki = 0.0;
-    public static double Kd = 0.0;
     public static double Kf = 0.0121;
 
 
     /// motion control
-    private PIDFController pidfController;
+    private TBHController tbhController;
 
     private double currentVelocity;
     ///
@@ -56,7 +55,7 @@ public class ShooterController {
     private static void setupConstants(){
         try {
             Class.forName(ShooterConstants.class.getName());
-            Class.forName(ShooterPIDFControllerConstants.class.getName());
+            Class.forName(ShooterTBHControllerConstants.class.getName());
         } catch (ClassNotFoundException e) {
             //e.printStackTrace();
         }
@@ -72,13 +71,13 @@ public class ShooterController {
 
         initializeMotor(hardwareMap);
         initializeLocalVariablesWithConstants();
-        initializePDFController();
+        initializeTBHController();
 
         initialized = true;
     }
 
     private void initializeMotor(HardwareMap hardwareMap){
-        shooterMotor =  hardwareMap.get(DcMotorEx.class, MotorConstants.name);
+        shooterMotor =  hardwareMap.get(DcMotorEx.class, ShooterConstantsBase.frontMotorName);
         MotorConfigurationType motorConfigurationType = shooterMotor.getMotorType().clone();
         motorConfigurationType.setTicksPerRev(MotorConstants.ticksPerRev);
         motorConfigurationType.setGearing(MotorConstants.gearing);
@@ -94,11 +93,10 @@ public class ShooterController {
         TOLERABLE_ERROR = MotorConstants.tolerableError;
     }
 
-    private void initializePDFController(){
+    private void initializeTBHController(){
 
-        pidfController = new PIDFController(Kp, Ki, Kd, Kf);
-        pidfController.setOutputLimits(PIDFControllerConstants.motorMinPowerLimit, PIDFControllerConstants.motorMaxPowerLimit); // Motor power limits
-        pidfController.setMaxIntegralSum(PIDFControllerConstants.maxIntegralSum); // Prevent integral windup
+        tbhController = new TBHController(Kp, Kf);
+        tbhController.setOutputLimits(PIDFControllerConstants.motorMinPowerLimit, PIDFControllerConstants.motorMaxPowerLimit); // Motor power limits
     }
 
 
@@ -130,18 +128,24 @@ public class ShooterController {
     }
 
     public void spinToTargetVelocity(double newTargetVelocity){
-        targetVelocity = newTargetVelocity;
 
-        // Get current encoder position
+        if(newTargetVelocity != targetVelocity) {
+            tbhController.reset();
+        }
+
+        targetVelocity = newTargetVelocity;
         currentVelocity = getCurrentVelocity();
 
-        // Calculate motor pidPower using PIDF
-        double pidPower = pidfController.calculate(targetVelocity, currentVelocity);
+        // Calculate motor tbhPower using TBH
+        double tbhPower = tbhController.calculate(targetVelocity, currentVelocity);
 
-        if ((lastPower == 0.0) || (Math.abs(pidPower - lastPower) >= 0.005)) {
-            // Apply pidPower to motor
-            shooterMotor.setPower(pidPower);
-            telemetry.addData("Set Power to PID", pidPower);
+        //Apply power to the motor if this is the first loop
+        //Or if it's substantially different than what the motor is currently running at.
+        //Otherwise save time by ignoring small changes in power.
+        if ((lastPower == 0.0) || (Math.abs(tbhPower - lastPower) >= 0.005)) {
+            // Apply tbhPower to motor
+            shooterMotor.setPower(tbhPower);
+            telemetry.addData("Set Power to PID", tbhPower);
         }
 
     }
