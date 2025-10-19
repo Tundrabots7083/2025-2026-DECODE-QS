@@ -68,7 +68,7 @@ public class SampleAutoPIDFOpMode extends LinearOpMode
             telemetry.addData("Target Position", targetPosition);
             telemetry.addData("Current Position", currentPosition);
             telemetry.addData("Power", power);
-            //telemetry.addData("Power", motorPower);
+            //joinedTelemetry.addData("Power", motorPower);
             telemetry.update();
 
         }

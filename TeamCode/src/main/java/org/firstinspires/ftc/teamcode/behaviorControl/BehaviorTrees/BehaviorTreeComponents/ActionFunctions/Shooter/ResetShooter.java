@@ -9,8 +9,7 @@ import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTree
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.Status;
 import org.firstinspires.ftc.teamcode.hardwareControl.actuators.shooter.ShooterController;
 
-public class ResetShooter implements ActionFunction
-{
+public class ResetShooter implements ActionFunction {
     private final LinearOpMode opMode;
     Telemetry telemetry;
     ShooterController shooterController;
@@ -25,7 +24,8 @@ public class ResetShooter implements ActionFunction
         this.init();
     }
 
-    private void init(){    }
+    private void init() {
+    }
 
     public Status perform(BlackBoard blackBoard) {
         Status status;
@@ -40,12 +40,10 @@ public class ResetShooter implements ActionFunction
         } else {
             if (shooterController.isBusy()) {
                 status = Status.RUNNING;
+            } else if (shooterController.isOnTarget()) {
+                status = Status.SUCCESS;
             } else {
-                if (shooterController.isShoulderStuck()) {
-                    status = Status.FAILURE;
-                } else {
-                    status = Status.SUCCESS;
-                }
+                status = Status.FAILURE;
             }
         }
 
