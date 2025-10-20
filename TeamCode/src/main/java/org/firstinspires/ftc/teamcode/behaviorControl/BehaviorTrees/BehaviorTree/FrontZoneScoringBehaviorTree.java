@@ -86,7 +86,7 @@ public class FrontZoneScoringBehaviorTree {
         this.limeLightController = LimeLightController.getInstance();
 
         this.limeLightController.reset();
-        this.limeLightController.initialize(hardwareMap, telemetry, this.opMode);
+        this.limeLightController.initialize(hardwareMap, telemetry);
         /// End Limelight
 
 

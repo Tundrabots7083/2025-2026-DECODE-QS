@@ -39,6 +39,10 @@ public class TBHController {
         // Calculate error
         double error = setpoint - current;
 
+        if(error > 500) {
+            isFirstCross = true;
+        }
+
         // Increment Power
         power = power + (kP * error);
 

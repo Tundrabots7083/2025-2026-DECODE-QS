@@ -19,21 +19,32 @@ import org.firstinspires.ftc.teamcode.hardwareControl.actuators.common.TBHContro
 @Configurable
 public class ShooterController {
 
-     private DcMotorEx shooterMotor;
+    private DcMotorEx frontShooterMotor;
+    private DcMotorEx rearShooterMotor;
 
     private double START_VELOCITY;
     private double TOLERABLE_ERROR;
     private double lastPower = 0;
     private double targetVelocity;
 
-    public static double Kp = 0.02;
-    public static double Kf = 0.0121;
+//    double FRONT_Kp = ShooterTBHControllerConstantBase.FRONT_Kp;
+//    double FRONT_Kf = ShooterTBHControllerConstantBase.FRONT_Kf;
+//    double REAR_Kp = ShooterTBHControllerConstantBase.FRONT_Kp;
+//    double REAR_Kf = ShooterTBHControllerConstantBase.FRONT_Kf;
+
+    public static double FRONT_Kp =0.000002;
+    public static double FRONT_Kf =0.00017;
+    public static double REAR_Kp = 0.000002;
+    public static double REAR_Kf = 0.00017;
 
 
     /// motion control
-    private TBHController tbhController;
+    private TBHController frontTbhController;
+    private TBHController rearTbhController;
 
-    private double currentVelocity;
+    private double currentFrontVelocity;
+    private double currentRearVelocity;
+
     ///
 
     private boolean initialized = false;
@@ -77,15 +88,22 @@ public class ShooterController {
     }
 
     private void initializeMotor(HardwareMap hardwareMap){
-        shooterMotor =  hardwareMap.get(DcMotorEx.class, ShooterConstantsBase.frontMotorName);
-        MotorConfigurationType motorConfigurationType = shooterMotor.getMotorType().clone();
+        frontShooterMotor =  hardwareMap.get(DcMotorEx.class, ShooterConstantsBase.frontMotorName);
+        MotorConfigurationType motorConfigurationType = frontShooterMotor.getMotorType().clone();
+        rearShooterMotor = hardwareMap.get(DcMotorEx.class, ShooterConstantsBase.rearMotorName);
         motorConfigurationType.setTicksPerRev(MotorConstants.ticksPerRev);
         motorConfigurationType.setGearing(MotorConstants.gearing);
         motorConfigurationType.setAchieveableMaxRPMFraction(MotorConstants.achievableMaxRPMFraction);
-        shooterMotor.setMotorType(motorConfigurationType);
-        shooterMotor.setMode(MotorConstants.resetMode);
-        shooterMotor.setMode(MotorConstants.mode);
-        shooterMotor.setDirection(MotorConstants.direction);
+
+        frontShooterMotor.setMotorType(motorConfigurationType);
+        frontShooterMotor.setMode(ShooterConstantsBase.resetMode);
+        frontShooterMotor.setMode(ShooterConstantsBase.mode);
+        frontShooterMotor.setDirection(ShooterConstantsBase.frontMotorDirection);
+
+        rearShooterMotor.setMotorType(motorConfigurationType);
+        rearShooterMotor.setMode(ShooterConstantsBase.resetMode);
+        rearShooterMotor.setMode(ShooterConstantsBase.mode);
+        rearShooterMotor.setDirection(ShooterConstantsBase.rearMotorDirection);
     }
 
     private void initializeLocalVariablesWithConstants(){
@@ -95,8 +113,11 @@ public class ShooterController {
 
     private void initializeTBHController(){
 
-        tbhController = new TBHController(Kp, Kf);
-        tbhController.setOutputLimits(PIDFControllerConstants.motorMinPowerLimit, PIDFControllerConstants.motorMaxPowerLimit); // Motor power limits
+        frontTbhController = new TBHController(FRONT_Kp, FRONT_Kf);
+        frontTbhController.setOutputLimits(PIDFControllerConstants.motorMinPowerLimit, PIDFControllerConstants.motorMaxPowerLimit); // Motor power limits
+
+        rearTbhController = new TBHController(REAR_Kp, REAR_Kf);
+        rearTbhController.setOutputLimits(PIDFControllerConstants.motorMinPowerLimit, PIDFControllerConstants.motorMaxPowerLimit); // Motor power limits
     }
 
 
@@ -106,16 +127,24 @@ public class ShooterController {
             if(this.isBusy()) {
                 this.spinToTargetVelocity(START_VELOCITY);
             } else {
-                shooterMotor.setMode(MotorConstants.resetMode);
-                shooterMotor.setMode(MotorConstants.mode);
-                shooterMotor.setDirection(MotorConstants.direction);
+                frontShooterMotor.setMode(MotorConstants.resetMode);
+                frontShooterMotor.setMode(MotorConstants.mode);
+                frontShooterMotor.setDirection(MotorConstants.direction);
+
+                rearShooterMotor.setMode(MotorConstants.resetMode);
+                rearShooterMotor.setMode(MotorConstants.mode);
+                rearShooterMotor.setDirection(MotorConstants.direction);
             }
             initialized = false;
         }
     }
 
-    public double getCurrentPosition() {
-        return shooterMotor.getCurrentPosition();
+    public double getFrontCurrentPosition() {
+        return frontShooterMotor.getCurrentPosition();
+    }
+
+    public double getRearCurrentPosition() {
+        return rearShooterMotor.getCurrentPosition();
     }
 
 
@@ -123,37 +152,53 @@ public class ShooterController {
      * Gets the velocity of the shooter motor
      * @return returns rotations per minute
      */
-    public double getCurrentVelocity() {
-        return -shooterMotor.getVelocity(AngleUnit.DEGREES) / 6;
+    public double getFrontCurrentVelocity() {
+        return frontShooterMotor.getVelocity(AngleUnit.DEGREES) / 6;
+    }
+
+    /**
+     * Gets the velocity of the shooter motor
+     * @return returns rotations per minute
+     */
+    public double getRearCurrentVelocity() {
+        return rearShooterMotor.getVelocity(AngleUnit.DEGREES) / 6;
     }
 
     public void spinToTargetVelocity(double newTargetVelocity){
 
         if(newTargetVelocity != targetVelocity) {
-            tbhController.reset();
+            frontTbhController.reset();
+            rearTbhController.reset();
         }
 
         targetVelocity = newTargetVelocity;
-        currentVelocity = getCurrentVelocity();
+
+        currentFrontVelocity = getFrontCurrentVelocity();
+        currentRearVelocity = getRearCurrentVelocity();
 
         // Calculate motor tbhPower using TBH
-        double tbhPower = tbhController.calculate(targetVelocity, currentVelocity);
+        double FRONTtbhPower = frontTbhController.calculate(targetVelocity, currentFrontVelocity);
+        double REARtbhPower = rearTbhController.calculate(targetVelocity, currentRearVelocity);
+
 
         //Apply power to the motor if this is the first loop
         //Or if it's substantially different than what the motor is currently running at.
         //Otherwise save time by ignoring small changes in power.
-        if ((lastPower == 0.0) || (Math.abs(tbhPower - lastPower) >= 0.005)) {
-            // Apply tbhPower to motor
-            shooterMotor.setPower(tbhPower);
-            telemetry.addData("Set Power to PID", tbhPower);
-        }
+//        if ((lastPower == 0.0) || (Math.abs(REARtbhPower - lastPower) >= 0.005)) {
+            // Apply FRONTtbhPower to motor
+            frontShooterMotor.setPower(FRONTtbhPower);
+            rearShooterMotor.setPower(REARtbhPower);
+            telemetry.addData("Set Front Power to PID", FRONTtbhPower);
+            telemetry.addData("Set Rear Power to PID", REARtbhPower);
+//        }
 
     }
 
     public boolean isOnTarget(){
-          double currentVelocity = this.getCurrentVelocity();
+          double currentFrontVelocity = getFrontCurrentVelocity();
+          double currentRearVelocity = getRearCurrentVelocity();
 
-        return ((Math.abs(targetVelocity - currentVelocity) <= TOLERABLE_ERROR));
+        return ((Math.abs(targetVelocity - currentFrontVelocity) <= TOLERABLE_ERROR) && (Math.abs(targetVelocity - currentRearVelocity) <= TOLERABLE_ERROR));
     }
 
     public void update(){
@@ -161,6 +206,6 @@ public class ShooterController {
     }
 
     public boolean isBusy(){
-        return shooterMotor.isBusy();
+        return frontShooterMotor.isBusy() || rearShooterMotor.isBusy();
     }
 }
