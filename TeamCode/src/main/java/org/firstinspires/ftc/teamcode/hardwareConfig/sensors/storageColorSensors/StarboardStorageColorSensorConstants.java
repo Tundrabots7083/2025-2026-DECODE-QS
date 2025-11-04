@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.hardwareConfig.sensors.storageColorSensor
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.hardwareConfig.baseConstants.ColorDistanceSensorConstants;
+import com.qualcomm.hardware.rev.RevColorSensorV3;
 
 /*
         Storage color sensor are named are as followed
@@ -14,9 +15,8 @@ import org.firstinspires.ftc.teamcode.hardwareConfig.baseConstants.ColorDistance
               [PortStorageColorSensor] [StarboardStorageColorSensor]
  */
 public class StarboardStorageColorSensorConstants {
-static{
+{
     ColorDistanceSensorConstants.name = "StarboardStorageColorSensor";
     ColorDistanceSensorConstants.distanceUnit = DistanceUnit.MM;
-
 }
 }
