@@ -10,12 +10,10 @@ import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTree
 
 
 public class PauseAction implements ActionFunction {
-    private static final double CLAW_OPEN_POSITION = 60;
     private final long pauseDuration;
     Telemetry telemetry;
     protected LinearOpMode opMode;
 
-    protected Status lastStatus = Status.FAILURE;
 
     public PauseAction (long pauseDuration, Telemetry telemetry, LinearOpMode opMode) {
         this.telemetry = telemetry;

@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Common.PauseAction;
+import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Common.EmptyAction;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.actuators.driveTrain.MoveToShootingPosition;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.Action;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.BehaviorTree;
@@ -86,7 +86,7 @@ public class FrontZoneScoringBehaviorTree {
         this.root = new Sequence(
                 Arrays.asList(
                         new Action(new MoveToShootingPosition(telemetry, driveTrainController), telemetry),
-                        new Action(new PauseAction(2000, telemetry, this.opMode), telemetry)
+                        new Action(new EmptyAction(telemetry, this.opMode), telemetry)
                 ),telemetry);
 
         this.tree = new BehaviorTree(root, blackBoard);
