@@ -2,14 +2,12 @@ package org.firstinspires.ftc.teamcode.hardwareControl.sensors.limeLight;
 
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
-import com.qualcomm.hardware.limelightvision.LLStatus;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
-import org.firstinspires.ftc.teamcode.hardwareConfig.baseConstants.LimeLightConstants;
 import org.firstinspires.ftc.teamcode.hardwareConfig.sensors.limeLight.LimeLight01Constants;
 
 import java.util.List;
@@ -22,6 +20,7 @@ public class LimeLightController  {
     private static final LimeLightController INSTANCE = new LimeLightController();
     private LinearOpMode opMode;
     private Telemetry telemetry;
+    private final int APRILTAG_PIPELINE = 0;
 
     private Limelight3A limelight;
 
@@ -66,45 +65,34 @@ public class LimeLightController  {
     }
 
     private void initLimeLight01(HardwareMap hardwareMap) {
-        limelight = hardwareMap.get(Limelight3A.class, LimeLightConstants.name);
-        limelight.pipelineSwitch(0); //TODO: match the pipeline index to LL config
+        limelight = hardwareMap.get(Limelight3A.class, "limelight");
+        limelight.pipelineSwitch(APRILTAG_PIPELINE);
         limelight.start();
     }
 
     // Example method
     public Pose3D getCurrentRobotPose(){
-        LLStatus status = limelight.getStatus();
-        telemetry.addData("Name", "%s",
-                status.getName());
-        telemetry.addData("LL", "Temp: %.1fC, CPU: %.1f%%, FPS: %d",
-                status.getTemp(), status.getCpu(),(int)status.getFps());
-        telemetry.addData("Pipeline", "Index: %d, Type: %s",
-                status.getPipelineIndex(), status.getPipelineType());
-
         LLResult result = limelight.getLatestResult();
         if (result.isValid()) {
             Pose3D robotPose = result.getBotpose();
 
-            telemetry.addData("RobotPose", robotPose.toString());
+            double xPose = (robotPose.getPosition().x * 39.37008);  //convert meters to inches
+            double yPose = (robotPose.getPosition().y * 39.37008);  //convert meters to inches
+            double heading = robotPose.getOrientation().getYaw();
+
+            telemetry.addData("RobotPoseX", xPose);
+            telemetry.addData("RobotPoseY", yPose);
+            telemetry.update();
             return robotPose;
         }
         return null;
     }
 
 public   List<LLResultTypes.FiducialResult> getFiducialResults(){
-    LLStatus status = limelight.getStatus();
-    telemetry.addData("Name", "%s",
-            status.getName());
-    telemetry.addData("LL", "Temp: %.1fC, CPU: %.1f%%, FPS: %d",
-            status.getTemp(), status.getCpu(),(int)status.getFps());
-    telemetry.addData("Pipeline", "Index: %d, Type: %s",
-            status.getPipelineIndex(), status.getPipelineType());
-
     LLResult result = limelight.getLatestResult();
     if (result.isValid()) {
         List<LLResultTypes.FiducialResult> fiducialResults = result.getFiducialResults();
         for (LLResultTypes.FiducialResult fr : fiducialResults) {
-            telemetry.addData("Fiducial", "ID: %d, Family: %s, X: %.2f, Y: %.2f", fr.getFiducialId(), fr.getFamily(), fr.getTargetXDegrees(), fr.getTargetYDegrees());
         }
         return fiducialResults;
     }
