@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import org.firstinspires.ftc.teamcode.hardwareConfig.baseConstants.MotorConstants;
 
-/// TODO: set values for the arm motor
+/// TODO: set values for the intake motor
 public class IntakeConstants {
     static {
         MotorConstants.name = "intakeMotor";

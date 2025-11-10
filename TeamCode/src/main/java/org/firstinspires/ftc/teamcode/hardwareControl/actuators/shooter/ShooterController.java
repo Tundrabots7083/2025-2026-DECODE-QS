@@ -1,13 +1,11 @@
 package org.firstinspires.ftc.teamcode.hardwareControl.actuators.shooter;
 
-
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-
 import org.firstinspires.ftc.teamcode.hardwareConfig.baseConstants.MotorConstants;
 import org.firstinspires.ftc.teamcode.hardwareConfig.baseConstants.PIDFControllerConstants;
 import org.firstinspires.ftc.teamcode.hardwareConfig.actuators.shooter.ShooterConstants;
@@ -19,7 +17,10 @@ import org.firstinspires.ftc.teamcode.hardwareControl.actuators.common.PIDFContr
 
 public class ShooterController {
 
-     private DcMotorEx shoulderMotor;
+     private DcMotorEx shooterMotor;
+    private double targetVelocity;
+    private boolean areConstgntVelocityVariablesInitialized = false;
+
 
     private double MAX_POSITION;
     private double MIN_POSITION;
@@ -88,21 +89,20 @@ public class ShooterController {
         initializeMotor(hardwareMap);
         initializeLocalVariablesWithConstants();
         initializePDFController();
-        initializeMotionProfiler();
 
         initialized = true;
     }
 
     private void initializeMotor(HardwareMap hardwareMap){
-        shoulderMotor =  hardwareMap.get(DcMotorEx.class, MotorConstants.name);
-        MotorConfigurationType motorConfigurationType = shoulderMotor.getMotorType().clone();
+        shooterMotor =  hardwareMap.get(DcMotorEx.class, MotorConstants.name);
+        MotorConfigurationType motorConfigurationType = shooterMotor.getMotorType().clone();
         motorConfigurationType.setTicksPerRev(MotorConstants.ticksPerRev);
         motorConfigurationType.setGearing(MotorConstants.gearing);
         motorConfigurationType.setAchieveableMaxRPMFraction(MotorConstants.achievableMaxRPMFraction);
-        shoulderMotor.setMotorType(motorConfigurationType);
-        shoulderMotor.setMode(MotorConstants.resetMode);
-        shoulderMotor.setMode(MotorConstants.mode);
-        shoulderMotor.setDirection(MotorConstants.direction);
+        shooterMotor.setMotorType(motorConfigurationType);
+        shooterMotor.setMode(MotorConstants.resetMode);
+        shooterMotor.setMode(MotorConstants.mode);
+        shooterMotor.setDirection(MotorConstants.direction);
     }
 
     private void initializeLocalVariablesWithConstants(){
@@ -124,15 +124,7 @@ public class ShooterController {
         pidfController.setMaxIntegralSum(PIDFControllerConstants.maxIntegralSum); // Prevent integral windup
     }
 
-    private void initializeMotionProfiler(){
-       // mpMaxVelocity = MotionProfilerConstants.maxVelocity;
-       // mpMaxAcceleration = MotionProfilerConstants.maxAcceleration;
 
-        // Initialize motion profiler (tune these constraints!)
-        motionProfiler = new MotionProfiler(mpMaxVelocity, mpMaxAcceleration); // e.g., ticks/s, ticks/s^2
-
-
-    }
 
     private void generateMotionProfile(double startPosition, double targetPosition){
         if(isMotionProfileGenerated){
@@ -156,9 +148,9 @@ public class ShooterController {
             if(this.isBusy()) {
                 this.moveToTargetPosition(START_POSITION);
             } else {
-                shoulderMotor.setMode(MotorConstants.resetMode);
-                shoulderMotor.setMode(MotorConstants.mode);
-                shoulderMotor.setDirection(MotorConstants.direction);
+                shooterMotor.setMode(MotorConstants.resetMode);
+                shooterMotor.setMode(MotorConstants.mode);
+                shooterMotor.setDirection(MotorConstants.direction);
                 isMotionProfileGenerated=false;
             }
             initialized = false;
@@ -168,10 +160,10 @@ public class ShooterController {
 
     // Example method
     public double getCurrentPosition() {
-        MotorConfigurationType motorType = shoulderMotor.getMotorType();
+        MotorConfigurationType motorType = shooterMotor.getMotorType();
         double ticksPerRev = motorType.getTicksPerRev();
         double gearing = motorType.getGearing();
-        double currentTicks = shoulderMotor.getCurrentPosition();
+        double currentTicks = shooterMotor.getCurrentPosition();
         double rotations = currentTicks / ticksPerRev;
         double degreesPerRotation = 360.0 / gearing;
         double currentPosition = rotations * degreesPerRotation + START_POSITION;
@@ -180,6 +172,19 @@ public class ShooterController {
         return rotations * degreesPerRotation + START_POSITION;
     }
 
+    public void moveAtTargetVelocity(double newTargetVelociy){
+        this.targetVelocity = newTargetVelociy;
+        InitializeConstantVelocityVariables();
+    }
+
+    private void InitializeConstantVelocityVariables(){
+        if(areConstgntVelocityVariablesInitialized){
+            return;
+        }
+
+        startTime = System.nanoTime();
+        lastPosition = 0;
+    }
     public void moveToTargetPosition(double newTargetPosition){
         this.targetPosition = newTargetPosition;
 
@@ -204,7 +209,7 @@ public class ShooterController {
 
         double power = pidPower + gravityCompPower;
         // Apply pidPower to motor
-        shoulderMotor.setPower(power);
+        shooterMotor.setPower(power);
 
 
         telemetry.addData("ShoulderController Target position", newTargetPosition);
@@ -237,7 +242,7 @@ public class ShooterController {
     }
 
     public boolean isBusy(){
-        return shoulderMotor.isBusy();
+        return shooterMotor.isBusy();
     }
 
 
