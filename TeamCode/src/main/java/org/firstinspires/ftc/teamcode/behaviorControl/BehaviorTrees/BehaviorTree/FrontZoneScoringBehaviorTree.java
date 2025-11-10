@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Common.PauseAction;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.FrontZone.MoveToShootingPosition;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.Action;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.BehaviorTree;
@@ -32,7 +33,7 @@ public class FrontZoneScoringBehaviorTree {
     /// Drivetrain
     protected DriveTrainController driveTrainController;
     /// TODO: set the startingPose to the right value
-    private final Pose startingPose = new Pose(56, 8, Math.toRadians(90));
+    private final Pose startingPose = new Pose(10, 55, Math.toRadians(0));
     /// Emd Drivetrain
 
     /// Shoulder
@@ -63,19 +64,19 @@ public class FrontZoneScoringBehaviorTree {
         /// End Drivetrain
 
         /// Shooter
-       /* this.shooterController = ShooterController.getInstance();
+        this.shooterController = ShooterController.getInstance();
 
         this.shooterController.reset();
         this.shooterController.initialize(hardwareMap, telemetry, this.opMode);
-*/
+
         /// End Shooter
 
         /// Intake
-       /* this.intakeController = IntakeController.getInstance();
+        this.intakeController = IntakeController.getInstance();
 
         this.intakeController.reset();
         this.intakeController.initialize(hardwareMap, telemetry, this.opMode);
-*/
+
         /// End Intake
 
 
@@ -84,7 +85,8 @@ public class FrontZoneScoringBehaviorTree {
 
         this.root = new Sequence(
                 Arrays.asList(
-                        new Action(new MoveToShootingPosition(telemetry, driveTrainController), telemetry)
+                        new Action(new MoveToShootingPosition(telemetry, driveTrainController), telemetry),
+                        new Action(new PauseAction(2000, telemetry, this.opMode), telemetry)
                 ),telemetry);
 
         this.tree = new BehaviorTree(root, blackBoard);

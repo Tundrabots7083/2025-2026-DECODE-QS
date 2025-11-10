@@ -1,14 +1,13 @@
-package org.firstinspires.ftc.teamcode.hardwareConfig.actuators.intake;
+package org.firstinspires.ftc.teamcode.hardwareConfig.actuators.turret;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import org.firstinspires.ftc.teamcode.hardwareConfig.baseConstants.MotorConstants;
 
-/// TODO: set values for the intake motor
-public class IntakeConstants {
+public class TurretConstants {
     static {
-        MotorConstants.name = "intakeMotor";
+        MotorConstants.name = "turretMotor";
         MotorConstants.motorConfigurationType = "clone";
         MotorConstants.ticksPerRev=1397.1; // gobuilda ticks per rev for 60 rpm;
         MotorConstants.inchesPerRev=Math.PI* 1.4; //spool diameter

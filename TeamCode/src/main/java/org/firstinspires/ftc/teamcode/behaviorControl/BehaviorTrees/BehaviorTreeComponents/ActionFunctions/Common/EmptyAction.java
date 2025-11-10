@@ -3,22 +3,19 @@ package org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTre
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.ActionFunction;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.BlackBoard;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.Status;
 
-
-public class PauseAction implements ActionFunction {
-    private final long pauseDuration;
+/// This action is to be used as a place holder when testing and debugging
+public class EmptyAction implements ActionFunction {
     Telemetry telemetry;
     protected LinearOpMode opMode;
 
 
-    public PauseAction (long pauseDuration, Telemetry telemetry, LinearOpMode opMode) {
+    public EmptyAction (Telemetry telemetry, LinearOpMode opMode) {
         this.telemetry = telemetry;
         this.opMode = opMode;
-        this.pauseDuration = pauseDuration;
         this.init();
     }
 
@@ -30,17 +27,16 @@ public class PauseAction implements ActionFunction {
     public Status perform(BlackBoard blackBoard) {
         Status status;
 
-        telemetry.addData("PauseAction", "perform start");
+        telemetry.addData("EmptyAction", "perform start");
         telemetry.update();
 
-        opMode.sleep(pauseDuration);
 
 
         status=Status.SUCCESS;
 
 
 
-        telemetry.addData("PauseAction", "perform finish");
+        telemetry.addData("EmptyAction", "perform finish");
         telemetry.update();
         return status;
     }
