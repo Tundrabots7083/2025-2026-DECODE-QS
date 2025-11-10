@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.FrontZone;
+package org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.actuators.driveTrain;
 
 import com.pedropathing.geometry.BezierCurve;
 import com.pedropathing.geometry.Pose;
@@ -53,7 +53,8 @@ public class MoveToShootingPosition implements ActionFunction {
         if (lastStatus == Status.SUCCESS) {
             return lastStatus;
         }
-        /// TODO: put code here to move the robot from current position to push sample2 in staging area
+
+
         if (!started) {
             driveTrainController.followPath(moveToShootingPose, true);
             started = true;
