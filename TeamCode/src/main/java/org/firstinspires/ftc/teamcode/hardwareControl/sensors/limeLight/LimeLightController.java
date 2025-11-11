@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.hardwareControl.sensors.limeLight;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -18,7 +17,6 @@ public class LimeLightController  {
 
     // Private static instance (eager initialization)
     private static final LimeLightController INSTANCE = new LimeLightController();
-    private LinearOpMode opMode;
     private Telemetry telemetry;
     private final int APRILTAG_POSE_PIPELINE = 0;
     private final int APRILTAG_MOTIF_PIPELINE = 1;
@@ -42,21 +40,17 @@ public class LimeLightController  {
         try {
             Class.forName(LimeLight01Constants.class.getName());
         } catch (ClassNotFoundException e) {
-            //e.printStackTrace();
+            //complains about unhandled exceptions if you take out try-catch
         }
     }
     // Initialization method — must be called once at the beginning
-    public void initialize(HardwareMap hardwareMap, Telemetry telemetry, LinearOpMode opMode) {
+    public void initialize(HardwareMap hardwareMap, Telemetry telemetry) {
         if (initialized) {
             return;
         }
         setupConstants();
-        this.opMode = opMode;
         this.telemetry  = telemetry;
-
-
         initLimeLight01(hardwareMap);
-
 
         initialized = true;
     }
@@ -83,6 +77,7 @@ public class LimeLightController  {
 
             telemetry.addData("RobotPoseX", xPose);
             telemetry.addData("RobotPoseY", yPose);
+            telemetry.addData("RobotHeading", heading);
             telemetry.update();
             return robotPose;
         }
@@ -94,6 +89,7 @@ public   List<LLResultTypes.FiducialResult> getFiducialResults(){
     if (result.isValid()) {
         List<LLResultTypes.FiducialResult> fiducialResults = result.getFiducialResults();
         for (LLResultTypes.FiducialResult fr : fiducialResults) {
+            fr.getFiducialId();
         }
         return fiducialResults;
     }

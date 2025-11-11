@@ -226,7 +226,7 @@ public class IntakeController {
     }
     public boolean isArmStuck(){
         return  false;
-       //   double currentPosition = this.getCurrentPosition();
+       //   double currentPosition = this.getFrontCurrentPosition();
        //   return (Math.abs(currentPosition - targetPosition) > TOLERABLE_ERROR) && !isBusy();
     }
 
