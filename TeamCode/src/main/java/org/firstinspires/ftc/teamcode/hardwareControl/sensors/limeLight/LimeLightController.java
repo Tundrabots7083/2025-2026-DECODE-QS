@@ -20,7 +20,9 @@ public class LimeLightController  {
     private static final LimeLightController INSTANCE = new LimeLightController();
     private LinearOpMode opMode;
     private Telemetry telemetry;
-    private final int APRILTAG_PIPELINE = 0;
+    private final int APRILTAG_POSE_PIPELINE = 0;
+    private final int APRILTAG_MOTIF_PIPELINE = 1;
+
 
     private Limelight3A limelight;
 
@@ -47,7 +49,6 @@ public class LimeLightController  {
     public void initialize(HardwareMap hardwareMap, Telemetry telemetry, LinearOpMode opMode) {
         if (initialized) {
             return;
-            //throw new IllegalStateException("FrontLeftCameraController has already been initialized.");
         }
         setupConstants();
         this.opMode = opMode;
@@ -66,7 +67,7 @@ public class LimeLightController  {
 
     private void initLimeLight01(HardwareMap hardwareMap) {
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
-        limelight.pipelineSwitch(APRILTAG_PIPELINE);
+        limelight.pipelineSwitch(APRILTAG_POSE_PIPELINE);
         limelight.start();
     }
 
@@ -98,6 +99,14 @@ public   List<LLResultTypes.FiducialResult> getFiducialResults(){
     }
     return null;
 }
+
+    public void setPosePipeline() {
+        limelight.pipelineSwitch(APRILTAG_POSE_PIPELINE);
+    }
+
+    public void setMotifPipeline() {
+        limelight.pipelineSwitch(APRILTAG_MOTIF_PIPELINE);
+    }
 
     public void update(){
 

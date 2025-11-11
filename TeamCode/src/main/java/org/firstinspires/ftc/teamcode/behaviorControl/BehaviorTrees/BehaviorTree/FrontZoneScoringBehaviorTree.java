@@ -6,8 +6,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Common.PauseAction;
-import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.actuators.driveTrain.MoveToShootingPosition;
+import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.sensors.limeLight.DisplayPose;
+import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.sensors.limeLight.RetrieveAprilTagPose;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.Action;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.BehaviorTree;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.BlackBoard;
@@ -17,6 +17,7 @@ import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTree
 import org.firstinspires.ftc.teamcode.hardwareControl.actuators.driveTrain.DriveTrainController;
 import org.firstinspires.ftc.teamcode.hardwareControl.actuators.intake.IntakeController;
 import org.firstinspires.ftc.teamcode.hardwareControl.actuators.shooter.ShooterController;
+import org.firstinspires.ftc.teamcode.hardwareControl.sensors.limeLight.LimeLightController;
 
 import java.util.Arrays;
 import java.util.List;
@@ -35,6 +36,11 @@ public class FrontZoneScoringBehaviorTree {
     /// TODO: set the startingPose to the right value
     private final Pose startingPose = new Pose(10, 55, Math.toRadians(0));
     /// Emd Drivetrain
+
+    /// Limelight
+    protected LimeLightController limeLightController;
+
+    /// End Limelight
 
     /// Shoulder
     protected ShooterController shooterController;
@@ -63,6 +69,11 @@ public class FrontZoneScoringBehaviorTree {
         this.driveTrainController.initialize(hardwareMap, startingPose);
         /// End Drivetrain
 
+        /// Limelight
+        this.limeLightController = LimeLightController.getInstance();
+
+        /// End Limelight
+
         /// Shooter
         this.shooterController = ShooterController.getInstance();
 
@@ -85,8 +96,8 @@ public class FrontZoneScoringBehaviorTree {
 
         this.root = new Sequence(
                 Arrays.asList(
-                        new Action(new MoveToShootingPosition(telemetry, driveTrainController), telemetry),
-                        new Action(new PauseAction(2000, telemetry, this.opMode), telemetry)
+                        new Action(new RetrieveAprilTagPose(telemetry, limeLightController), telemetry),
+                        new Action(new DisplayPose(telemetry), telemetry)
                 ),telemetry);
 
         this.tree = new BehaviorTree(root, blackBoard);
