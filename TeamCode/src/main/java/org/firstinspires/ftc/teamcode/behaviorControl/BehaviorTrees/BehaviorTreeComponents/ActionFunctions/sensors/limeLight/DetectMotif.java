@@ -17,8 +17,8 @@ public class DetectMotif implements ActionFunction {
 
     protected Status lastStatus = Status.FAILURE;
 
-
     boolean started = false;
+    private List<LLResultTypes.FiducialResult> fiducialResults = Collections.emptyList();
 
 
     public DetectMotif(Telemetry telemetry, LimeLightController limelightController) {
@@ -28,8 +28,6 @@ public class DetectMotif implements ActionFunction {
     }
 
     private void init() {
-
-
     }
 
     public Status perform(BlackBoard blackBoard) {
@@ -39,18 +37,17 @@ public class DetectMotif implements ActionFunction {
             return lastStatus;
         }
 
-        /// TODO: check logic to identify the obelisk april tag and interpret it
-        List<LLResultTypes.FiducialResult> fiducialResults = Collections.emptyList();
+        limelightController.setMotifPipeline();
 
-        if (!started) {
-            fiducialResults = limelightController.getFiducialResults();
-            started = true;
-            status = Status.RUNNING;
-        } else {
+
+        fiducialResults = limelightController.getFiducialResults();
+        status = Status.RUNNING;
+
+        if(!fiducialResults.isEmpty()) {
             blackBoard.setValue("FiducialResults", fiducialResults);
-                status = Status.SUCCESS;
-
+            status = Status.SUCCESS;
         }
+
 
         limelightController.update();
         lastStatus = status;

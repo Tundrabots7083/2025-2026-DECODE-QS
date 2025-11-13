@@ -14,6 +14,8 @@ public class RetrieveAprilTagPose implements ActionFunction {
 
     protected Status lastStatus = Status.FAILURE;
 
+    private int count = 0;
+
 
     public RetrieveAprilTagPose(Telemetry telemetry, LimeLightController limelightController) {
         this.telemetry = telemetry;
@@ -42,6 +44,9 @@ public class RetrieveAprilTagPose implements ActionFunction {
             blackBoard.setValue("AprilTagPose_Y", aprilTagPose.getPosition().y);
             blackBoard.setValue("AprilTagPose_HEADING", aprilTagPose.getOrientation().getYaw(AngleUnit.DEGREES));
             status = Status.SUCCESS;
+        } else if (count < 20){
+            status = Status.RUNNING;
+            count++;
         } else {
             status = Status.FAILURE;
         }
