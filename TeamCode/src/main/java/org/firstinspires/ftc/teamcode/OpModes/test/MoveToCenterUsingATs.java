@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.opModes.test;
 
 
+import com.bylazar.telemetry.JoinedTelemetry;
+import com.bylazar.telemetry.PanelsTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
@@ -15,13 +17,14 @@ public class MoveToCenterUsingATs extends LinearOpMode
 
     int count = 0;
 
+    JoinedTelemetry joinedTelemetry = new JoinedTelemetry(PanelsTelemetry.INSTANCE.getFtcTelemetry(),telemetry);
 
     @Override
     public void runOpMode()
     {
 
-//        joinedTelemetry.addData("DecodeScoringOpMode", "runOpMode started");
-//        joinedTelemetry.update();
+        joinedTelemetry.addData("DecodeScoringOpMode", "runOpMode started");
+        joinedTelemetry.update();
         initialize(this);
         waitForStart();
 
@@ -29,17 +32,17 @@ public class MoveToCenterUsingATs extends LinearOpMode
         while (opModeIsActive())
         {
             count++;
-          //  joinedTelemetry.addData("DecodeScoringOpMode000", "runOpMode while started count: %d", count);
-          //  joinedTelemetry.update();
+            joinedTelemetry.addData("DecodeScoringOpMode000", "runOpMode while started count: %d", count);
+            joinedTelemetry.update();
             Status result = this.behaviorTree.tick();
 
 
-//            joinedTelemetry.addData("DecodeScoringOpMode", "Behavior tree result: %s",result);
-//            joinedTelemetry.update();
+            joinedTelemetry.addData("DecodeScoringOpMode", "Behavior tree result: %s",result);
+            joinedTelemetry.update();
 
 
             if(result == Status.SUCCESS){
-//                requestOpModeStop();
+                requestOpModeStop();
             }
 
         }
