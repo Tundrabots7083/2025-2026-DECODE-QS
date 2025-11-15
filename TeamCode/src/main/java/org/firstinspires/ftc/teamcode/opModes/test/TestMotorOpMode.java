@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.opModes.test;
+package org.firstinspires.ftc.teamcode.OpModes.test;
 
 import com.bylazar.configurables.annotations.Configurable;
 import com.bylazar.telemetry.JoinedTelemetry;
@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.hardwareControl.actuators.shooter.ShooterController;
+import org.firstinspires.ftc.teamcode.hardwareControl.sensors.storageInventoryController.PortStorageColorSensorController;
 
 import java.util.List;
 
@@ -17,7 +18,7 @@ public class TestMotorOpMode extends LinearOpMode {
 
     public static double velocityTargetPosition = 50;
     ShooterController shooterController;
-
+    PortStorageColorSensorController portStorageColorSensorController;
     private long lastTime = System.nanoTime();
 
     JoinedTelemetry joinedTelemetry = new JoinedTelemetry(telemetry, PanelsTelemetry.INSTANCE.getFtcTelemetry());
@@ -50,9 +51,18 @@ public class TestMotorOpMode extends LinearOpMode {
         this.shooterController.reset();
         this.shooterController.initialize(hardwareMap, joinedTelemetry, this);
         /// End Shooter
+        /// PortStorageColorSensor
+        this.portStorageColorSensorController = PortStorageColorSensorController.getInstance();
+
+        this.portStorageColorSensorController.reset();
+        this.portStorageColorSensorController.initialize(hardwareMap, joinedTelemetry, this);
+        /// End PortStorageColorSensor
 
         while (opModeIsActive()) {
-            shooterController.spinToTargetVelocity(velocityTargetPosition);
+          String color = portStorageColorSensorController.getColor();
+          joinedTelemetry.addData("Color",color);
+
+           /* shooterController.spinToTargetVelocity(velocityTargetPosition);
 
             long currentTime = System.nanoTime();
             double loopTimeMs = (currentTime - lastTime) / 1e6;
@@ -66,7 +76,7 @@ public class TestMotorOpMode extends LinearOpMode {
             joinedTelemetry.addData("TargetVelocity", velocityTargetPosition);
             joinedTelemetry.addData("Encoder Position", shooterController.getCurrentPosition());
             joinedTelemetry.update();
-
+*/
             // Clear the bulk cache for each Lynx module hub. This must be performed once per loop
             // as the bulk read caches are being handled manually.
             for (LynxModule hub : allHubs) {

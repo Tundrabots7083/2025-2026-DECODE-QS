@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode.hardwareConfig.sensors.storageColorSensor
 
 
 
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+
 import org.firstinspires.ftc.teamcode.hardwareConfig.baseConstants.ColorDistanceSensorConstants;
 
 /*
@@ -15,14 +15,19 @@ import org.firstinspires.ftc.teamcode.hardwareConfig.baseConstants.ColorDistance
                         [ShooterStorageColorSensor]
               [PortStorageColorSensor] [StarboardStorageColorSensor]
  */
-
-
-    public class ShooterStorageColorSensorConstants {
+public class ShooterStorageColorSensorConstants {
     static {
         ColorDistanceSensorConstants.name = "ShooterStorageColorSensor";
-        ColorDistanceSensorConstants.distanceUnit = DistanceUnit.MM;
+        ColorDistanceSensorConstants.Gain = 50;
+        ColorDistanceSensorConstants.maxGreen = 160;
+        ColorDistanceSensorConstants.minGreen = 150;
+        ColorDistanceSensorConstants.maxPurple = 220;
+        ColorDistanceSensorConstants.minPurple = 233;
+
     }
-    }
+}
+
+
 
 
 

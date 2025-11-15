@@ -11,7 +11,13 @@ public class ColorDistanceSensorConstants {
     public static double maxDistance;
     public static double minDistance;
     public static DistanceUnit distanceUnit;
-    public static BroadcomColorSensor.Gain gain;
+    public static double Gain;
+    public static double maxGreen;
+    public static double minGreen;
+    public static double maxPurple;
+    public static double minPurple;
+
+
 
 }
 
