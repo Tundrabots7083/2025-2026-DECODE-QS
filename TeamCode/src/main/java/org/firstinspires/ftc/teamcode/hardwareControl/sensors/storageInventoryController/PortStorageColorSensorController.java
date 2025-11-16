@@ -54,10 +54,10 @@ public class PortStorageColorSensorController {
         this.opMode = opMode;
         this.telemetry  = telemetry;
 
-        colorSensor = hardwareMap.get(RevColorSensorV3.class, ColorDistanceSensorConstants.name);
-
+        //colorSensor = hardwareMap.get(RevColorSensorV3.class, ColorDistanceSensorConstants.name);
+        telemetry.addData("ColorDistanceSensorConstants.name", ColorDistanceSensorConstants.name);
         colors = colorSensor.getNormalizedColors();
-        colorSensor.setGain(gain);
+        colorSensor.setGain(ColorDistanceSensorConstants.gain);
 
         initialized = true;
     }

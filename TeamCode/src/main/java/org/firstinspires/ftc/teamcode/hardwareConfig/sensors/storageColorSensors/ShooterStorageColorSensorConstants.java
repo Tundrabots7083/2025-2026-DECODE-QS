@@ -18,7 +18,7 @@ import org.firstinspires.ftc.teamcode.hardwareConfig.baseConstants.ColorDistance
 public class ShooterStorageColorSensorConstants {
     static {
         ColorDistanceSensorConstants.name = "ShooterStorageColorSensor";
-        ColorDistanceSensorConstants.Gain = 50;
+        ColorDistanceSensorConstants.gain = 50;
         ColorDistanceSensorConstants.maxGreen = 160;
         ColorDistanceSensorConstants.minGreen = 150;
         ColorDistanceSensorConstants.maxPurple = 220;

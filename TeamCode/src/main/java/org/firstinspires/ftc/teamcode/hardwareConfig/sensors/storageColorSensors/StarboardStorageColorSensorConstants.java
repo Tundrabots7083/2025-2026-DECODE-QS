@@ -17,7 +17,7 @@ public class StarboardStorageColorSensorConstants {
 
     static {
     ColorDistanceSensorConstants.name = "StarboardStorageColorSensor";
-    ColorDistanceSensorConstants.Gain = 50;
+    ColorDistanceSensorConstants.gain = 50;
     ColorDistanceSensorConstants.maxGreen = 160;
     ColorDistanceSensorConstants.minGreen = 150;
     ColorDistanceSensorConstants.maxPurple = 220;

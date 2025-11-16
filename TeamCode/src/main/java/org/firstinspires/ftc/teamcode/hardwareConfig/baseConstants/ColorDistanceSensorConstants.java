@@ -9,9 +9,10 @@ public class ColorDistanceSensorConstants {
     public static String name;
 
     public static double maxDistance;
+
     public static double minDistance;
     public static DistanceUnit distanceUnit;
-    public static double Gain;
+    public static float gain;
     public static double maxGreen;
     public static double minGreen;
     public static double maxPurple;
