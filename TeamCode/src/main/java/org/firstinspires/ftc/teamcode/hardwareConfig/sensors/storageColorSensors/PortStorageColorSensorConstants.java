@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.hardwareConfig.sensors.storageColorSensors;
 
+import com.bylazar.configurables.annotations.Configurable;
+
 import org.firstinspires.ftc.teamcode.hardwareConfig.baseConstants.ColorDistanceSensorConstants;
 
 /*
@@ -12,18 +14,16 @@ import org.firstinspires.ftc.teamcode.hardwareConfig.baseConstants.ColorDistance
                         [ShooterStorageColorSensor]
               [PortStorageColorSensor] [StarboardStorageColorSensor]
  */
-public class PortStorageColorSensorConstants {
-    static {
+
+public  class PortStorageColorSensorConstants {
+        public static String name = "PortStorageColorSensor";
+        public static float gain = 50;
+        public static double maxGreen = 180;
+        public static double minGreen = 120;
+        public static double maxPurple = 240;
+        public static double minPurple = 220;
 
 
-        ColorDistanceSensorConstants.name = "PortStorageColorSensor";
-        ColorDistanceSensorConstants.gain = 50;
-        ColorDistanceSensorConstants.maxGreen = 160;
-        ColorDistanceSensorConstants.minGreen = 150;
-        ColorDistanceSensorConstants.maxPurple = 220;
-        ColorDistanceSensorConstants.minPurple = 233;
 
 
-
-    }
 }

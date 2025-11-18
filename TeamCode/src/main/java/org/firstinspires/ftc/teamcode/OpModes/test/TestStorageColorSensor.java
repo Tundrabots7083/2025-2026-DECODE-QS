@@ -33,10 +33,14 @@ public class TestStorageColorSensor extends LinearOpMode  {
         this.portStorageColorSensorController.reset();
         this.portStorageColorSensorController.initialize(hardwareMap, joinedTelemetry, this);
         /// End PortStorageColorSensor
+        waitForStart();
 
         while (opModeIsActive()) {
             String color = portStorageColorSensorController.getColor();
-            joinedTelemetry.addData("Color", color);
+           telemetry.addData("Color", color);
+           telemetry.update();
+           joinedTelemetry.addData("Color", color);
+
             for (LynxModule hub : allHubs) {
                 hub.clearBulkCache();
             }

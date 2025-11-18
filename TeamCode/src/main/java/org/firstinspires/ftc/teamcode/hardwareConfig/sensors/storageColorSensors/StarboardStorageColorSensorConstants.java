@@ -15,15 +15,12 @@ import org.firstinspires.ftc.teamcode.hardwareConfig.baseConstants.ColorDistance
  */
 public class StarboardStorageColorSensorConstants {
 
-    static {
-    ColorDistanceSensorConstants.name = "StarboardStorageColorSensor";
-    ColorDistanceSensorConstants.gain = 50;
-    ColorDistanceSensorConstants.maxGreen = 160;
-    ColorDistanceSensorConstants.minGreen = 150;
-    ColorDistanceSensorConstants.maxPurple = 220;
-    ColorDistanceSensorConstants.minPurple = 233;
-
-    }
+ public static String name = "StarboardStorageColorSensor";
+ public static float gain = 50;
+ public static double maxGreen = 160;
+ public static double minGreen = 150;
+ public static double maxPurple = 233;
+ public static double minPurple = 220;
 
 }
 

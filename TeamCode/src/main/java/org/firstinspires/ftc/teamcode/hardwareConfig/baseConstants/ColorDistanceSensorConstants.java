@@ -6,17 +6,17 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 public class ColorDistanceSensorConstants {
 
-    public static String name;
+    public  String name;
 
-    public static double maxDistance;
+    public  double maxDistance;
 
-    public static double minDistance;
-    public static DistanceUnit distanceUnit;
+    public  double minDistance;
+
     public static float gain;
-    public static double maxGreen;
-    public static double minGreen;
-    public static double maxPurple;
-    public static double minPurple;
+    public  double maxGreen;
+    public  double minGreen;
+    public  double maxPurple;
+    public  double minPurple;
 
 
 

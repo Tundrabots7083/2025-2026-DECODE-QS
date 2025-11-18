@@ -9,7 +9,6 @@ import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.hardwareConfig.baseConstants.ColorDistanceSensorConstants;
 import org.firstinspires.ftc.teamcode.hardwareConfig.sensors.storageColorSensors.PortStorageColorSensorConstants;
 
 public class PortStorageColorSensorController {
@@ -39,6 +38,7 @@ public class PortStorageColorSensorController {
 
     private static void setupConstants(){
         try {
+
             Class.forName(PortStorageColorSensorConstants.class.getName());
         } catch (ClassNotFoundException e) {
             //e.printStackTrace();
@@ -51,13 +51,15 @@ public class PortStorageColorSensorController {
             //throw new IllegalStateException("FrontDistanceSensorController has already been initialized.");
         }
         setupConstants();
+        telemetry.addData("PortStorageColorSensorConstants.class.getName()", PortStorageColorSensorConstants.class.getName());
+
         this.opMode = opMode;
         this.telemetry  = telemetry;
 
-        //colorSensor = hardwareMap.get(RevColorSensorV3.class, ColorDistanceSensorConstants.name);
-        telemetry.addData("ColorDistanceSensorConstants.name", ColorDistanceSensorConstants.name);
-        colors = colorSensor.getNormalizedColors();
-        colorSensor.setGain(ColorDistanceSensorConstants.gain);
+        colorSensor = hardwareMap.get(RevColorSensorV3.class, PortStorageColorSensorConstants.name);
+
+         colors = colorSensor.getNormalizedColors();
+        colorSensor.setGain(PortStorageColorSensorConstants.gain);
 
         initialized = true;
     }
@@ -73,7 +75,8 @@ public class PortStorageColorSensorController {
         colors = colorSensor.getNormalizedColors();
 
         Color.colorToHSV(colors.toColor(), hsvValues);
-
+        telemetry.addData("hue",hsvValues[0]);
+        telemetry.update();
         boolean isPurple = shooterColorSensorIsPurple(hsvValues[0]);
         boolean isGreen = shooterColorSensorIsGreen(hsvValues[0]);
 
@@ -93,10 +96,10 @@ public class PortStorageColorSensorController {
 
     }
     private boolean shooterColorSensorIsGreen(float hue){
-        return hue >= ColorDistanceSensorConstants.minGreen && hue <= ColorDistanceSensorConstants.maxGreen;
+        return hue >= PortStorageColorSensorConstants.minGreen && hue <= PortStorageColorSensorConstants.maxGreen;
     }
     private boolean shooterColorSensorIsPurple(float hue){
-        return hue >= ColorDistanceSensorConstants.minPurple && hue <= ColorDistanceSensorConstants.maxPurple;
+        return hue >= PortStorageColorSensorConstants.minPurple && hue <= PortStorageColorSensorConstants.maxPurple;
     }
 }
 
