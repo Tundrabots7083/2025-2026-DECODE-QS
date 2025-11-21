@@ -36,7 +36,7 @@ public class PortStorageColorSensorController {
         return INSTANCE;
     }
 
-    private static void setupConstants(){
+    private static void setupConstants() {
         try {
 
             Class.forName(PortStorageColorSensorConstants.class.getName());
@@ -44,6 +44,7 @@ public class PortStorageColorSensorController {
             //e.printStackTrace();
         }
     }
+
     // Initialization method — must be called once at the beginning
     public void initialize(HardwareMap hardwareMap, Telemetry telemetry, LinearOpMode opMode) {
         if (initialized) {
@@ -54,11 +55,11 @@ public class PortStorageColorSensorController {
         telemetry.addData("PortStorageColorSensorConstants.class.getName()", PortStorageColorSensorConstants.class.getName());
 
         this.opMode = opMode;
-        this.telemetry  = telemetry;
+        this.telemetry = telemetry;
 
         colorSensor = hardwareMap.get(RevColorSensorV3.class, PortStorageColorSensorConstants.name);
 
-         colors = colorSensor.getNormalizedColors();
+        colors = colorSensor.getNormalizedColors();
         colorSensor.setGain(PortStorageColorSensorConstants.gain);
 
         initialized = true;
@@ -70,35 +71,36 @@ public class PortStorageColorSensorController {
 
 
     // Example method
-    public String getColor(){
+    public String getColor() {
         final float[] hsvValues = new float[3];
         colors = colorSensor.getNormalizedColors();
 
         Color.colorToHSV(colors.toColor(), hsvValues);
-        telemetry.addData("hue",hsvValues[0]);
-        telemetry.update();
-        boolean isPurple = shooterColorSensorIsPurple(hsvValues[0]);
-        boolean isGreen = shooterColorSensorIsGreen(hsvValues[0]);
+
+        boolean isPurple = colorIsPurple(hsvValues[0]);
+        boolean isGreen = colorIsGreen(hsvValues[0]);
 
 
-      if(isPurple){
-        return "PURPLE";
-      } else if(isGreen){
-          return "GREEN";
-      } else {
-          return "EMPTY";
-      }
-
-      }
-
-
-        public void update(){
+        if (isPurple) {
+            return "PURPLE";
+        } else if (isGreen) {
+            return "GREEN";
+        } else {
+            return "EMPTY";
+        }
 
     }
-    private boolean shooterColorSensorIsGreen(float hue){
+
+
+    public void update() {
+
+    }
+
+    private boolean colorIsGreen(float hue) {
         return hue >= PortStorageColorSensorConstants.minGreen && hue <= PortStorageColorSensorConstants.maxGreen;
     }
-    private boolean shooterColorSensorIsPurple(float hue){
+
+    private boolean colorIsPurple(float hue) {
         return hue >= PortStorageColorSensorConstants.minPurple && hue <= PortStorageColorSensorConstants.maxPurple;
     }
 }

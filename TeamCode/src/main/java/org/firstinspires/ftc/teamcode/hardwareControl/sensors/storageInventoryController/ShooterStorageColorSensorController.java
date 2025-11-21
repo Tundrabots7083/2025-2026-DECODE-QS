@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.hardwareControl.sensors.storageInventoryController;
 
 
-
 import android.graphics.Color;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -11,84 +10,101 @@ import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.hardwareConfig.sensors.storageColorSensors.ShooterStorageColorSensorConstants;
 
-// TODO Remove opMode and fix camelCase
-public class ShooterStorageColorSensorController extends LinearOpMode{
+public class ShooterStorageColorSensorController {
+    private boolean initialized = false;
+
+
+    // Private static instance (eager initialization)
+    private static final ShooterStorageColorSensorController INSTANCE = new ShooterStorageColorSensorController();
+    private LinearOpMode opMode;
+    private Telemetry telemetry;
+
     private NormalizedColorSensor colorSensor;
-    private String initPortStorageColorSensor(HardwareMap hardwareMap) {
-        colorSensor = hardwareMap.get(RevColorSensorV3.class, "ShooterColorSensor");
 
-    return null;
+    private static float gain = 50;
+    NormalizedRGBA colors;
+
+    // Private constructor to prevent instantiation
+    private ShooterStorageColorSensorController() {
+        // Initialize hardware, state, or configuration here
+
+    }
+
+    // Public method to access the singleton instance
+    public static ShooterStorageColorSensorController getInstance() {
+        return INSTANCE;
+    }
+
+    private static void setupConstants() {
+        try {
+
+            Class.forName(ShooterStorageColorSensorConstants.class.getName());
+        } catch (ClassNotFoundException e) {
+            //e.printStackTrace();
+        }
+    }
+
+    // Initialization method — must be called once at the beginning
+    public void initialize(HardwareMap hardwareMap, Telemetry telemetry, LinearOpMode opMode) {
+        if (initialized) {
+            return;
+            //throw new IllegalStateException("FrontDistanceSensorController has already been initialized.");
+        }
+        setupConstants();
+        telemetry.addData("ShooterStorageColorSensorConstants.class.getName()", ShooterStorageColorSensorConstants.class.getName());
+
+        this.opMode = opMode;
+        this.telemetry = telemetry;
+
+        colorSensor = hardwareMap.get(RevColorSensorV3.class, ShooterStorageColorSensorConstants.name);
+
+        colors = colorSensor.getNormalizedColors();
+        colorSensor.setGain(ShooterStorageColorSensorConstants.gain);
+
+        initialized = true;
+    }
+
+    public void reset() {
+
     }
 
 
+    // Example method
+    public String getColor() {
+        final float[] hsvValues = new float[3];
+        colors = colorSensor.getNormalizedColors();
 
-   public static float gain = 50;
-
-
-
-        // Define a variable for our color sensor
-
-        NormalizedRGBA colors;
-        @Override
-        public void runOpMode() {
-// Get the color sensor from hardwareMap
-initPortStorageColorSensor(hardwareMap);
-
-// Wait for the Play button to be pressed
-            waitForStart();
-            final float[] hsvValues = new float[3];
-            colors = colorSensor.getNormalizedColors();
-            colorSensor.setGain(gain);
-             boolean shooterColorSensorIsPurple;
-             boolean shooterColorSensorIsGreen;
-             boolean shooterColorSensorIsBallPresent;
-// While the Op Mode is running, update the telemetry values
-            while (opModeIsActive()) {
-
-                colors = colorSensor.getNormalizedColors();
+        Color.colorToHSV(colors.toColor(), hsvValues);
+        boolean isPurple = colorIsPurple(hsvValues[0]);
+        boolean isGreen = colorIsGreen(hsvValues[0]);
 
 
-
-                Color.colorToHSV(colors.toColor(), hsvValues);
-
-               /* telemetry.addLine()
-                        .addData("ShooterColorSensorHue", "%.3f", hsvValues[0])
-                        .addData("ShooterColorSensorSaturation", "%.3f", hsvValues[1])
-                        .addData("ShooterColorSensorValue", "%.3f", hsvValues[2]);
-                telemetry.addData("ShooterColorSensorGain", gain);
-                 Retained for debug purposes
-                 */
-
-
-
-                // Comment following 2 lines for debug
-                shooterColorSensorIsPurple = shooterColorSensorIsPurple(hsvValues[0]);
-                shooterColorSensorIsGreen = shooterColorSensorIsGreen(hsvValues[0]);
-
-
-
-                /*shooterColorSensorIsGreen = hsvValues[0] >= 150 && hsvValues[0] <= 160;
-                shooterColorSensorIsPurple = hsvValues[0] >= 220 && hsvValues[0] <= 233;
-                shooterColorSensorIsBallPresent = (!shooterColorSensorIsPurple && !shooterColorSensorIsGreen);
-                telemetry.addData("ShooterColorSensorGreen?",shooterColorSensorIsGreen);
-                telemetry.addData("ShooterColorSensorPurple?",shooterColorSensorIsPurple);
-                telemetry.addData("ShooterColorSensorBall?",!shooterColorSensorIsBallPresent);
-                telemetry.update();
-                Retained for debug purposes
-                 */
+        if (isPurple) {
+            return "PURPLE";
+        } else if (isGreen) {
+            return "GREEN";
+        }  else {
+            return "EMPTY";
         }
 
-        }
-
-        private boolean shooterColorSensorIsGreen(float Hue){
-            return Hue >= 150 && Hue <= 160;
-        }
-         private boolean shooterColorSensorIsPurple(float Hue){
-          return Hue >= 220 && Hue <= 233;
-        }
+    }
 
 
+    public void update() {
+
+    }
+
+    private boolean colorIsGreen(float hue) {
+        return hue >= ShooterStorageColorSensorConstants.minGreen && hue <= ShooterStorageColorSensorConstants.maxGreen;
+    }
+
+    private boolean colorIsPurple(float hue) {
+        return hue >= ShooterStorageColorSensorConstants.minPurple && hue <= ShooterStorageColorSensorConstants.maxPurple;
+    }
 }
 
+/*usage Example*/
 
