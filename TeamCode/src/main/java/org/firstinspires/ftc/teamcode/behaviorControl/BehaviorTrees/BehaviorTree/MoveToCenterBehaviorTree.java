@@ -33,7 +33,7 @@ public class MoveToCenterBehaviorTree {
     /// Drivetrain
     protected DriveTrainController driveTrainController;
     /// TODO: set the startingPose to the right value
-    private final Pose startingPose = new Pose(10, 55, Math.toRadians(0));
+    private final Pose startingPose = new Pose(48, 48, Math.toRadians(45));
     /// Emd Drivetrain
 
     /// Limelight
@@ -60,6 +60,7 @@ public class MoveToCenterBehaviorTree {
 
         /// Limelight
         this.limeLightController = LimeLightController.getInstance();
+        limeLightController.initialize(hardwareMap, telemetry);
 
         /// End Limelight
 

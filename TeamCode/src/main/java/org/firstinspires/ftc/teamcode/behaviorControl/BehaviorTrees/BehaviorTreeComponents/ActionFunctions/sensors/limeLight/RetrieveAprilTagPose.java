@@ -2,7 +2,8 @@ package org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTre
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.ActionFunction;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.BlackBoard;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.Status;
@@ -35,14 +36,13 @@ public class RetrieveAprilTagPose implements ActionFunction {
             return lastStatus;
         }
 
-        limelightController.update();
 
-        Pose3D aprilTagPose = limelightController.getCurrentRobotPose();
+        Pose2D aprilTagPose = limelightController.getCurrentRobotPose();
 
         if(aprilTagPose != null) {
-            blackBoard.setValue("AprilTagPose_X", aprilTagPose.getPosition().x);
-            blackBoard.setValue("AprilTagPose_Y", aprilTagPose.getPosition().y);
-            blackBoard.setValue("AprilTagPose_HEADING", aprilTagPose.getOrientation().getYaw(AngleUnit.DEGREES));
+            blackBoard.setValue("AprilTagPose_X", aprilTagPose.getX(DistanceUnit.INCH));
+            blackBoard.setValue("AprilTagPose_Y", aprilTagPose.getY(DistanceUnit.INCH));
+            blackBoard.setValue("AprilTagPose_HEADING", aprilTagPose.getHeading(AngleUnit.DEGREES));
             status = Status.SUCCESS;
         } else if (count < 20){
             status = Status.RUNNING;

@@ -50,15 +50,11 @@ public class DriveTrainController {
 
     // Example method
     public void followPath(PathChain pathChain, boolean holdEnd) {
-        if(!follower.isBusy()) {
             follower.followPath(pathChain,holdEnd);
-        }
     }
 
     public void followPath(Path path, boolean holdEnd) {
-        if(!follower.isBusy()) {
             follower.followPath(path,holdEnd);
-        }
     }
 
     public void setPosition(Pose currentPose) {
@@ -67,6 +63,10 @@ public class DriveTrainController {
 
     public Pose getPosition() {
        return follower.getPose();
+    }
+
+    public double getHeading() {
+        return follower.getHeading();
     }
 
     public boolean isBusy(){

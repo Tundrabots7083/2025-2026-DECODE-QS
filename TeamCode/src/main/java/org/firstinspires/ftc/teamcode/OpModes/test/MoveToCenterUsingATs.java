@@ -6,14 +6,14 @@ import com.bylazar.telemetry.PanelsTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTree.DetectPoseBehaviorTree;
+import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTree.MoveToCenterBehaviorTree;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.Status;
 
 
 @Autonomous(name="BT MoveToCenter", group="test")
 public class MoveToCenterUsingATs extends LinearOpMode
 {
-    DetectPoseBehaviorTree behaviorTree = null;
+    MoveToCenterBehaviorTree behaviorTree = null;
 
     int count = 0;
 
@@ -32,8 +32,8 @@ public class MoveToCenterUsingATs extends LinearOpMode
         while (opModeIsActive())
         {
             count++;
-            joinedTelemetry.addData("DecodeScoringOpMode000", "runOpMode while started count: %d", count);
-            joinedTelemetry.update();
+//            joinedTelemetry.addData("DecodeScoringOpMode000", "runOpMode while started count: %d", count);
+//            joinedTelemetry.update();
             Status result = this.behaviorTree.tick();
 
 
@@ -42,7 +42,7 @@ public class MoveToCenterUsingATs extends LinearOpMode
 
 
             if(result == Status.SUCCESS){
-                requestOpModeStop();
+               // requestOpModeStop();
             }
 
         }
@@ -50,7 +50,7 @@ public class MoveToCenterUsingATs extends LinearOpMode
 
 
     private void initialize(LinearOpMode opMode){
-        this.behaviorTree = new DetectPoseBehaviorTree(opMode);
+        this.behaviorTree = new MoveToCenterBehaviorTree(opMode);
     }
 
 

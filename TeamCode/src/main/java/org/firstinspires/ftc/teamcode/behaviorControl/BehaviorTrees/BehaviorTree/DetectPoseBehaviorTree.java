@@ -73,6 +73,8 @@ public class DetectPoseBehaviorTree {
             hub.clearBulkCache();
         }
 
+        telemetry.update();
+
         // Run the behavior tree
         Status result = tree.tick();
 

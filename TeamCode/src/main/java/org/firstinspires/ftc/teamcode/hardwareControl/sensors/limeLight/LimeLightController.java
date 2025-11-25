@@ -6,6 +6,9 @@ import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 import org.firstinspires.ftc.teamcode.hardwareConfig.sensors.limeLight.LimeLight01Constants;
 
@@ -50,7 +53,9 @@ public class LimeLightController  {
         }
         setupConstants();
         this.telemetry  = telemetry;
-        initLimeLight01(hardwareMap);
+        limelight = hardwareMap.get(Limelight3A.class, "limelight");
+        limelight.pipelineSwitch(APRILTAG_POSE_PIPELINE);
+        limelight.start();
 
         initialized = true;
     }
@@ -59,27 +64,23 @@ public class LimeLightController  {
 
     }
 
-    private void initLimeLight01(HardwareMap hardwareMap) {
-        limelight = hardwareMap.get(Limelight3A.class, "limelight");
-        limelight.pipelineSwitch(APRILTAG_POSE_PIPELINE);
-        limelight.start();
-    }
 
     // Example method
-    public Pose3D getCurrentRobotPose(){
+    public Pose2D getCurrentRobotPose(){
         LLResult result = limelight.getLatestResult();
-        if (result.isValid()) {
+        if (result.isValid() && limelight.getTimeSinceLastUpdate() < 200) {
             Pose3D robotPose = result.getBotpose();
 
-            double xPose = (robotPose.getPosition().x * 39.37008);  //convert meters to inches
-            double yPose = (robotPose.getPosition().y * 39.37008);  //convert meters to inches
+            double xPose = (robotPose.getPosition().x);
+            double yPose = (robotPose.getPosition().y);
             double heading = robotPose.getOrientation().getYaw();
+
+            Pose2D robotPoseINCHES = new Pose2D(DistanceUnit.METER, xPose, yPose, AngleUnit.DEGREES, heading);
 
             telemetry.addData("RobotPoseX", xPose);
             telemetry.addData("RobotPoseY", yPose);
             telemetry.addData("RobotHeading", heading);
-            telemetry.update();
-            return robotPose;
+            return robotPoseINCHES;
         }
         return null;
     }
@@ -105,7 +106,6 @@ public   List<LLResultTypes.FiducialResult> getFiducialResults(){
     }
 
     public void update(){
-
     }
 
     public void resumeStreaming(){

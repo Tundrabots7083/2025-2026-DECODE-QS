@@ -30,24 +30,30 @@ public class Relocalize implements ActionFunction {
         }
 
 
-            if (driveTrainController.isBusy()) {
-                status = Status.RUNNING;
-            } else if (driveTrainController.isRobotStuck()) {
-                    status = Status.FAILURE;
-            } else if (blackBoard.getValue("AprilTagPose_X") != null){
-                    currentPose = new Pose(
-                            (double) blackBoard.getValue("AprilTagPose_X"),
-                            (double) blackBoard.getValue("AprilTagPose_Y"),
-                            (double) blackBoard.getValue("AprilTagPose_HEADING")
-                    );
+        if (driveTrainController.isBusy()) {
+            status = Status.RUNNING;
+        } else if (driveTrainController.isRobotStuck()) {
+            status = Status.FAILURE;
+        } else if (blackBoard.getValue("AprilTagPose_X") != null) {
 
-                    driveTrainController.setPosition(currentPose);
-                    status = Status.SUCCESS;
-            } else {
-                status = Status.FAILURE;
-            }
+            double x = (double) blackBoard.getValue("AprilTagPose_X");
+            double y = (double) blackBoard.getValue("AprilTagPose_Y");
+            double heading = Math.toRadians(((double) blackBoard.getValue("AprilTagPose_HEADING") + 270) % 360);
 
 
+            double pedroX = y + 72;
+            double pedroY = -x + 72;
+            double pedroHeading = (heading + 270) % 360;
+
+            currentPose = new Pose(pedroX, pedroY, pedroHeading);
+
+            driveTrainController.breakFollowing();
+            driveTrainController.setPosition(currentPose);
+            telemetry.addLine("SLKFJLKJSFLKJDSLFJSKFJLSDKFKSLDKJFLSKJDFLSKJLDFKJSLDJFLSKJDFLKJSDLFKJDSLFKJ");
+            status = Status.SUCCESS;
+        } else {
+            status = Status.FAILURE;
+        }
 
         lastStatus = status;
         return status;
