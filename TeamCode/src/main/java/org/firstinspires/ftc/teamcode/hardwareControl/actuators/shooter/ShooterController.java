@@ -14,6 +14,7 @@ import org.firstinspires.ftc.teamcode.hardwareConfig.actuators.shooter.ShooterTB
 import org.firstinspires.ftc.teamcode.hardwareConfig.baseConstants.MotorConstants;
 import org.firstinspires.ftc.teamcode.hardwareConfig.baseConstants.PIDFControllerConstants;
 import org.firstinspires.ftc.teamcode.hardwareConfig.baseConstants.ShooterConstantsBase;
+import org.firstinspires.ftc.teamcode.hardwareConfig.baseConstants.ShooterTBHControllerConstantBase;
 import org.firstinspires.ftc.teamcode.hardwareControl.actuators.common.TBHController;
 
 @Configurable
@@ -33,10 +34,14 @@ public class ShooterController {
 //    double REAR_Kf = ShooterTBHControllerConstantBase.FRONT_Kf;
 
     public static double FRONT_Kp =0.000002;
-    public static double FRONT_Kf =0.00017;
     public static double REAR_Kp = 0.000002;
-    public static double REAR_Kf = 0.00017;
 
+    private double FRONT_Kf_a;
+    private double FRONT_Kf_b;
+    private double FRONT_Kf_c;
+    private double REAR_Kf_a;
+    private double REAR_Kf_b;
+    private double REAR_Kf_c;
 
     /// motion control
     private TBHController frontTbhController;
@@ -109,14 +114,21 @@ public class ShooterController {
     private void initializeLocalVariablesWithConstants(){
         START_VELOCITY = MotorConstants.startPosition;
         TOLERABLE_ERROR = MotorConstants.tolerableError;
+
+        FRONT_Kf_a = ShooterTBHControllerConstantBase.FRONT_Kf_a;
+        FRONT_Kf_b = ShooterTBHControllerConstantBase.FRONT_Kf_b;
+        FRONT_Kf_c = ShooterTBHControllerConstantBase.FRONT_Kf_c;
+        REAR_Kf_a = ShooterTBHControllerConstantBase.REAR_Kf_a;
+        REAR_Kf_b = ShooterTBHControllerConstantBase.REAR_Kf_b;
+        REAR_Kf_c = ShooterTBHControllerConstantBase.REAR_Kf_c;
     }
 
     private void initializeTBHController(){
 
-        frontTbhController = new TBHController(FRONT_Kp, FRONT_Kf);
+        frontTbhController = new TBHController(FRONT_Kp, FRONT_Kf_a, FRONT_Kf_b, FRONT_Kf_c);
         frontTbhController.setOutputLimits(PIDFControllerConstants.motorMinPowerLimit, PIDFControllerConstants.motorMaxPowerLimit); // Motor power limits
 
-        rearTbhController = new TBHController(REAR_Kp, REAR_Kf);
+        rearTbhController = new TBHController(REAR_Kp, REAR_Kf_a, REAR_Kf_b, REAR_Kf_c);
         rearTbhController.setOutputLimits(PIDFControllerConstants.motorMinPowerLimit, PIDFControllerConstants.motorMaxPowerLimit); // Motor power limits
     }
 
