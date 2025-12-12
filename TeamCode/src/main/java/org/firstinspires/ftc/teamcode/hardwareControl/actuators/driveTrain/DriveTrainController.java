@@ -40,7 +40,7 @@ public class DriveTrainController {
             follower.breakFollowing();
             follower = null;
             initialized = false;
-        }
+        } //hi, this is caroline
     }
 
     // Public method to access the singleton instance
