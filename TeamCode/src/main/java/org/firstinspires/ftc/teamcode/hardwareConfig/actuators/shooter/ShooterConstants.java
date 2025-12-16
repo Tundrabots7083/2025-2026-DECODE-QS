@@ -6,22 +6,22 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 
-import org.firstinspires.ftc.teamcode.hardwareConfig.baseConstants.ShooterConstantsBase;
+import org.firstinspires.ftc.teamcode.hardwareConfig.baseConstants.VelocityMotorConstantsBase;
 
 public class ShooterConstants {
         static {
-                ShooterConstantsBase.frontMotorName = "rightRear";
-                ShooterConstantsBase.rearMotorName = "leftRear";
-                ShooterConstantsBase.motorConfigurationType = "clone";
-                ShooterConstantsBase.ticksPerRev= 28; // gobilda ticks 6000 rpm
-                ShooterConstantsBase.achievableMaxRPMFraction =1.0;
-                ShooterConstantsBase.gearing=1;
-                ShooterConstantsBase.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER;
-                ShooterConstantsBase.resetMode = DcMotor.RunMode.STOP_AND_RESET_ENCODER;
-                ShooterConstantsBase.frontMotorDirection = DcMotorSimple.Direction.REVERSE;
-                ShooterConstantsBase.rearMotorDirection = DcMotorSimple.Direction.FORWARD;
-                ShooterConstantsBase.startPosition =0;
-                ShooterConstantsBase.targetPosition =0;
-                ShooterConstantsBase.tolerableError=0.7; //in degrees
+                VelocityMotorConstantsBase.frontMotorName = "rightRear";
+                VelocityMotorConstantsBase.rearMotorName = "leftRear";
+                VelocityMotorConstantsBase.motorConfigurationType = "clone";
+                VelocityMotorConstantsBase.ticksPerRev= 28; // gobilda ticks 6000 rpm
+                VelocityMotorConstantsBase.achievableMaxRPMFraction =1.0;
+                VelocityMotorConstantsBase.gearing=1;
+                VelocityMotorConstantsBase.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER;
+                VelocityMotorConstantsBase.resetMode = DcMotor.RunMode.STOP_AND_RESET_ENCODER;
+                VelocityMotorConstantsBase.frontMotorDirection = DcMotorSimple.Direction.REVERSE;
+                VelocityMotorConstantsBase.rearMotorDirection = DcMotorSimple.Direction.FORWARD;
+                VelocityMotorConstantsBase.startPosition =0;
+                VelocityMotorConstantsBase.targetPosition =0;
+                VelocityMotorConstantsBase.tolerableError=0.7; //in degrees
         }
 }

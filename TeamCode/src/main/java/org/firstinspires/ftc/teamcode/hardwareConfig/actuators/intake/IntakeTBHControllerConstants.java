@@ -1,10 +1,9 @@
-package org.firstinspires.ftc.teamcode.hardwareConfig.actuators.shooter;
-
-
+package org.firstinspires.ftc.teamcode.hardwareConfig.actuators.intake;
 
 import org.firstinspires.ftc.teamcode.hardwareConfig.baseConstants.VelocityTBHControllerConstantBase;
 
-public class ShooterTBHControllerConstants {
+
+public class IntakeTBHControllerConstants {
     static {
         VelocityTBHControllerConstantBase.FRONT_Kp= 0.000008;  //to be tuned for the PID controller
         VelocityTBHControllerConstantBase.REAR_Kp= 0.000008;  //to be tuned for the PID controller

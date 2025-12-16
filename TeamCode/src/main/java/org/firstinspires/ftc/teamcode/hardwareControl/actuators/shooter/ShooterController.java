@@ -13,8 +13,8 @@ import org.firstinspires.ftc.teamcode.hardwareConfig.actuators.shooter.ShooterCo
 import org.firstinspires.ftc.teamcode.hardwareConfig.actuators.shooter.ShooterTBHControllerConstants;
 import org.firstinspires.ftc.teamcode.hardwareConfig.baseConstants.MotorConstants;
 import org.firstinspires.ftc.teamcode.hardwareConfig.baseConstants.PIDFControllerConstants;
-import org.firstinspires.ftc.teamcode.hardwareConfig.baseConstants.ShooterConstantsBase;
-import org.firstinspires.ftc.teamcode.hardwareConfig.baseConstants.ShooterTBHControllerConstantBase;
+import org.firstinspires.ftc.teamcode.hardwareConfig.baseConstants.VelocityMotorConstantsBase;
+import org.firstinspires.ftc.teamcode.hardwareConfig.baseConstants.VelocityTBHControllerConstantBase;
 import org.firstinspires.ftc.teamcode.hardwareControl.actuators.common.TBHController;
 
 @Configurable
@@ -25,13 +25,8 @@ public class ShooterController {
 
     private double START_VELOCITY;
     private double TOLERABLE_ERROR;
-    private double lastPower = 0;
     private double targetVelocity;
 
-//    double FRONT_Kp = ShooterTBHControllerConstantBase.FRONT_Kp;
-//    double FRONT_Kf = ShooterTBHControllerConstantBase.FRONT_Kf;
-//    double REAR_Kp = ShooterTBHControllerConstantBase.FRONT_Kp;
-//    double REAR_Kf = ShooterTBHControllerConstantBase.FRONT_Kf;
 
     public static double FRONT_Kp =0.000002;
     public static double REAR_Kp = 0.000002;
@@ -93,34 +88,34 @@ public class ShooterController {
     }
 
     private void initializeMotor(HardwareMap hardwareMap){
-        frontShooterMotor =  hardwareMap.get(DcMotorEx.class, ShooterConstantsBase.frontMotorName);
+        frontShooterMotor =  hardwareMap.get(DcMotorEx.class, VelocityMotorConstantsBase.frontMotorName);
         MotorConfigurationType motorConfigurationType = frontShooterMotor.getMotorType().clone();
-        rearShooterMotor = hardwareMap.get(DcMotorEx.class, ShooterConstantsBase.rearMotorName);
+        rearShooterMotor = hardwareMap.get(DcMotorEx.class, VelocityMotorConstantsBase.rearMotorName);
         motorConfigurationType.setTicksPerRev(MotorConstants.ticksPerRev);
         motorConfigurationType.setGearing(MotorConstants.gearing);
         motorConfigurationType.setAchieveableMaxRPMFraction(MotorConstants.achievableMaxRPMFraction);
 
         frontShooterMotor.setMotorType(motorConfigurationType);
-        frontShooterMotor.setMode(ShooterConstantsBase.resetMode);
-        frontShooterMotor.setMode(ShooterConstantsBase.mode);
-        frontShooterMotor.setDirection(ShooterConstantsBase.frontMotorDirection);
+        frontShooterMotor.setMode(VelocityMotorConstantsBase.resetMode);
+        frontShooterMotor.setMode(VelocityMotorConstantsBase.mode);
+        frontShooterMotor.setDirection(VelocityMotorConstantsBase.frontMotorDirection);
 
         rearShooterMotor.setMotorType(motorConfigurationType);
-        rearShooterMotor.setMode(ShooterConstantsBase.resetMode);
-        rearShooterMotor.setMode(ShooterConstantsBase.mode);
-        rearShooterMotor.setDirection(ShooterConstantsBase.rearMotorDirection);
+        rearShooterMotor.setMode(VelocityMotorConstantsBase.resetMode);
+        rearShooterMotor.setMode(VelocityMotorConstantsBase.mode);
+        rearShooterMotor.setDirection(VelocityMotorConstantsBase.rearMotorDirection);
     }
 
     private void initializeLocalVariablesWithConstants(){
         START_VELOCITY = MotorConstants.startPosition;
         TOLERABLE_ERROR = MotorConstants.tolerableError;
 
-        FRONT_Kf_a = ShooterTBHControllerConstantBase.FRONT_Kf_a;
-        FRONT_Kf_b = ShooterTBHControllerConstantBase.FRONT_Kf_b;
-        FRONT_Kf_c = ShooterTBHControllerConstantBase.FRONT_Kf_c;
-        REAR_Kf_a = ShooterTBHControllerConstantBase.REAR_Kf_a;
-        REAR_Kf_b = ShooterTBHControllerConstantBase.REAR_Kf_b;
-        REAR_Kf_c = ShooterTBHControllerConstantBase.REAR_Kf_c;
+        FRONT_Kf_a = VelocityTBHControllerConstantBase.FRONT_Kf_a;
+        FRONT_Kf_b = VelocityTBHControllerConstantBase.FRONT_Kf_b;
+        FRONT_Kf_c = VelocityTBHControllerConstantBase.FRONT_Kf_c;
+        REAR_Kf_a = VelocityTBHControllerConstantBase.REAR_Kf_a;
+        REAR_Kf_b = VelocityTBHControllerConstantBase.REAR_Kf_b;
+        REAR_Kf_c = VelocityTBHControllerConstantBase.REAR_Kf_c;
     }
 
     private void initializeTBHController(){

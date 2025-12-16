@@ -1,239 +1,166 @@
 package org.firstinspires.ftc.teamcode.hardwareControl.actuators.intake;
 
 
+import com.bylazar.configurables.annotations.Configurable;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-
-
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.hardwareConfig.actuators.intake.IntakeConstants;
-import org.firstinspires.ftc.teamcode.hardwareConfig.actuators.intake.IntakeMotionProfilerConstants;
-import org.firstinspires.ftc.teamcode.hardwareConfig.actuators.intake.IntakePIDFControllerConstants;
+import org.firstinspires.ftc.teamcode.hardwareConfig.actuators.intake.IntakeTBHControllerConstants;
 import org.firstinspires.ftc.teamcode.hardwareConfig.baseConstants.MotorConstants;
 import org.firstinspires.ftc.teamcode.hardwareConfig.baseConstants.PIDFControllerConstants;
-import org.firstinspires.ftc.teamcode.hardwareControl.actuators.common.MotionProfiler;
-import org.firstinspires.ftc.teamcode.hardwareControl.actuators.common.PIDFController;
+import org.firstinspires.ftc.teamcode.hardwareConfig.baseConstants.VelocityMotorConstantsBase;
+import org.firstinspires.ftc.teamcode.hardwareConfig.baseConstants.VelocityTBHControllerConstantBase;
+import org.firstinspires.ftc.teamcode.hardwareControl.actuators.common.TBHController;
 
 
+@Configurable
 public class IntakeController {
 
-    private DcMotorEx armMotor;
+    private DcMotorEx intakeMotor;
 
-    private double MAX_POSITION;
-    private double MIN_POSITION;
-    private double START_POSITION;
-    private double targetPosition;
-    private double lastPosition;
+    private double START_VELOCITY;
     private double TOLERABLE_ERROR;
-    private double FEED_FORWARD;
-
-    private double INCHES_PER_REV;
-
-    public static double Kp = 0.01;
-    public static double Ki = 0.001;
-    public static double Kd = 0.0;
-    public static double Kf = 0.0;
+    private double targetVelocity;
+    private final double INTAKE_VELOCITY = 1;
+    private final double REJECT_VELOCITY = -1;
+    private final double STOP_VELOCITY = 0;
+    private final double RETAIN_VELOCITY = 0.3;
 
 
-    /// motion control
-    private PIDFController pidfController;
+    /** TBH gains (live configurable) */
+    public static double Kp = 0.000002;
 
-    private MotionProfiler motionProfiler;
+    private double Kf_a;
+    private double Kf_b;
+    private double Kf_c;
 
-    private double currentPosition=0.0;
-    public static double mpMaxVelocity = 500;  /// deg/s
-    public static double mpMaxAcceleration = 200;   /// deg/s**2
-    private double startTime;
-    ///
-
+    private TBHController tbhController;
     private boolean initialized = false;
-    private boolean isMotionProfileGenerated = false;
 
-    // Private static instance (eager initialization)
     private static final IntakeController INSTANCE = new IntakeController();
-    private LinearOpMode opMode;
     private Telemetry telemetry;
 
-    // Private constructor to prevent instantiation
-    private IntakeController() {
-        // Initialize hardware, state, or configuration here
+    private IntakeController() {}
 
-    }
-    // Public method to access the singleton instance
     public static IntakeController getInstance() {
         return INSTANCE;
     }
 
-    private static void setupConstants(){
+    private static void setupConstants() {
         try {
             Class.forName(IntakeConstants.class.getName());
-            Class.forName(IntakePIDFControllerConstants.class.getName());
-            Class.forName(IntakeMotionProfilerConstants.class.getName());
-        } catch (ClassNotFoundException e) {
-            //e.printStackTrace();
-        }
+            Class.forName(IntakeTBHControllerConstants.class.getName());
+        } catch (ClassNotFoundException ignored) {}
     }
-    // Initialization method — must be called once at the beginning
+
     public void initialize(HardwareMap hardwareMap, Telemetry telemetry, LinearOpMode opMode) {
-        if (initialized) {
-            return;
-            //throw new IllegalStateException("ArmController has already been initialized.");
-        }
+        if (initialized) return;
+
         setupConstants();
-        this.opMode = opMode;
-        this.telemetry  = telemetry;
+        this.telemetry = telemetry;
 
         initializeMotor(hardwareMap);
-        initializeLocalVariablesWithConstants();
-        initializePDFController();
-        initializeMotionProfiler();
+        initializeConstants();
+        initializeTBH();
 
         initialized = true;
     }
 
-    private void initializeMotor(HardwareMap hardwareMap){
-        armMotor =  hardwareMap.get(DcMotorEx.class, MotorConstants.name);
-        MotorConfigurationType motorConfigurationType = armMotor.getMotorType().clone();
-        motorConfigurationType.setTicksPerRev(MotorConstants.ticksPerRev);
-        motorConfigurationType.setGearing(MotorConstants.gearing);
-        motorConfigurationType.setAchieveableMaxRPMFraction(MotorConstants.achievableMaxRPMFraction);
-        armMotor.setMotorType(motorConfigurationType);
-        armMotor.setMode(MotorConstants.resetMode);
-        armMotor.setMode(MotorConstants.mode);
-        armMotor.setDirection(MotorConstants.direction);
+    private void initializeMotor(HardwareMap hardwareMap) {
+        intakeMotor = hardwareMap.get(DcMotorEx.class, VelocityMotorConstantsBase.frontMotorName);
+
+        MotorConfigurationType type = intakeMotor.getMotorType().clone();
+        type.setTicksPerRev(MotorConstants.ticksPerRev);
+        type.setGearing(MotorConstants.gearing);
+        type.setAchieveableMaxRPMFraction(MotorConstants.achievableMaxRPMFraction);
+
+        intakeMotor.setMotorType(type);
+        intakeMotor.setMode(MotorConstants.resetMode);
+        intakeMotor.setMode(MotorConstants.mode);
+        intakeMotor.setDirection(MotorConstants.direction);
     }
 
-    private void initializeLocalVariablesWithConstants(){
-        START_POSITION = MotorConstants.startPosition;
-        lastPosition = START_POSITION;
-        MAX_POSITION = MotorConstants.maxPosition;
-        MIN_POSITION = MotorConstants.minPosition;
+    private void initializeConstants() {
+        START_VELOCITY = MotorConstants.startPosition;
         TOLERABLE_ERROR = MotorConstants.tolerableError;
-        FEED_FORWARD = MotorConstants.feedforward;
-        INCHES_PER_REV = MotorConstants.inchesPerRev;
+
+        Kf_a = VelocityTBHControllerConstantBase.FRONT_Kf_a;
+        Kf_b = VelocityTBHControllerConstantBase.FRONT_Kf_b;
+        Kf_c = VelocityTBHControllerConstantBase.FRONT_Kf_c;
     }
 
-    private void initializePDFController(){
-  /*        Kp= PIDFControllerConstants.kp;
-        Ki=PIDFControllerConstants.ki;
-        Kd=PIDFControllerConstants.kd;*/
-
-        pidfController = new PIDFController(Kp, Ki, Kd, Kf);
-        pidfController.setOutputLimits(PIDFControllerConstants.motorMinPowerLimit, PIDFControllerConstants.motorMaxPowerLimit); // Motor power limits
-        pidfController.setMaxIntegralSum(PIDFControllerConstants.maxIntegralSum); // Prevent integral windup
+    private void initializeTBH() {
+        tbhController = new TBHController(Kp, Kf_a, Kf_b, Kf_c);
+        tbhController.setOutputLimits(
+                PIDFControllerConstants.motorMinPowerLimit,
+                PIDFControllerConstants.motorMaxPowerLimit
+        );
     }
 
-    private void initializeMotionProfiler(){
-        // mpMaxVelocity = MotionProfilerConstants.maxVelocity;
-        // mpMaxAcceleration = MotionProfilerConstants.maxAcceleration;
-
-        // Initialize motion profiler (tune these constraints!)
-        motionProfiler = new MotionProfiler(mpMaxVelocity, mpMaxAcceleration); // e.g., ticks/s, ticks/s^2
-
-
+    /** RPM */
+    public double getCurrentVelocity() {
+        return intakeMotor.getVelocity(AngleUnit.DEGREES) / 6.0;
     }
 
-    private void generateMotionProfile(double startPosition, double targetPosition){
-        if(isMotionProfileGenerated){
-            return;
+    public void spinToTargetVelocity(double newTargetVelocity) {
+        if (newTargetVelocity != targetVelocity) {
+            tbhController.reset();
         }
 
-        // Generate motion profile
-        motionProfiler.generateProfile(startPosition, targetPosition);
+        targetVelocity = newTargetVelocity;
+        double currentVelocity = getCurrentVelocity();
 
-        startTime = System.nanoTime() / 1_000_000_000.0; // Start time in seconds
+        double power = tbhController.calculate(targetVelocity, currentVelocity);
+        intakeMotor.setPower(power);
 
-        isMotionProfileGenerated=true;
-
-        telemetry.addData("ArmCtrl.generateMotionProfile startPosition", startPosition);
-        telemetry.addData("ArmCtrl.generateMotionProfile targetPosition", targetPosition);
-        telemetry.update();
+        telemetry.addData("Intake Target RPM", targetVelocity);
+        telemetry.addData("Intake Current RPM", currentVelocity);
+        telemetry.addData("Intake Power", power);
     }
+
+    public void startIntake() {
+        spinToTargetVelocity(INTAKE_VELOCITY);
+    }
+
+    public void stopIntake() {
+        spinToTargetVelocity(STOP_VELOCITY);
+
+    }
+
+    public void retainArtifacts() {
+        spinToTargetVelocity(RETAIN_VELOCITY);
+    }
+
+    public void rejectArtifacts() {
+        spinToTargetVelocity(REJECT_VELOCITY);
+    }
+
+    public boolean isOnTarget() {
+        return Math.abs(targetVelocity - getCurrentVelocity()) <= TOLERABLE_ERROR;
+    }
+
+    public boolean isBusy() {
+        return intakeMotor.isBusy();
+    }
+
     public void reset() {
-        /// TODO: include sensor to detect hardware reset.
-        if(initialized) {
-            if(this.isBusy()) {
-                this.moveToTargetPosition(START_POSITION);
-            } else {
-                armMotor.setMode(MotorConstants.resetMode);
-                armMotor.setMode(MotorConstants.mode);
-                armMotor.setDirection(MotorConstants.direction);
-                isMotionProfileGenerated=false;
-            }
-            initialized = false;
-        }
+        if (!initialized) return;
+
+        intakeMotor.setMode(MotorConstants.resetMode);
+        intakeMotor.setMode(MotorConstants.mode);
+        intakeMotor.setDirection(MotorConstants.direction);
+
+        initialized = false;
     }
 
-
-
-    // Example method
-    public double getCurrentPosition() {
-        MotorConfigurationType motorType = armMotor.getMotorType();
-        double ticksPerRev = motorType.getTicksPerRev();
-        double currentTicks = armMotor.getCurrentPosition();
-        double rotations = currentTicks / ticksPerRev;
-        double currentPosition = rotations * INCHES_PER_REV + START_POSITION;
-
-
-        return rotations * INCHES_PER_REV + START_POSITION;
+    public void update() {
+        // intentionally empty — called externally if desired
     }
-
-    public void moveToTargetPosition(double newTargetPosition){
-        this.targetPosition = newTargetPosition;
-
-        generateMotionProfile(lastPosition, targetPosition);
-
-
-        // Get current time relative to start
-        double currentTime = System.nanoTime() / 1_000_000_000.0 - startTime;
-
-        // Get motion profile setpoint
-        MotionProfiler.MotionState state = motionProfiler.getMotionState(currentTime);
-        double setpointPosition = state.position;
-
-        // Get current encoder position
-        currentPosition = this.getCurrentPosition();
-
-        // Calculate motor pidPower using PIDF
-        double pidPower = pidfController.calculate(setpointPosition, currentPosition);
-
-        // Apply pidPower to motor
-        armMotor.setPower(pidPower);
-
-        telemetry.addData("ArmController Target position", newTargetPosition);
-        telemetry.addData("ArmController Current position", currentPosition);
-        telemetry.addData("ArmController setpointPosition", setpointPosition);
-        telemetry.addData("ArmController pidPower", pidPower);
-        telemetry.update();
-
-    }
-
-    public boolean isOnTarget(){
-        double currentPosition = this.getCurrentPosition();
-        boolean isOnTarget = ((Math.abs(targetPosition - currentPosition) <= TOLERABLE_ERROR));
-        if (isOnTarget){
-            lastPosition = currentPosition;
-            isMotionProfileGenerated=false;
-        }
-        return isOnTarget;
-    }
-
-    public void update(){
-
-    }
-    public boolean isArmStuck(){
-        return  false;
-       //   double currentPosition = this.getFrontCurrentPosition();
-       //   return (Math.abs(currentPosition - targetPosition) > TOLERABLE_ERROR) && !isBusy();
-    }
-
-    public boolean isBusy(){
-        return armMotor.isBusy();
-    }
-
 
 }
 

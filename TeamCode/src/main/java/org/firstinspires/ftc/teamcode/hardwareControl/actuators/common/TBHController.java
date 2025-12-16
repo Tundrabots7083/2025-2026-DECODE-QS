@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.hardwareControl.actuators.common;
 import com.qualcomm.robotcore.util.Range;
 
 public class TBHController {
-    private double kP, kF_a, kF_b, kF_c; // error multiplier coefficients
+    private double Kp, Kf_a, Kf_b, Kf_c; // error multiplier coefficients
     private double lastError = 0.0;
     private double maxPower = 1.0; // Typical max power for FTC motors
     private double minPower = -1.0;
@@ -14,13 +14,13 @@ public class TBHController {
     /**
      * Constructor for TBHController
      *
-     * @param kP Proportional gain
+     * @param Kp Proportional gain
      */
-    public TBHController(double kP, double kF_a, double kF_b, double kF_c) {
-        this.kP = kP;
-        this.kF_a = kF_a;
-        this.kF_b = kF_b;
-        this.kF_c = kF_c;
+    public TBHController(double Kp, double Kf_a, double Kf_b, double Kf_c) {
+        this.Kp = Kp;
+        this.Kf_a = Kf_a;
+        this.Kf_b = Kf_b;
+        this.Kf_c = Kf_c;
     }
 
     /**
@@ -49,9 +49,9 @@ public class TBHController {
             lastError = error;
             return Math.signum(error);
         } else if(isFirstCross && driveAtZero == 0.0) {
-            power = kF_a
-                    + kF_b * setpoint
-                    + kF_c * Math.pow(setpoint, 2);
+            power = Kf_a
+                    + Kf_b * setpoint
+                    + Kf_c * Math.pow(setpoint, 2);
             driveAtZero = power;
             isFirstCross = false;
             lastError = error;
@@ -63,7 +63,7 @@ public class TBHController {
 
 
         // Increment Power
-        power = power + (kP * error);
+        power = power + (Kp * error);
 
         // Clamp output to motor power limits
         power = Range.clip(power, minPower, maxPower);
@@ -97,9 +97,9 @@ public class TBHController {
     /**
      * Getters and setters for PIDF coefficients
      */
-    public void setPIDF(double kP) {
-        this.kP = kP;
+    public void setPIDF(double Kp) {
+        this.Kp = Kp;
     }
 
-    public double getKP() { return kP; }
+    public double getKp() { return Kp; }
 }

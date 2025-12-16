@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.hardwareConfig.baseConstants;
 
-public class ShooterTBHControllerConstantBase extends TBHControllerConstants{
+public class VelocityTBHControllerConstantBase extends TBHControllerConstants{
     public static double FRONT_Kp;
     public static double REAR_Kp;
     public static double motorMinPowerLimit;
