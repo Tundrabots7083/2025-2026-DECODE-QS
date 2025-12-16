@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.FrontZone;
+package org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.LimeLight;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
@@ -26,11 +26,13 @@ public class DetectRobotPose implements ActionFunction {
 
         Pose3D currentPose = limeLightController.getCurrentRobotPose();
 
-            if(currentPose != null){
-                blackBoard.setValue("AprilTag_Pose", currentPose);
-            }
+        if (currentPose != null) {
+            blackBoard.setValue("AprilTag_Pose", currentPose);
+        } else {
+            return Status.FAILURE;
+        }
 
-            status = Status.RUNNING;
+        status = Status.SUCCESS;
 
         return status;
     }

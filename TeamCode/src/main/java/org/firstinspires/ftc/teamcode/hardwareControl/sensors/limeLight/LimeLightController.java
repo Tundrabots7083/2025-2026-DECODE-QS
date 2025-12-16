@@ -9,7 +9,9 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 import org.firstinspires.ftc.teamcode.hardwareConfig.sensors.limeLight.LimeLight01Constants;
 
-import java.util.List;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 public class LimeLightController  {
     private boolean initialized = false;
@@ -65,6 +67,8 @@ public class LimeLightController  {
 
     // Example method
     public Pose3D getCurrentRobotPose(){
+        limelight.pipelineSwitch(APRILTAG_PIPELINE);
+
         LLResult result = limelight.getLatestResult();
         if (result.isValid()) {
             Pose3D robotPose = result.getBotpose();
@@ -82,17 +86,20 @@ public class LimeLightController  {
         return null;
     }
 
-public   List<LLResultTypes.FiducialResult> getFiducialResults(){
-    LLResult result = limelight.getLatestResult();
-    if (result.isValid()) {
-        List<LLResultTypes.FiducialResult> fiducialResults = result.getFiducialResults();
-        for (LLResultTypes.FiducialResult fr : fiducialResults) {
-            fr.getFiducialId();
+
+    public Set<Integer> getPresentFiducialIds() {
+        LLResult result = limelight.getLatestResult();
+
+        if (!result.isValid()) {
+            return Collections.emptySet();
         }
-        return fiducialResults;
+
+        Set<Integer> ids = new HashSet<>();
+        for (LLResultTypes.FiducialResult fr : result.getFiducialResults()) {
+            ids.add(fr.getFiducialId());
+        }
+        return ids;
     }
-    return null;
-}
 
     public void update(){
 
