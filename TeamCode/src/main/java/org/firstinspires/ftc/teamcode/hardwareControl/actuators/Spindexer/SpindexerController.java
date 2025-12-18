@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.hardwareControl.actuators.Spindexer;
 
 import com.bylazar.configurables.annotations.Configurable;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
@@ -98,18 +99,22 @@ import org.firstinspires.ftc.teamcode.hardwareControl.actuators.common.PIDFContr
                     kF            );
         }
 
+        public void hardwareReset() {
+            spindexerMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            spindexerMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        }
 
-        public void moveToPosition(double targetPositionTicks) {
 
-            if (targetPositionTicks != TARGET_POSITION) {
+        public void moveToPosition(double targetPosition) {
+
+            if (targetPosition != TARGET_POSITION) {
                 pidfController.reset();
             }
 
-            TARGET_POSITION = targetPositionTicks;
+            TARGET_POSITION = targetPosition;
 
-            double currentPosition = spindexerMotor.getCurrentPosition();
+            double currentPosition = getPosition();
 
-            // PID + Feedforward handled internally
             double power = pidfController.calculate(TARGET_POSITION, currentPosition);
 
             spindexerMotor.setPower(power);
@@ -124,14 +129,29 @@ import org.firstinspires.ftc.teamcode.hardwareControl.actuators.common.PIDFContr
                     <= TOLERABLE_ERROR;
         }
 
+        public void moveOnePosition() {
+            double targetPosition = getPosition() + 120;
+            moveToPosition(targetPosition);
+        }
+
+        public void moveTwoPositions() {
+            double targetPosition = getPosition() + 240;
+            moveToPosition(targetPosition);
+        }
+
         public void stop() {
             spindexerMotor.setPower(0);
             pidfController.reset();
         }
 
+        public double getPosition() {
+            double currentAngle = (spindexerMotor.getCurrentPosition() % MotorConstants.ticksPerRev) * 360; //current position in degrees
 
-        public double getCurrentPosition() {
-            return spindexerMotor.getCurrentPosition();
+            if(currentAngle < 0) {
+                currentAngle += 360;
+            }
+
+            return currentAngle;
         }
 
         public boolean isBusy() {
@@ -139,6 +159,11 @@ import org.firstinspires.ftc.teamcode.hardwareControl.actuators.common.PIDFContr
         }
 
         public void update() {
+            double currentPosition = getPosition();
+
+            double power = pidfController.calculate(TARGET_POSITION, currentPosition);
+
+            spindexerMotor.setPower(power);
         }
 
         public void reset() {
