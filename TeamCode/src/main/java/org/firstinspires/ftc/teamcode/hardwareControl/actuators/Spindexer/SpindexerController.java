@@ -22,6 +22,7 @@ import org.firstinspires.ftc.teamcode.hardwareControl.actuators.common.PIDFContr
 
         private double TARGET_POSITION;
         private double TOLERABLE_ERROR;
+        private double LAST_POWER;
 
         public static double kP = 0;
         public static double kI = 0;
@@ -119,6 +120,8 @@ import org.firstinspires.ftc.teamcode.hardwareControl.actuators.common.PIDFContr
 
             spindexerMotor.setPower(power);
 
+            LAST_POWER = power;
+
             telemetry.addData("Spindexer Target", TARGET_POSITION);
             telemetry.addData("Spindexer Position", currentPosition);
             telemetry.addData("Spindexer Power", power);
@@ -137,6 +140,10 @@ import org.firstinspires.ftc.teamcode.hardwareControl.actuators.common.PIDFContr
         public void moveTwoPositions() {
             double targetPosition = getPosition() + 240;
             moveToPosition(targetPosition);
+        }
+
+        public void spinSlowly() {
+            spindexerMotor.setPower(0.2);
         }
 
         public void stop() {
@@ -163,7 +170,11 @@ import org.firstinspires.ftc.teamcode.hardwareControl.actuators.common.PIDFContr
 
             double power = pidfController.calculate(TARGET_POSITION, currentPosition);
 
-            spindexerMotor.setPower(power);
+            if(Math.abs(LAST_POWER - power) > 0.01) {
+                spindexerMotor.setPower(power);
+            }
+
+            LAST_POWER = power;
         }
 
         public void reset() {
