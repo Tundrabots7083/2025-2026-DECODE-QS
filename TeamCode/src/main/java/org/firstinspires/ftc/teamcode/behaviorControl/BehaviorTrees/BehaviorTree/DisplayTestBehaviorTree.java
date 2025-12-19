@@ -5,14 +5,14 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Display.DisplayMotif;
-import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.LimeLight.DetectMotifPattern;
+import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Spindexer.SpinSpindexerSlowly;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.Action;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.BehaviorTree;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.BlackBoard;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.Node;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.Sequence;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.Status;
+import org.firstinspires.ftc.teamcode.hardwareControl.actuators.Spindexer.SpindexerController;
 import org.firstinspires.ftc.teamcode.hardwareControl.sensors.limeLight.LimeLightController;
 
 import java.util.Arrays;
@@ -30,6 +30,10 @@ public class DisplayTestBehaviorTree {
     /// Limelight
     protected LimeLightController limeLightController;
 
+    ///
+
+    ///
+    protected SpindexerController spindexerController;
     ///
 
     public DisplayTestBehaviorTree(LinearOpMode opMode) {
@@ -51,13 +55,18 @@ public class DisplayTestBehaviorTree {
         this.limeLightController.initialize(hardwareMap, telemetry);
         /// End Limelight
 
+        /// Spindexer
+        this.spindexerController = SpindexerController.getInstance();
+
+        this.spindexerController.initialize(hardwareMap, telemetry);
+        ///  End Spindexer
 
         telemetry.clearAll();
 
         this.root = new Sequence(
                 Arrays.asList(
-                        new Action(new DetectMotifPattern(telemetry, limeLightController), telemetry),
-                        new Action(new DisplayMotif( telemetry, limeLightController), telemetry)
+                        new Action(new SpinSpindexerSlowly(telemetry, spindexerController), telemetry)
+//                        new Action(new DisplayMotif( telemetry, limeLightController), telemetry)
                 ),telemetry);
 
         this.tree = new BehaviorTree(root, blackBoard);

@@ -20,6 +20,6 @@ public class SpinSpindexerSlowly implements ActionFunction {
     public Status perform(BlackBoard blackBoard) {
         spindexerController.spinSlowly();
 
-        return Status.SUCCESS;
+        return Status.RUNNING;
     }
 }

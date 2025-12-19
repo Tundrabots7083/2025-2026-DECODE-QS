@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.hardwareControl.actuators.Spindexer;
 
 
 import com.bylazar.configurables.annotations.Configurable;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -24,7 +23,7 @@ import org.firstinspires.ftc.teamcode.hardwareControl.actuators.common.PIDFContr
         private double TOLERABLE_ERROR;
         private double LAST_POWER;
 
-        public static double kP = 0;
+        public static double kP = 0.1;
         public static double kI = 0;
         public static double kD = 0;
         public static double kF = 0;
@@ -52,14 +51,14 @@ import org.firstinspires.ftc.teamcode.hardwareControl.actuators.common.PIDFContr
             }
         }
 
-        public void initialize(HardwareMap hardwareMap, Telemetry telemetry, LinearOpMode opMode) {
+        public void initialize(HardwareMap hardwareMap, Telemetry telemetry) {
             if (initialized) return;
 
             setupConstants();
             this.telemetry = telemetry;
 
             initializeMotor(hardwareMap);
-            initializeLocalVariablesWithConstants();
+//            initializeLocalVariablesWithConstants();
             initializePIDFController();
 
             initialized = true;
