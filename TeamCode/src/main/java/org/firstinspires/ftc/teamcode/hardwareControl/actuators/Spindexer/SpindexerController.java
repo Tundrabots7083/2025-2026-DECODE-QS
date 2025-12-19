@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.hardwareConfig.actuators.Spindexer.SpindexerConstants;
 import org.firstinspires.ftc.teamcode.hardwareConfig.actuators.Spindexer.SpindexerPIDFControllerConstants;
 import org.firstinspires.ftc.teamcode.hardwareConfig.baseConstants.MotorConstants;
@@ -127,8 +128,11 @@ import org.firstinspires.ftc.teamcode.hardwareControl.actuators.common.PIDFContr
         }
 
         public boolean isOnTarget() {
-            return Math.abs(TARGET_POSITION - spindexerMotor.getCurrentPosition())
+            boolean isInDeadband = Math.abs(TARGET_POSITION - spindexerMotor.getCurrentPosition())
                     <= TOLERABLE_ERROR;
+            boolean isVelocityLow = Math.abs(spindexerMotor.getVelocity(AngleUnit.DEGREES))
+                    <= TOLERABLE_ERROR;
+            return isInDeadband && isVelocityLow;
         }
 
         public void moveOnePosition() {
@@ -151,7 +155,7 @@ import org.firstinspires.ftc.teamcode.hardwareControl.actuators.common.PIDFContr
         }
 
         public double getPosition() {
-            double currentAngle = (spindexerMotor.getCurrentPosition() % MotorConstants.ticksPerRev) * 360; //current position in degrees
+            double currentAngle = (spindexerMotor.getCurrentPosition() / MotorConstants.ticksPerRev) * 360; //current position in degrees
 
             if(currentAngle < 0) {
                 currentAngle += 360;

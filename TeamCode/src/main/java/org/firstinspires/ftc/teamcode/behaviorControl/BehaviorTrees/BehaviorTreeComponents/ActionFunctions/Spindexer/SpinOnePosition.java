@@ -12,13 +12,18 @@ public class SpinOnePosition implements ActionFunction {
 
     SpindexerController spindexerController;
 
+    boolean hasRun = false;
+
     public SpinOnePosition(Telemetry telemetry, SpindexerController spindexerController) {
         this.telemetry = telemetry;
         this.spindexerController = spindexerController;
     }
 
     public Status perform(BlackBoard blackBoard) {
-        spindexerController.moveOnePosition();
+        if(!hasRun) {
+            spindexerController.moveOnePosition();
+            hasRun = true;
+        }
 
         if (!spindexerController.isOnTarget()) {
             spindexerController.update();

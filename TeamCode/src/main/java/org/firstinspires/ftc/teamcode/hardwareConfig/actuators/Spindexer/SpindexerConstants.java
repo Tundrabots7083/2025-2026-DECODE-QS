@@ -16,6 +16,6 @@ public class SpindexerConstants {
         MotorConstants.resetMode = DcMotor.RunMode.STOP_AND_RESET_ENCODER;
         MotorConstants.direction = DcMotorSimple.Direction.FORWARD;
         MotorConstants.startPosition = 0.0;
-        MotorConstants.tolerableError = 5.0;
+        MotorConstants.tolerableError = 0.5;
     }
 }
