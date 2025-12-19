@@ -44,7 +44,7 @@ public class DetectMotifPattern implements ActionFunction {
         return status;
     }
 
-    enum Pattern {
+    public enum Pattern {
         PPG,
         PGP,
         GPP
