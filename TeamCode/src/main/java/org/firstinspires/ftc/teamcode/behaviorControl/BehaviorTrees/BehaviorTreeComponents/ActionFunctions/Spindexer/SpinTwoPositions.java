@@ -9,10 +9,9 @@ import org.firstinspires.ftc.teamcode.hardwareControl.actuators.Spindexer.Spinde
 public class SpinTwoPositions implements ActionFunction {
 
     Telemetry telemetry;
-
     SpindexerController spindexerController;
-
-    boolean hasRun = false;
+    Status status;
+    Status lastStatus = Status.FAILURE;
 
     private double currentPosition;
     private double targetPosition;
@@ -23,19 +22,21 @@ public class SpinTwoPositions implements ActionFunction {
     }
 
     public Status perform(BlackBoard blackBoard) {
-        if(!hasRun) {
-            currentPosition = spindexerController.getPosition();
-            targetPosition = currentPosition + 240;
-            spindexerController.moveToPosition(targetPosition);
-            hasRun = true;
+        if (lastStatus == Status.SUCCESS) {
+            return lastStatus;
         }
-
+        currentPosition = spindexerController.getPosition();
+        targetPosition = currentPosition + 240;
+        spindexerController.moveToPosition(targetPosition);
 
         if (!spindexerController.isOnTarget()) {
             spindexerController.update();
-            return Status.RUNNING;
+            status = Status.RUNNING;
         } else {
-            return Status.SUCCESS;
+            status = Status.SUCCESS;
         }
+
+        lastStatus = status;
+        return status;
     }
 }

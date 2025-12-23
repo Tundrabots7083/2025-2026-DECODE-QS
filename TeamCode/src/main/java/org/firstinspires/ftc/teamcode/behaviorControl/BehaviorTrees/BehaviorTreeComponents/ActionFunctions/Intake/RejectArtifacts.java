@@ -9,8 +9,10 @@ import org.firstinspires.ftc.teamcode.hardwareControl.actuators.intake.IntakeCon
 public class RejectArtifacts implements ActionFunction {
 
     Telemetry telemetry;
-
     IntakeController intakeController;
+    Status lastStatus;
+    Status status;
+    private final double REJECT_VELOCITY = -100;
 
     public RejectArtifacts(Telemetry telemetry, IntakeController intakeController) {
         this.telemetry = telemetry;
@@ -18,10 +20,20 @@ public class RejectArtifacts implements ActionFunction {
     }
 
     public Status perform(BlackBoard blackBoard) {
-        // Activate the intake mechanism
-        intakeController.rejectArtifacts();
+        if (lastStatus == Status.SUCCESS) {
+            return lastStatus;
+        }
 
-        // Return SUCCESS immediately so the Behavior Tree moves to the next action
-        return Status.SUCCESS;
+        // Activate the intake mechanism
+        intakeController.spinToTargetVelocity(REJECT_VELOCITY);
+
+        if (!intakeController.isOnTarget()) {
+            status = Status.RUNNING;
+        } else {
+            status = Status.SUCCESS;
+        }
+
+        lastStatus = status;
+        return status;
     }
 }

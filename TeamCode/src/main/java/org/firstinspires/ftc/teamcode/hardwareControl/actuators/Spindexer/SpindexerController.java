@@ -135,7 +135,7 @@ import org.firstinspires.ftc.teamcode.hardwareControl.actuators.common.PIDFContr
         }
 
         public void spinSlowly() {
-            spindexerMotor.setPower(0.2);
+            spindexerMotor.setPower(0.15);
         }
 
         public void stop() {

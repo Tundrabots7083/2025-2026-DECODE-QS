@@ -21,11 +21,8 @@ public class IntakeController {
 
     private DcMotorEx intakeMotor;
 
-    private double START_VELOCITY;
     private double TOLERABLE_ERROR;
     private double targetVelocity;
-    private final double REJECT_VELOCITY = -1;
-    private final double RETAIN_VELOCITY = 0.3;
 
 
 
@@ -83,7 +80,6 @@ public class IntakeController {
     }
 
     private void initializeConstants() {
-        START_VELOCITY = MotorConstants.startPosition;
         TOLERABLE_ERROR = MotorConstants.tolerableError;
 
         Kf_a = VelocityTBHControllerConstantBase.FRONT_Kf_a;
@@ -114,15 +110,6 @@ public class IntakeController {
         telemetry.addData("Intake Target RPM", targetVelocity);
         telemetry.addData("Intake Current RPM", currentVelocity);
         telemetry.addData("Intake Power", power);
-    }
-
-
-    public void retainArtifacts() {
-        spinToTargetVelocity(RETAIN_VELOCITY);
-    }
-
-    public void rejectArtifacts() {
-        spinToTargetVelocity(REJECT_VELOCITY);
     }
 
     public boolean isOnTarget() {

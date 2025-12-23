@@ -12,6 +12,7 @@ import org.firstinspires.ftc.teamcode.hardwareControl.actuators.intake.IntakeCon
         IntakeController intakeController;
         Status lastStatus = Status.FAILURE;
         Status status;
+        private final double INTAKE_VELOCITY = 320;
 
         public StartIntake(Telemetry telemetry, IntakeController intakeController) {
             this.telemetry = telemetry;
@@ -24,7 +25,7 @@ import org.firstinspires.ftc.teamcode.hardwareControl.actuators.intake.IntakeCon
             }
 
             // Activate the intake mechanism
-            intakeController.spinToTargetVelocity(320);
+            intakeController.spinToTargetVelocity(INTAKE_VELOCITY);
 
             if(!intakeController.isOnTarget()){
                 status = Status.RUNNING;

@@ -19,8 +19,12 @@ public class StopAndResetSpindexer implements ActionFunction {
 
     public Status perform(BlackBoard blackBoard) {
         spindexerController.stop();
-        spindexerController.hardwareReset();
 
-        return Status.SUCCESS;
+        if (!spindexerController.isOnTarget()) {
+            spindexerController.hardwareReset();
+            return Status.RUNNING;
+        } else {
+            return Status.SUCCESS;
+        }
     }
 }
