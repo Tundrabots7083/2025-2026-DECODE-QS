@@ -5,6 +5,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Common.PauseAction;
+import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Spindexer.SpinOnePosition;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Spindexer.SpinTwoPositions;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.Action;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.BehaviorTree;
@@ -36,9 +38,9 @@ public class DisplayTestBehaviorTree {
     protected SpindexerController spindexerController;
     ///
 
-    public DisplayTestBehaviorTree(LinearOpMode opMode) {
+    public DisplayTestBehaviorTree(LinearOpMode opMode, Telemetry telemetry) {
         this.hardwareMap = opMode.hardwareMap;
-        this.telemetry = opMode.telemetry;
+        this.telemetry = telemetry;
         this.opMode = opMode;
 
         Init();
@@ -66,8 +68,9 @@ public class DisplayTestBehaviorTree {
 
         this.root = new Sequence(
                 Arrays.asList(
-                        new Action(new SpinTwoPositions(telemetry, spindexerController), telemetry)
-//                        new Action(new DisplayMotif( telemetry, limeLightController), telemetry)
+                        new Action(new SpinTwoPositions(telemetry, spindexerController), telemetry),
+                        new Action(new PauseAction( 8000,telemetry), telemetry),
+                        new Action(new SpinOnePosition(telemetry, spindexerController), telemetry)
                 ),telemetry);
 
         this.tree = new BehaviorTree(root, blackBoard);

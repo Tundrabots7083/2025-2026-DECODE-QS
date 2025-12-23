@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.hardwareControl.actuators.Spindexer;
 
 
 import com.bylazar.configurables.annotations.Configurable;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
@@ -22,11 +21,12 @@ import org.firstinspires.ftc.teamcode.hardwareControl.actuators.common.PIDFContr
 
         private double TARGET_POSITION;
         private double TOLERABLE_ERROR;
+        private double TOLERABLE_VELOCITY_ERROR;
         private double LAST_POWER;
 
-        public static double kP = 0.1;
-        public static double kI = 0;
-        public static double kD = 0;
+        public static double kP = 0.015;
+        public static double kI = 0.0015;
+        public static double kD = 0.0003;
         public static double kF = 0;
 
         private PIDFController pidfController;
@@ -59,7 +59,7 @@ import org.firstinspires.ftc.teamcode.hardwareControl.actuators.common.PIDFContr
             this.telemetry = telemetry;
 
             initializeMotor(hardwareMap);
-//            initializeLocalVariablesWithConstants();
+            initializeLocalVariablesWithConstants();
             initializePIDFController();
 
             initialized = true;
@@ -86,6 +86,8 @@ import org.firstinspires.ftc.teamcode.hardwareControl.actuators.common.PIDFContr
         private void initializeLocalVariablesWithConstants() {
             TOLERABLE_ERROR = MotorConstants.tolerableError;
 
+            TOLERABLE_VELOCITY_ERROR = MotorConstants.tolerableVelocityError;
+
             kP = PIDFControllerConstants.kp;
             kI = PIDFControllerConstants.ki;
             kD = PIDFControllerConstants.kd;
@@ -101,8 +103,8 @@ import org.firstinspires.ftc.teamcode.hardwareControl.actuators.common.PIDFContr
         }
 
         public void hardwareReset() {
-            spindexerMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            spindexerMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            spindexerMotor.setMode(MotorConstants.resetMode);
+            spindexerMotor.setMode(MotorConstants.mode);
         }
 
 
@@ -122,27 +124,14 @@ import org.firstinspires.ftc.teamcode.hardwareControl.actuators.common.PIDFContr
 
             LAST_POWER = power;
 
-            telemetry.addData("Spindexer Target", TARGET_POSITION);
-            telemetry.addData("Spindexer Position", currentPosition);
-            telemetry.addData("Spindexer Power", power);
         }
 
         public boolean isOnTarget() {
-            boolean isInDeadband = Math.abs(TARGET_POSITION - spindexerMotor.getCurrentPosition())
+            boolean isInDeadband = Math.abs(TARGET_POSITION - getPosition())
                     <= TOLERABLE_ERROR;
             boolean isVelocityLow = Math.abs(spindexerMotor.getVelocity(AngleUnit.DEGREES))
-                    <= TOLERABLE_ERROR;
+                    <= TOLERABLE_VELOCITY_ERROR;
             return isInDeadband && isVelocityLow;
-        }
-
-        public void moveOnePosition() {
-            double targetPosition = getPosition() + 120;
-            moveToPosition(targetPosition);
-        }
-
-        public void moveTwoPositions() {
-            double targetPosition = getPosition() + 240;
-            moveToPosition(targetPosition);
         }
 
         public void spinSlowly() {
@@ -156,11 +145,6 @@ import org.firstinspires.ftc.teamcode.hardwareControl.actuators.common.PIDFContr
 
         public double getPosition() {
             double currentAngle = (spindexerMotor.getCurrentPosition() / MotorConstants.ticksPerRev) * 360; //current position in degrees
-
-            if(currentAngle < 0) {
-                currentAngle += 360;
-            }
-
             return currentAngle;
         }
 
@@ -173,7 +157,11 @@ import org.firstinspires.ftc.teamcode.hardwareControl.actuators.common.PIDFContr
 
             double power = pidfController.calculate(TARGET_POSITION, currentPosition);
 
-            if(Math.abs(LAST_POWER - power) > 0.01) {
+            telemetry.addData("Spindexer Target", TARGET_POSITION);
+            telemetry.addData("Spindexer Position", currentPosition);
+            telemetry.addData("Spindexer Power", power);
+
+            if(Math.abs(LAST_POWER - power) > 0.001) {
                 spindexerMotor.setPower(power);
             }
 

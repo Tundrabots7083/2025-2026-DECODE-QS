@@ -19,6 +19,7 @@ public class MotorConstants {
     public static double startPosition;
     public static double targetPosition;
     public static double tolerableError;
+    public static double tolerableVelocityError;
     public static double feedforward;
     public static double kp;
     public static double ki;
