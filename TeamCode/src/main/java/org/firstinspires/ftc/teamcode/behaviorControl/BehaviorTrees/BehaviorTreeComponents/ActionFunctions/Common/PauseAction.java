@@ -10,40 +10,40 @@ import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTree
 
 
 public class PauseAction implements ActionFunction {
-    private static final double CLAW_OPEN_POSITION = 60;
     private final long pauseDuration;
+    private long startTime;
+    private long endTime;
     Telemetry telemetry;
     protected LinearOpMode opMode;
+    private boolean hasRun = false;
 
     protected Status lastStatus = Status.FAILURE;
 
-    public PauseAction (long pauseDuration, Telemetry telemetry, LinearOpMode opMode) {
+    public PauseAction (long pauseDuration, Telemetry telemetry) {
         this.telemetry = telemetry;
-        this.opMode = opMode;
         this.pauseDuration = pauseDuration;
-        this.init();
     }
 
-    private void init(){
 
-
-    }
     @Override
     public Status perform(BlackBoard blackBoard) {
         Status status;
 
-        telemetry.addData("PauseAction", "perform start");
-        telemetry.update();
 
-        opMode.sleep(pauseDuration);
+        if(!hasRun) {
+            startTime = System.currentTimeMillis();
+            endTime = startTime + pauseDuration;
+            hasRun = true;
+        }
 
+        if (System.currentTimeMillis() < endTime) {
+            telemetry.addData("PauseAction", "perform start");
+            status = Status.RUNNING;
+        } else {
+            status = Status.SUCCESS;
+            telemetry.addData("PauseAction", "perform finish");
+        }
 
-        status=Status.SUCCESS;
-
-
-
-        telemetry.addData("PauseAction", "perform finish");
-        telemetry.update();
         return status;
     }
 }
