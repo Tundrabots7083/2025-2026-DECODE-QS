@@ -7,6 +7,5 @@ public class TurretConstants {
         ServoConstants.name = "turretServo";
         ServoConstants.maxDegrees = 359;
         ServoConstants.minDegrees = 0;
-        ServoConstants.waitTime = 100;
     }
 }

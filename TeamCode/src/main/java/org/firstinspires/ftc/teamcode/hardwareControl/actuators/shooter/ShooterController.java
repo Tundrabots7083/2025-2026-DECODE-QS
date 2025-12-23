@@ -12,7 +12,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.hardwareConfig.actuators.shooter.ShooterConstants;
 import org.firstinspires.ftc.teamcode.hardwareConfig.actuators.shooter.ShooterTBHControllerConstants;
 import org.firstinspires.ftc.teamcode.hardwareConfig.baseConstants.MotorConstants;
-import org.firstinspires.ftc.teamcode.hardwareConfig.baseConstants.PIDFControllerConstants;
 import org.firstinspires.ftc.teamcode.hardwareConfig.baseConstants.VelocityMotorConstantsBase;
 import org.firstinspires.ftc.teamcode.hardwareConfig.baseConstants.VelocityTBHControllerConstantBase;
 import org.firstinspires.ftc.teamcode.hardwareControl.actuators.common.TBHController;
@@ -121,10 +120,8 @@ public class ShooterController {
     private void initializeTBHController(){
 
         frontTbhController = new TBHController(FRONT_Kp, FRONT_Kf_a, FRONT_Kf_b, FRONT_Kf_c, telemetry);
-        frontTbhController.setOutputLimits(PIDFControllerConstants.motorMinPowerLimit, PIDFControllerConstants.motorMaxPowerLimit); // Motor power limits
 
         rearTbhController = new TBHController(REAR_Kp, REAR_Kf_a, REAR_Kf_b, REAR_Kf_c, telemetry);
-        rearTbhController.setOutputLimits(PIDFControllerConstants.motorMinPowerLimit, PIDFControllerConstants.motorMaxPowerLimit); // Motor power limits
     }
 
 

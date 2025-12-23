@@ -11,7 +11,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.hardwareConfig.actuators.intake.IntakeConstants;
 import org.firstinspires.ftc.teamcode.hardwareConfig.actuators.intake.IntakeTBHControllerConstants;
 import org.firstinspires.ftc.teamcode.hardwareConfig.baseConstants.MotorConstants;
-import org.firstinspires.ftc.teamcode.hardwareConfig.baseConstants.PIDFControllerConstants;
 import org.firstinspires.ftc.teamcode.hardwareConfig.baseConstants.VelocityMotorConstantsBase;
 import org.firstinspires.ftc.teamcode.hardwareConfig.baseConstants.VelocityTBHControllerConstantBase;
 import org.firstinspires.ftc.teamcode.hardwareControl.actuators.common.TBHController;
@@ -31,7 +30,7 @@ public class IntakeController {
 
 
     /** TBH gain */
-    public static double Kp = 0.002;
+    public static double Kp = 0.0002;
 
     private double Kf_a;
     private double Kf_b;
@@ -94,10 +93,6 @@ public class IntakeController {
 
     private void initializeTBH() {
         tbhController = new TBHController(Kp, Kf_a, Kf_b, Kf_c, telemetry);
-        tbhController.setOutputLimits(
-                PIDFControllerConstants.motorMinPowerLimit,
-                PIDFControllerConstants.motorMaxPowerLimit
-        );
     }
 
     /** RPM */
@@ -150,6 +145,10 @@ public class IntakeController {
 
         double power = tbhController.calculate(targetVelocity, currentVelocity);
         intakeMotor.setPower(power);
+
+        telemetry.addData("Intake Target RPM", targetVelocity);
+        telemetry.addData("Intake Current RPM", currentVelocity);
+        telemetry.addData("Intake Power", power);
     }
 }
 

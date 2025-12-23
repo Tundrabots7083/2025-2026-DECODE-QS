@@ -9,8 +9,10 @@ import org.firstinspires.ftc.teamcode.hardwareControl.actuators.intake.IntakeCon
 public class StopIntake implements ActionFunction {
 
     Telemetry telemetry;
-
     IntakeController intakeController;
+    Status lastStatus = Status.FAILURE;
+    Status status;
+
 
     public StopIntake(Telemetry telemetry, IntakeController intakeController) {
         this.telemetry = telemetry;
@@ -18,13 +20,21 @@ public class StopIntake implements ActionFunction {
     }
 
     public Status perform(BlackBoard blackBoard) {
+
+        if (lastStatus == Status.SUCCESS) {
+            return lastStatus;
+        }
+
         // Activate the intake mechanism
         intakeController.spinToTargetVelocity(0);
 
         if(!intakeController.isOnTarget()){
-            return Status.RUNNING;
+            status = Status.RUNNING;
         } else {
-            return Status.SUCCESS;
+            status = Status.SUCCESS;
         }
+
+        lastStatus = status;
+        return status;
     }
 }

@@ -4,9 +4,8 @@ import org.firstinspires.ftc.teamcode.hardwareConfig.baseConstants.ServoConstant
 
 public class RampConstants {
     static {
-        ServoConstants.name = "rampServo";
+        ServoConstants.name = "Ramp";
         ServoConstants.maxDegrees = 180;
         ServoConstants.minDegrees = 0;
-        ServoConstants.waitTime = 100;
     }
 }

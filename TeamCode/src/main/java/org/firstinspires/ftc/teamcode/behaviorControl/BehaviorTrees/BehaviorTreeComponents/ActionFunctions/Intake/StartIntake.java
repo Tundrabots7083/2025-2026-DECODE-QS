@@ -9,8 +9,9 @@ import org.firstinspires.ftc.teamcode.hardwareControl.actuators.intake.IntakeCon
     public class StartIntake implements ActionFunction {
 
         Telemetry telemetry;
-
         IntakeController intakeController;
+        Status lastStatus = Status.FAILURE;
+        Status status;
 
         public StartIntake(Telemetry telemetry, IntakeController intakeController) {
             this.telemetry = telemetry;
@@ -18,13 +19,20 @@ import org.firstinspires.ftc.teamcode.hardwareControl.actuators.intake.IntakeCon
         }
 
         public Status perform(BlackBoard blackBoard) {
+            if (lastStatus == Status.SUCCESS) {
+                return lastStatus;
+            }
+
             // Activate the intake mechanism
             intakeController.spinToTargetVelocity(320);
 
             if(!intakeController.isOnTarget()){
-                return Status.RUNNING;
+                status = Status.RUNNING;
             } else {
-                return Status.SUCCESS;
+                status = Status.SUCCESS;
             }
+
+            lastStatus = status;
+            return status;
         }
     }

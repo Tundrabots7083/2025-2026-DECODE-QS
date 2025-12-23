@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.hardwareControl.actuators.Ramp;
 
 
 import com.bylazar.configurables.annotations.Configurable;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.ServoImplEx;
 import com.qualcomm.robotcore.util.Range;
@@ -43,7 +42,7 @@ public class RampController {
         }
     }
 
-    public void initialize(HardwareMap hardwareMap, Telemetry telemetry, LinearOpMode opMode) {
+    public void initialize(HardwareMap hardwareMap, Telemetry telemetry) {
         if (initialized) return;
 
         setupConstants();

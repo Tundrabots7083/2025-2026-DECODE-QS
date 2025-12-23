@@ -8,8 +8,6 @@ public class ShooterTBHControllerConstants {
     static {
         VelocityTBHControllerConstantBase.FRONT_Kp= 0.000008;  //to be tuned for the PID controller
         VelocityTBHControllerConstantBase.REAR_Kp= 0.000008;  //to be tuned for the PID controller
-        VelocityTBHControllerConstantBase.motorMinPowerLimit= 0.0; // Always going forwards with a flywheel
-        VelocityTBHControllerConstantBase.motorMaxPowerLimit= 1.0;
         VelocityTBHControllerConstantBase.FRONT_Kf_a = 0.0607; // a,b,c represent the values in
         VelocityTBHControllerConstantBase.FRONT_Kf_b = 1.42E-04; // a + bx + cx^2
         VelocityTBHControllerConstantBase.FRONT_Kf_c = 6.33E-09; // in the feedforward equation

@@ -7,7 +7,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 public class TBHController {
     private double Kp, Kf_a, Kf_b, Kf_c; // error multiplier coefficients
     private double lastError = 0.0;
-    private double maxPower = 1.0; // Typical max power for FTC motors
+    private double maxPower = 1.0;
     private double minPower = -1.0;
     private boolean isFirstCross = true;
     private double driveAtZero = 0.0; // This is the previous motor power at zero error
@@ -28,16 +28,6 @@ public class TBHController {
     }
 
     /**
-     * Sets the output limits for the controller
-     * @param min Minimum output (e.g., -1.0 for motor power)
-     * @param max Maximum output (e.g., 1.0 for motor power)
-     */
-    public void setOutputLimits(double min, double max) {
-        this.minPower = min;
-        this.maxPower = max;
-    }
-
-    /**
      * Calculates the control output based on setpoint and current position
      * @param setpoint Desired target (e.g., encoder ticks or velocity)
      * @param current Current position or state (e.g., encoder ticks or velocity)
@@ -49,7 +39,7 @@ public class TBHController {
         double error = setpoint - current;
         telemetry.addData("Error", error);
 
-        if (Math.abs(error) >= 50) {
+        if (Math.abs(error) >= 400) {
             isFirstCross = true;
             lastError = error;
             return Math.signum(error);
@@ -68,11 +58,12 @@ public class TBHController {
 
 
         // Increment Power
-        power = power + (Kp * error);
-        telemetry.addLine("got HEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEERE");
+        power += (Kp * error);
 
         // Clamp output to motor power limits
-        power = Range.clip(power, minPower, maxPower);
+        power = Range.clip(power,minPower,maxPower);
+
+        telemetry.addData("Power in TBH", power);
 
         // Doesn't run if this is the first loop, otherwise check if crossed target
         if ((lastError != 0.0) && (Math.signum(error) != Math.signum(lastError))) {

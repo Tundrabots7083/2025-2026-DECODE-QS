@@ -19,6 +19,6 @@ public class IntakeConstants {
         VelocityMotorConstantsBase.rearMotorDirection = DcMotorSimple.Direction.FORWARD;
         VelocityMotorConstantsBase.startPosition =0;
         VelocityMotorConstantsBase.targetPosition =0;
-        VelocityMotorConstantsBase.tolerableError=0.7; //in degrees
+        VelocityMotorConstantsBase.tolerableError=20; //in degrees
     }
 }
