@@ -9,8 +9,9 @@ import org.firstinspires.ftc.teamcode.hardwareControl.actuators.Ramp.RampControl
 public class StoreRamp implements ActionFunction {
 
     Telemetry telemetry;
-
     RampController rampController;
+    private final double STORED_RAMP = 0;
+    Status lastStatus;
 
     public StoreRamp(Telemetry telemetry, RampController rampController) {
         this.telemetry = telemetry;
@@ -18,7 +19,12 @@ public class StoreRamp implements ActionFunction {
     }
 
     public Status perform(BlackBoard blackBoard) {
-        rampController.storeRamp();
-        return Status.SUCCESS;
+        if (lastStatus == Status.SUCCESS) {
+            return lastStatus;
+        }
+
+        rampController.setTargetPosition(STORED_RAMP);
+        lastStatus = Status.SUCCESS;
+        return lastStatus;
     }
 }

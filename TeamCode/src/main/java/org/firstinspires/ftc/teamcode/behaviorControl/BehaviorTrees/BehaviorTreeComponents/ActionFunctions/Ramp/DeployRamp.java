@@ -9,8 +9,9 @@ import org.firstinspires.ftc.teamcode.hardwareControl.actuators.Ramp.RampControl
 public class DeployRamp implements ActionFunction {
 
     Telemetry telemetry;
-
     RampController rampController;
+    private final double DEPLOYED_RAMP = 100; //degrees at which the ramp is deployed
+    Status lastStatus;
 
     public DeployRamp(Telemetry telemetry, RampController rampController) {
         this.telemetry = telemetry;
@@ -18,7 +19,12 @@ public class DeployRamp implements ActionFunction {
     }
 
     public Status perform(BlackBoard blackBoard) {
-        rampController.deployRamp();
-        return Status.SUCCESS;
+        if (lastStatus == Status.SUCCESS) {
+            return lastStatus;
+        }
+
+        rampController.setTargetPosition(DEPLOYED_RAMP);
+        lastStatus = Status.SUCCESS;
+        return lastStatus;
     }
 }

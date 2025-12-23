@@ -18,10 +18,6 @@ public class RampController {
     private double MAX_DEGREES;
     private double MIN_DEGREES;
 
-    private final double STORED_RAMP = 0;
-    private final double DEPLOYED_RAMP = 100; //degrees at which the ramp is deployed
-
-
     private boolean initialized = false;
 
     // Singleton instance
@@ -78,25 +74,9 @@ public class RampController {
         return TARGET_POSITION;
     }
 
-    public void deployRamp() {
-        if(getPosition() == DEPLOYED_RAMP) {
-            return;
-        }
-        rampServo.setPosition(DEPLOYED_RAMP);
-    }
-
-    public void storeRamp() {
-        if(getPosition() == STORED_RAMP) {
-            return;
-        }
-        rampServo.setPosition(STORED_RAMP);
-    }
-
-
-    public void update() {}
-
     public void reset() {
         if (!initialized) return;
-        rampServo.setPosition(STORED_RAMP);
+        initialized = false;
+        //rampServo.setPosition(STORED_RAMP);
     }
 }
