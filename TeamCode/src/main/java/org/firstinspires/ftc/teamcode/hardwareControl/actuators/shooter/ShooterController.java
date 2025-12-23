@@ -120,10 +120,10 @@ public class ShooterController {
 
     private void initializeTBHController(){
 
-        frontTbhController = new TBHController(FRONT_Kp, FRONT_Kf_a, FRONT_Kf_b, FRONT_Kf_c);
+        frontTbhController = new TBHController(FRONT_Kp, FRONT_Kf_a, FRONT_Kf_b, FRONT_Kf_c, telemetry);
         frontTbhController.setOutputLimits(PIDFControllerConstants.motorMinPowerLimit, PIDFControllerConstants.motorMaxPowerLimit); // Motor power limits
 
-        rearTbhController = new TBHController(REAR_Kp, REAR_Kf_a, REAR_Kf_b, REAR_Kf_c);
+        rearTbhController = new TBHController(REAR_Kp, REAR_Kf_a, REAR_Kf_b, REAR_Kf_c, telemetry);
         rearTbhController.setOutputLimits(PIDFControllerConstants.motorMinPowerLimit, PIDFControllerConstants.motorMaxPowerLimit); // Motor power limits
     }
 

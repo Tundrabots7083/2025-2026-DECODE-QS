@@ -19,9 +19,12 @@ import org.firstinspires.ftc.teamcode.hardwareControl.actuators.intake.IntakeCon
 
         public Status perform(BlackBoard blackBoard) {
             // Activate the intake mechanism
-            intakeController.startIntake();
+            intakeController.spinToTargetVelocity(320);
 
-            // Return SUCCESS immediately so the Behavior Tree moves to the next action
-            return Status.SUCCESS;
+            if(!intakeController.isOnTarget()){
+                return Status.RUNNING;
+            } else {
+                return Status.SUCCESS;
+            }
         }
     }

@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.hardwareControl.actuators.intake;
 
 
 import com.bylazar.configurables.annotations.Configurable;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
@@ -26,14 +25,13 @@ public class IntakeController {
     private double START_VELOCITY;
     private double TOLERABLE_ERROR;
     private double targetVelocity;
-    private final double INTAKE_VELOCITY = 1;
     private final double REJECT_VELOCITY = -1;
-    private final double STOP_VELOCITY = 0;
     private final double RETAIN_VELOCITY = 0.3;
 
 
-    /** TBH gains (live configurable) */
-    public static double Kp = 0.000002;
+
+    /** TBH gain */
+    public static double Kp = 0.002;
 
     private double Kf_a;
     private double Kf_b;
@@ -58,7 +56,7 @@ public class IntakeController {
         } catch (ClassNotFoundException ignored) {}
     }
 
-    public void initialize(HardwareMap hardwareMap, Telemetry telemetry, LinearOpMode opMode) {
+    public void initialize(HardwareMap hardwareMap, Telemetry telemetry) {
         if (initialized) return;
 
         setupConstants();
@@ -95,7 +93,7 @@ public class IntakeController {
     }
 
     private void initializeTBH() {
-        tbhController = new TBHController(Kp, Kf_a, Kf_b, Kf_c);
+        tbhController = new TBHController(Kp, Kf_a, Kf_b, Kf_c, telemetry);
         tbhController.setOutputLimits(
                 PIDFControllerConstants.motorMinPowerLimit,
                 PIDFControllerConstants.motorMaxPowerLimit
@@ -110,9 +108,9 @@ public class IntakeController {
     public void spinToTargetVelocity(double newTargetVelocity) {
         if (newTargetVelocity != targetVelocity) {
             tbhController.reset();
+            targetVelocity = newTargetVelocity;
         }
 
-        targetVelocity = newTargetVelocity;
         double currentVelocity = getCurrentVelocity();
 
         double power = tbhController.calculate(targetVelocity, currentVelocity);
@@ -123,14 +121,6 @@ public class IntakeController {
         telemetry.addData("Intake Power", power);
     }
 
-    public void startIntake() {
-        spinToTargetVelocity(INTAKE_VELOCITY);
-    }
-
-    public void stopIntake() {
-        spinToTargetVelocity(STOP_VELOCITY);
-
-    }
 
     public void retainArtifacts() {
         spinToTargetVelocity(RETAIN_VELOCITY);
@@ -144,13 +134,10 @@ public class IntakeController {
         return Math.abs(targetVelocity - getCurrentVelocity()) <= TOLERABLE_ERROR;
     }
 
-    public boolean isBusy() {
-        return intakeMotor.isBusy();
-    }
-
     public void reset() {
         if (!initialized) return;
 
+        tbhController.reset();
         intakeMotor.setMode(MotorConstants.resetMode);
         intakeMotor.setMode(MotorConstants.mode);
         intakeMotor.setDirection(MotorConstants.direction);
@@ -159,9 +146,10 @@ public class IntakeController {
     }
 
     public void update() {
-        // intentionally empty — called externally if desired
-    }
+        double currentVelocity = getCurrentVelocity();
 
+        double power = tbhController.calculate(targetVelocity, currentVelocity);
+        intakeMotor.setPower(power);
+    }
 }
 
-/*usage Example*/

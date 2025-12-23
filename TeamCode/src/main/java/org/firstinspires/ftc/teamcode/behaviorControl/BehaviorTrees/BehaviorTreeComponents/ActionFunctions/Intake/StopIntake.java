@@ -19,9 +19,12 @@ public class StopIntake implements ActionFunction {
 
     public Status perform(BlackBoard blackBoard) {
         // Activate the intake mechanism
-        intakeController.stopIntake();
+        intakeController.spinToTargetVelocity(0);
 
-        // Return SUCCESS immediately so the Behavior Tree moves to the next action
-        return Status.SUCCESS;
+        if(!intakeController.isOnTarget()){
+            return Status.RUNNING;
+        } else {
+            return Status.SUCCESS;
+        }
     }
 }

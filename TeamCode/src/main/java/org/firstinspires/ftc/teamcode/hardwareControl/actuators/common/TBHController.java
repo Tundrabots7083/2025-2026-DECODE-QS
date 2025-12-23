@@ -2,6 +2,8 @@ package org.firstinspires.ftc.teamcode.hardwareControl.actuators.common;
 
 import com.qualcomm.robotcore.util.Range;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
 public class TBHController {
     private double Kp, Kf_a, Kf_b, Kf_c; // error multiplier coefficients
     private double lastError = 0.0;
@@ -10,17 +12,19 @@ public class TBHController {
     private boolean isFirstCross = true;
     private double driveAtZero = 0.0; // This is the previous motor power at zero error
     private double power = 0.0;
+    private Telemetry telemetry;
 
     /**
      * Constructor for TBHController
      *
      * @param Kp Proportional gain
      */
-    public TBHController(double Kp, double Kf_a, double Kf_b, double Kf_c) {
+    public TBHController(double Kp, double Kf_a, double Kf_b, double Kf_c, Telemetry telemetry) {
         this.Kp = Kp;
         this.Kf_a = Kf_a;
         this.Kf_b = Kf_b;
         this.Kf_c = Kf_c;
+        this.telemetry = telemetry;
     }
 
     /**
@@ -43,8 +47,9 @@ public class TBHController {
 
         // Calculate error
         double error = setpoint - current;
+        telemetry.addData("Error", error);
 
-        if (Math.abs(error) > 400) {
+        if (Math.abs(error) >= 50) {
             isFirstCross = true;
             lastError = error;
             return Math.signum(error);
@@ -64,6 +69,7 @@ public class TBHController {
 
         // Increment Power
         power = power + (Kp * error);
+        telemetry.addLine("got HEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEERE");
 
         // Clamp output to motor power limits
         power = Range.clip(power, minPower, maxPower);
@@ -97,7 +103,7 @@ public class TBHController {
     /**
      * Getters and setters for PIDF coefficients
      */
-    public void setPIDF(double Kp) {
+    public void setP(double Kp) {
         this.Kp = Kp;
     }
 

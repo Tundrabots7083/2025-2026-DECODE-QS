@@ -6,8 +6,8 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Common.PauseAction;
-import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Spindexer.SpinOnePosition;
-import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Spindexer.SpinTwoPositions;
+import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Intake.StartIntake;
+import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Intake.StopIntake;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.Action;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.BehaviorTree;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.BlackBoard;
@@ -15,6 +15,7 @@ import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTree
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.Sequence;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.Status;
 import org.firstinspires.ftc.teamcode.hardwareControl.actuators.Spindexer.SpindexerController;
+import org.firstinspires.ftc.teamcode.hardwareControl.actuators.intake.IntakeController;
 import org.firstinspires.ftc.teamcode.hardwareControl.sensors.limeLight.LimeLightController;
 
 import java.util.Arrays;
@@ -38,6 +39,10 @@ public class DisplayTestBehaviorTree {
     protected SpindexerController spindexerController;
     ///
 
+    ///
+    protected IntakeController intakeController;
+    ///
+
     public DisplayTestBehaviorTree(LinearOpMode opMode, Telemetry telemetry) {
         this.hardwareMap = opMode.hardwareMap;
         this.telemetry = telemetry;
@@ -48,7 +53,6 @@ public class DisplayTestBehaviorTree {
     private void Init() {
         this.blackBoard = BlackBoard.getInstance(telemetry);
         this.blackBoard.reset();
-
 
         /// Limelight
         this.limeLightController = LimeLightController.getInstance();
@@ -64,13 +68,22 @@ public class DisplayTestBehaviorTree {
         this.spindexerController.initialize(hardwareMap, telemetry);
         ///  End Spindexer
 
+        /// Intake
+        this.intakeController = IntakeController.getInstance();
+
+        this.intakeController.reset();
+        this.intakeController.initialize(hardwareMap, telemetry);
+        /// End Intake
+
         telemetry.clearAll();
 
         this.root = new Sequence(
                 Arrays.asList(
-                        new Action(new SpinTwoPositions(telemetry, spindexerController), telemetry),
-                        new Action(new PauseAction( 8000,telemetry), telemetry),
-                        new Action(new SpinOnePosition(telemetry, spindexerController), telemetry)
+                        new Action(new StartIntake(telemetry, intakeController), telemetry),
+//                        new Action(new SpinTwoPositions(telemetry, spindexerController), telemetry),
+                        new Action(new PauseAction( 3000,telemetry), telemetry),
+//                        new Action(new SpinOnePosition(telemetry, spindexerController), telemetry)
+                        new Action(new StopIntake(telemetry, intakeController), telemetry)
                 ),telemetry);
 
         this.tree = new BehaviorTree(root, blackBoard);
