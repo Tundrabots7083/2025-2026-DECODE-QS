@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.hardwareControl.actuators.Ramp;
 
 import com.bylazar.configurables.annotations.Configurable;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.PwmControl;
 import com.qualcomm.robotcore.hardware.ServoImplEx;
 import com.qualcomm.robotcore.util.Range;
 
@@ -15,6 +16,7 @@ public class RampController {
     private ServoImplEx rampServo;
 
     private double TARGET_POSITION;
+    private double lastTargetPosition = 0.0;
     private double MAX_DEGREES;
     private double MIN_DEGREES;
 
@@ -53,10 +55,16 @@ public class RampController {
         rampServo = hardwareMap.get(ServoImplEx.class, ServoConstants.name);
         MAX_DEGREES = ServoConstants.maxDegrees;
         MIN_DEGREES = ServoConstants.minDegrees;
+        rampServo.setPwmRange(new PwmControl.PwmRange(500, 2500));
     }
 
     public void setTargetPosition(double targetPosition) {
-        targetPosition = targetPosition % 360;
+        if ((targetPosition == lastTargetPosition) || (targetPosition - lastTargetPosition <= 1)) {
+            return;
+        }
+        lastTargetPosition = targetPosition;
+
+        targetPosition = targetPosition % MAX_DEGREES;
 
         if(targetPosition < 0) {
             targetPosition += 360;
@@ -64,7 +72,7 @@ public class RampController {
 
         TARGET_POSITION = Range.clip(targetPosition, MIN_DEGREES, MAX_DEGREES);
 
-        double servoPosition = TARGET_POSITION / 360;
+        double servoPosition = TARGET_POSITION / MAX_DEGREES;
 
         rampServo.setPosition(servoPosition);
         telemetry.addData("Ramp Target", TARGET_POSITION);

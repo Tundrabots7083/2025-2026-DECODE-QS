@@ -23,6 +23,7 @@ public class IntakeController {
 
     private double TOLERABLE_ERROR;
     private double targetVelocity;
+    private double lastPower = 0.0;
 
 
 
@@ -102,14 +103,7 @@ public class IntakeController {
             targetVelocity = newTargetVelocity;
         }
 
-        double currentVelocity = getCurrentVelocity();
-
-        double power = tbhController.calculate(targetVelocity, currentVelocity);
-        intakeMotor.setPower(power);
-
-        telemetry.addData("Intake Target RPM", targetVelocity);
-        telemetry.addData("Intake Current RPM", currentVelocity);
-        telemetry.addData("Intake Power", power);
+        update();
     }
 
     public boolean isOnTarget() {
@@ -131,7 +125,12 @@ public class IntakeController {
         double currentVelocity = getCurrentVelocity();
 
         double power = tbhController.calculate(targetVelocity, currentVelocity);
-        intakeMotor.setPower(power);
+
+        if (Math.abs(lastPower - power) > 0.001) {
+            intakeMotor.setPower(power);
+        }
+
+        lastPower = power;
 
         telemetry.addData("Intake Target RPM", targetVelocity);
         telemetry.addData("Intake Current RPM", currentVelocity);

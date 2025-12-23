@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.hardwareControl.actuators.Turret;
 
 import com.bylazar.configurables.annotations.Configurable;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.PwmControl;
 import com.qualcomm.robotcore.hardware.ServoImplEx;
 import com.qualcomm.robotcore.util.Range;
 
@@ -15,6 +16,7 @@ public class TurretController {
     private ServoImplEx turretServo;
 
     private double TARGET_POSITION;
+    private double lastTargetPosition = 0.0;
     private double MAX_DEGREES;
     private double MIN_DEGREES;
 
@@ -53,21 +55,27 @@ public class TurretController {
         turretServo = hardwareMap.get(ServoImplEx.class, ServoConstants.name);
         MAX_DEGREES = ServoConstants.maxDegrees;
         MIN_DEGREES = ServoConstants.minDegrees;
+        turretServo.setPwmRange(new PwmControl.PwmRange(500, 2500));
     }
 
     public void setTargetPosition(double targetPosition) {
+        if ((targetPosition == lastTargetPosition) || (targetPosition - lastTargetPosition <= 1)) {
+            return;
+        }
+        lastTargetPosition = targetPosition;
+
         targetPosition = targetPosition % 360;
 
         if(targetPosition < 0) {
             targetPosition += 360;
         }
 
-        TARGET_POSITION = Range.clip(targetPosition, MIN_DEGREES, MAX_DEGREES);
+        this.TARGET_POSITION = Range.clip(targetPosition, MIN_DEGREES, MAX_DEGREES);
 
-        double servoPosition = TARGET_POSITION / 360;
+        double servoPosition = this.TARGET_POSITION / 360;
 
         turretServo.setPosition(servoPosition);
-        telemetry.addData("Turret Target", TARGET_POSITION);
+        telemetry.addData("Turret Target", this.TARGET_POSITION);
     }
 
     public double getPosition() {

@@ -65,7 +65,6 @@ public class TestMotorOpMode extends LinearOpMode {
             joinedTelemetry.addData("CurrentFrontVelocity", shooterController.getFrontCurrentVelocity());
             joinedTelemetry.addData("CurrentRearVelocity", shooterController.getRearCurrentVelocity());
             joinedTelemetry.addData("TargetVelocity", velocityTargetPosition);
-            joinedTelemetry.addData("Encoder Position", shooterController.getFrontCurrentPosition());
             joinedTelemetry.update();
 
             // Clear the bulk cache for each Lynx module hub. This must be performed once per loop

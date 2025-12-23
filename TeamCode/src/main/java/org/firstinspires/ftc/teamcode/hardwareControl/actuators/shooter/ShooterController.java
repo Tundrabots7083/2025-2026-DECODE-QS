@@ -44,6 +44,9 @@ public class ShooterController {
     private double currentFrontVelocity;
     private double currentRearVelocity;
 
+    private double FRONTLastPower = 0.0;
+    private double REARLastPower = 0.0;
+
     ///
 
     private boolean initialized = false;
@@ -62,28 +65,29 @@ public class ShooterController {
         return INSTANCE;
     }
 
-    private static void setupConstants(){
-        try {
-            Class.forName(ShooterConstants.class.getName());
-            Class.forName(ShooterTBHControllerConstants.class.getName());
-        } catch (ClassNotFoundException e) {
-            //e.printStackTrace();
-        }
-    }
+
     // Initialization method — must be called once at the beginning
     public void initialize(HardwareMap hardwareMap, Telemetry telemetry, LinearOpMode opMode) {
         if (initialized) {
             return;
-            //throw new IllegalStateException("ShoulderController has already been initialized.");
         }
+        this.telemetry = telemetry;
         setupConstants();
-        this.telemetry  = telemetry;
 
         initializeMotor(hardwareMap);
         initializeLocalVariablesWithConstants();
         initializeTBHController();
 
         initialized = true;
+    }
+
+    private static void setupConstants() {
+        try {
+            Class.forName(ShooterConstants.class.getName());
+            Class.forName(ShooterTBHControllerConstants.class.getName());
+        } catch (ClassNotFoundException e) {
+            //e.printStackTrace();
+        }
     }
 
     private void initializeMotor(HardwareMap hardwareMap){
@@ -106,12 +110,14 @@ public class ShooterController {
     }
 
     private void initializeLocalVariablesWithConstants(){
+
         START_VELOCITY = MotorConstants.startPosition;
         TOLERABLE_ERROR = MotorConstants.tolerableError;
 
         FRONT_Kf_a = VelocityTBHControllerConstantBase.FRONT_Kf_a;
         FRONT_Kf_b = VelocityTBHControllerConstantBase.FRONT_Kf_b;
         FRONT_Kf_c = VelocityTBHControllerConstantBase.FRONT_Kf_c;
+
         REAR_Kf_a = VelocityTBHControllerConstantBase.REAR_Kf_a;
         REAR_Kf_b = VelocityTBHControllerConstantBase.REAR_Kf_b;
         REAR_Kf_c = VelocityTBHControllerConstantBase.REAR_Kf_c;
@@ -120,7 +126,6 @@ public class ShooterController {
     private void initializeTBHController(){
 
         frontTbhController = new TBHController(FRONT_Kp, FRONT_Kf_a, FRONT_Kf_b, FRONT_Kf_c, telemetry);
-
         rearTbhController = new TBHController(REAR_Kp, REAR_Kf_a, REAR_Kf_b, REAR_Kf_c, telemetry);
     }
 
@@ -128,7 +133,7 @@ public class ShooterController {
     public void reset() {
         /// TODO: include sensor to detect hardware reset.
         if(initialized) {
-            if(this.isBusy()) {
+            if (!isOnTarget()) {
                 this.spinToTargetVelocity(START_VELOCITY);
             } else {
                 frontShooterMotor.setMode(MotorConstants.resetMode);
@@ -143,13 +148,13 @@ public class ShooterController {
         }
     }
 
-    public double getFrontCurrentPosition() {
-        return frontShooterMotor.getCurrentPosition();
-    }
+//    public double getFrontCurrentPosition() {
+//        return frontShooterMotor.getCurrentPosition();
+//    }
 
-    public double getRearCurrentPosition() {
-        return rearShooterMotor.getCurrentPosition();
-    }
+//    public double getRearCurrentPosition() {
+//        return rearShooterMotor.getCurrentPosition();
+//    }
 
 
     /**
@@ -173,9 +178,22 @@ public class ShooterController {
         if(newTargetVelocity != targetVelocity) {
             frontTbhController.reset();
             rearTbhController.reset();
+
+            targetVelocity = newTargetVelocity;
         }
 
-        targetVelocity = newTargetVelocity;
+        update();
+    }
+
+    public boolean isOnTarget(){
+          double currentFrontVelocity = getFrontCurrentVelocity();
+          double currentRearVelocity = getRearCurrentVelocity();
+
+        return ((Math.abs(targetVelocity - currentFrontVelocity) <= TOLERABLE_ERROR)
+                && (Math.abs(targetVelocity - currentRearVelocity) <= TOLERABLE_ERROR));
+    }
+
+    public void update(){
 
         currentFrontVelocity = getFrontCurrentVelocity();
         currentRearVelocity = getRearCurrentVelocity();
@@ -188,28 +206,19 @@ public class ShooterController {
         //Apply power to the motor if this is the first loop
         //Or if it's substantially different than what the motor is currently running at.
         //Otherwise save time by ignoring small changes in power.
-//        if ((lastPower == 0.0) || (Math.abs(REARtbhPower - lastPower) >= 0.005)) {
+        if ((Math.abs(FRONTtbhPower - FRONTLastPower) >= 0.005)) {
             // Apply FRONTtbhPower to motor
             frontShooterMotor.setPower(FRONTtbhPower);
-            rearShooterMotor.setPower(REARtbhPower);
             telemetry.addData("Set Front Power to PID", FRONTtbhPower);
+        }
+
+        if ((Math.abs(REARtbhPower - REARLastPower) >= 0.005)) {
+            // Apply FRONTtbhPower to motor
+            rearShooterMotor.setPower(REARtbhPower);
             telemetry.addData("Set Rear Power to PID", REARtbhPower);
-//        }
+        }
 
-    }
-
-    public boolean isOnTarget(){
-          double currentFrontVelocity = getFrontCurrentVelocity();
-          double currentRearVelocity = getRearCurrentVelocity();
-
-        return ((Math.abs(targetVelocity - currentFrontVelocity) <= TOLERABLE_ERROR) && (Math.abs(targetVelocity - currentRearVelocity) <= TOLERABLE_ERROR));
-    }
-
-    public void update(){
-
-    }
-
-    public boolean isBusy(){
-        return frontShooterMotor.isBusy() || rearShooterMotor.isBusy();
+        FRONTLastPower = FRONTtbhPower;
+        REARLastPower = REARtbhPower;
     }
 }
