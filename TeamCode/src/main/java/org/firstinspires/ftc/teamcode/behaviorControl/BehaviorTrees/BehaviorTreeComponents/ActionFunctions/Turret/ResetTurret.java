@@ -9,8 +9,9 @@ import org.firstinspires.ftc.teamcode.hardwareControl.actuators.Turret.TurretCon
 public class ResetTurret implements ActionFunction {
 
     Telemetry telemetry;
-
     TurretController turretController;
+    Status lastStatus;
+    private final double RESET_POSITION = 0.5;
 
     public ResetTurret(Telemetry telemetry, TurretController turretController) {
         this.telemetry = telemetry;
@@ -18,7 +19,12 @@ public class ResetTurret implements ActionFunction {
     }
 
     public Status perform(BlackBoard blackBoard) {
-        turretController.reset();
-        return Status.SUCCESS;
+        if (lastStatus == Status.SUCCESS) {
+            return lastStatus;
+        }
+
+        turretController.setTargetPosition(RESET_POSITION);
+        lastStatus = Status.SUCCESS;
+        return lastStatus;
     }
 }

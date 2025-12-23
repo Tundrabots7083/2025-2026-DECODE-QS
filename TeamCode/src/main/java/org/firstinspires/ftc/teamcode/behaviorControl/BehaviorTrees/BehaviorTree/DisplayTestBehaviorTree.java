@@ -8,8 +8,8 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Common.PauseAction;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Ramp.DeployRamp;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Ramp.StoreRamp;
-import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Spindexer.SpinOnePosition;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Spindexer.SpinTwoPositions;
+import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Turret.ResetTurret;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.Action;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.BehaviorTree;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.BlackBoard;
@@ -18,6 +18,7 @@ import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTree
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.Status;
 import org.firstinspires.ftc.teamcode.hardwareControl.actuators.Ramp.RampController;
 import org.firstinspires.ftc.teamcode.hardwareControl.actuators.Spindexer.SpindexerController;
+import org.firstinspires.ftc.teamcode.hardwareControl.actuators.Turret.TurretController;
 import org.firstinspires.ftc.teamcode.hardwareControl.actuators.intake.IntakeController;
 import org.firstinspires.ftc.teamcode.hardwareControl.sensors.limeLight.LimeLightController;
 
@@ -49,6 +50,12 @@ public class DisplayTestBehaviorTree {
     ///
     protected RampController rampController;
     ///
+
+    ///
+    protected TurretController turretController;
+
+    ///
+
 
     public DisplayTestBehaviorTree(LinearOpMode opMode, Telemetry telemetry) {
         this.hardwareMap = opMode.hardwareMap;
@@ -89,13 +96,19 @@ public class DisplayTestBehaviorTree {
         this.rampController.initialize(hardwareMap,telemetry);
         /// End Ramp
 
+        /// Turret
+        this.turretController = TurretController.getInstance();
+
+        this.turretController.reset();
+        this.turretController.initialize(hardwareMap, telemetry);
+
         telemetry.clearAll();
 
         this.root = new Sequence(
                 Arrays.asList(
                         new Action(new DeployRamp(telemetry, rampController), telemetry),
                         new Action(new PauseAction( 2000,telemetry), telemetry),
-                        new Action(new SpinOnePosition(telemetry, spindexerController), telemetry),
+                        new Action(new ResetTurret(telemetry, turretController), telemetry),
                         new Action(new SpinTwoPositions(telemetry, spindexerController),telemetry),
                         new Action(new StoreRamp(telemetry, rampController), telemetry),
                         new Action(new PauseAction( 2000,telemetry), telemetry)

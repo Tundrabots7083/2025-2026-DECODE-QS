@@ -4,7 +4,7 @@ import org.firstinspires.ftc.teamcode.hardwareConfig.baseConstants.ServoConstant
 
 public class TurretConstants {
     static {
-        ServoConstants.name = "turretServo";
+        ServoConstants.name = "Ramp";
         ServoConstants.maxDegrees = 359;
         ServoConstants.minDegrees = 0;
     }

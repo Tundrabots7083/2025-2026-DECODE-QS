@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.hardwareControl.actuators.Turret;
 
 
 import com.bylazar.configurables.annotations.Configurable;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.ServoImplEx;
 import com.qualcomm.robotcore.util.Range;
@@ -39,7 +38,7 @@ public class TurretController {
         }
     }
 
-    public void initialize(HardwareMap hardwareMap, Telemetry telemetry, LinearOpMode opMode) {
+    public void initialize(HardwareMap hardwareMap, Telemetry telemetry) {
         if (initialized) return;
 
         setupConstants();
@@ -75,11 +74,11 @@ public class TurretController {
         return TARGET_POSITION;
     }
 
-
     public void update() {}
 
     public void reset() {
         if (!initialized) return;
-        turretServo.setPosition(0.5);
+        initialized = false;
+//        turretServo.setPosition(0.5);
     }
 }
