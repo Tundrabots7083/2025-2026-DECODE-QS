@@ -61,6 +61,14 @@ public class DriveTrainController {
         }
     }
 
+    public Pose getPosition() {
+        return follower.getPose();
+    }
+
+    public void setPosition(Pose currentPose) {
+        follower.setPose(currentPose);
+    }
+
     public boolean isBusy(){
         return follower.isBusy();
     }

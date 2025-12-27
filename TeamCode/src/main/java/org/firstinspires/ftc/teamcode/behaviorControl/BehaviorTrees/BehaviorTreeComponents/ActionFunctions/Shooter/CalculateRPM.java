@@ -6,17 +6,22 @@ import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTree
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.Status;
 import org.firstinspires.ftc.teamcode.hardwareControl.actuators.shooter.ShooterController;
 
-public class ResetShooter implements ActionFunction {
+public class CalculateRPM implements ActionFunction {
     Telemetry telemetry;
     ShooterController shooterController;
     protected Status lastStatus = Status.FAILURE;
+    double distanceToShoot;
 
-    boolean started = false;
+    double a = 0.1; //these represent the values
+    double b = 0.1; //a,b,c, and d in the equation
+    double c = 0.1; //velocity = a + bx + cx^2 + dx^3
+    double d = 0.1;
 
-    public ResetShooter(Telemetry telemetry, ShooterController shooterController) {
+    public CalculateRPM(Telemetry telemetry, ShooterController shooterController) {
         this.telemetry = telemetry;
         this.shooterController = shooterController;
     }
+
 
     public Status perform(BlackBoard blackBoard) {
         Status status;
@@ -24,19 +29,25 @@ public class ResetShooter implements ActionFunction {
         if (lastStatus == Status.SUCCESS) {
             return lastStatus;
         }
-        if (!started) {
-            shooterController.reset();
-            started = true;
-            status = Status.RUNNING;
+
+        if (blackBoard.getValue("DistanceToGoal") != null) {
+            distanceToShoot = (double) blackBoard.getValue("DistanceToGoal");
+
+            blackBoard.setValue("TargetShooterRPM", calculateRPM());
+            status = Status.SUCCESS;
         } else {
-            if (!shooterController.isOnTarget()) {
-                status = Status.RUNNING;
-            } else {
-                status = Status.SUCCESS;
-            }
+            status = Status.FAILURE;
         }
 
         return status;
+
     }
 
+    private double calculateRPM() {
+        return a
+                + b * Math.pow(distanceToShoot, 1)
+                + c * Math.pow(distanceToShoot, 2)
+                + d * Math.pow(distanceToShoot, 3);
+
+    }
 }
