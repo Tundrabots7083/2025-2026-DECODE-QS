@@ -35,6 +35,7 @@ public class DetectMotifPattern implements ActionFunction {
         } else if (ids.contains(23)) {
             blackBoard.setValue("Motif_Pattern", Pattern.PPG);
         } else {
+            blackBoard.setValue("Motif_Pattern", null);
             status = Status.FAILURE;
             return status;
         }

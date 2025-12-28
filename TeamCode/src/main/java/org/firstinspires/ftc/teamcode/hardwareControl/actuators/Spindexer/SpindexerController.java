@@ -142,10 +142,24 @@ import org.firstinspires.ftc.teamcode.hardwareControl.actuators.common.PIDFContr
             spindexerMotor.setPower(0);
             pidfController.reset();
         }
-
         public double getPosition() {
             double currentAngle = (spindexerMotor.getCurrentPosition() / MotorConstants.ticksPerRev) * 360; //current position in degrees
             return currentAngle;
+        }
+
+        public int getSlotPosition() {
+            double currentAngle = getPosition() % 360;
+            if (currentAngle < 0) {
+                currentAngle += 360;
+            }
+
+            if (currentAngle < 120) {
+                return 0;
+            } else if (currentAngle < 240) {
+                return 1;
+            } else {
+                return 2;
+            }
         }
 
         public boolean isBusy() {
