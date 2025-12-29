@@ -56,7 +56,11 @@ public class MatchPatternToMotif implements ActionFunction {
 
         if (currentPattern == targetPattern) {
             blackBoard.setValue("spindexerTurnsToPattern", 0);
-        } else if (currentPattern == targetPattern)
+        } else if (currentPattern == rotateArray(targetPattern)) {
+            blackBoard.setValue("spindexerTurnsToPattern", 1);
+        } else if (currentPattern == rotateArray(rotateArray(targetPattern))) {
+            blackBoard.setValue("spindexerTurnsToPattern", 2);
+        }
 
             return Status.SUCCESS;
     }
@@ -91,8 +95,9 @@ public class MatchPatternToMotif implements ActionFunction {
         ArtifactColor[] tempArray = arrayToRotate;
         ArtifactColor[] arrayToReturn = arrayToRotate;
 
-        for (int i = 0; i < 4; i++) {
-            arrayToReturn[i % 3] = tempArray[i + 1];
+        //shifts array to the right by 1 slot
+        for (int i = 0; i <= 2; i++) {
+            arrayToReturn[(i + 1) % 3] = tempArray[i];
         }
 
         return arrayToReturn;
