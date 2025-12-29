@@ -92,12 +92,11 @@ public class MatchPatternToMotif implements ActionFunction {
     }
 
     private ArtifactColor[] rotateArray(ArtifactColor[] arrayToRotate) {
-        ArtifactColor[] tempArray = arrayToRotate;
-        ArtifactColor[] arrayToReturn = arrayToRotate;
+        ArtifactColor[] arrayToReturn = new ArtifactColor[3];
 
         //shifts array to the right by 1 slot
         for (int i = 0; i <= 2; i++) {
-            arrayToReturn[(i + 1) % 3] = tempArray[i];
+            arrayToReturn[(i + 1) % 3] = arrayToRotate[i];
         }
 
         return arrayToReturn;
