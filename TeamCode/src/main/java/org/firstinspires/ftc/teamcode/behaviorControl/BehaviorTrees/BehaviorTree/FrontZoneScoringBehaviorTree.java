@@ -49,9 +49,9 @@ public class FrontZoneScoringBehaviorTree {
 
     ///
 
-    public FrontZoneScoringBehaviorTree(LinearOpMode opMode) {
+    public FrontZoneScoringBehaviorTree(LinearOpMode opMode, Telemetry telemetry) {
         this.hardwareMap = opMode.hardwareMap;
-        this.telemetry = opMode.telemetry;
+        this.telemetry = telemetry;
         this.opMode = opMode;
 
         Init();

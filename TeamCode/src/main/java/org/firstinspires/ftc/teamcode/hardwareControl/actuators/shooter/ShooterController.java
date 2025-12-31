@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.hardwareControl.actuators.shooter;
 
 
 import com.bylazar.configurables.annotations.Configurable;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
@@ -67,7 +66,7 @@ public class ShooterController {
 
 
     // Initialization method — must be called once at the beginning
-    public void initialize(HardwareMap hardwareMap, Telemetry telemetry, LinearOpMode opMode) {
+    public void initialize(HardwareMap hardwareMap, Telemetry telemetry) {
         if (initialized) {
             return;
         }

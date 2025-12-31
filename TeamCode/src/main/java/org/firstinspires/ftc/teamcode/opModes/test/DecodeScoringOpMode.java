@@ -4,10 +4,8 @@ package org.firstinspires.ftc.teamcode.opModes.test;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-
-import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.Status;
-
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTree.FrontZoneScoringBehaviorTree;
+import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.Status;
 
 
 @Autonomous(name="BT Front zone Scoring", group="test")
@@ -50,7 +48,7 @@ public class DecodeScoringOpMode extends LinearOpMode
 
 
     private void initialize(LinearOpMode opMode){
-        this.behaviorTree = new FrontZoneScoringBehaviorTree(opMode);
+        this.behaviorTree = new FrontZoneScoringBehaviorTree(opMode, telemetry);
     }
 
 
