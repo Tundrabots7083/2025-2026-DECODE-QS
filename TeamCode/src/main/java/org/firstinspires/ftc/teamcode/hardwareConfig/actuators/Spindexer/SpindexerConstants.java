@@ -7,7 +7,7 @@ import org.firstinspires.ftc.teamcode.hardwareConfig.baseConstants.MotorConstant
 
 public class SpindexerConstants {
     static{
-        MotorConstants.name = "leftFront";
+        MotorConstants.name = "Spindexer";
         MotorConstants.motorConfigurationType = "clone";
         MotorConstants.ticksPerRev = 384.5; //placeholder
         MotorConstants.gearing = 1;

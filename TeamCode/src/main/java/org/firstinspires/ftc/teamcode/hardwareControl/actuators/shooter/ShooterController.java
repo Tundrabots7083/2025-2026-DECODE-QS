@@ -201,6 +201,8 @@ public class ShooterController {
         double FRONTtbhPower = frontTbhController.calculate(targetVelocity, currentFrontVelocity);
         double REARtbhPower = rearTbhController.calculate(targetVelocity, currentRearVelocity);
 
+//        frontShooterMotor.setPower(FRONTtbhPower);
+//        rearShooterMotor.setPower(REARtbhPower);
 
         //Apply power to the motor if this is the first loop
         //Or if it's substantially different than what the motor is currently running at.
@@ -208,16 +210,15 @@ public class ShooterController {
         if ((Math.abs(FRONTtbhPower - FRONTLastPower) >= 0.005)) {
             // Apply FRONTtbhPower to motor
             frontShooterMotor.setPower(FRONTtbhPower);
+            FRONTLastPower = FRONTtbhPower;
             telemetry.addData("Set Front Power to PID", FRONTtbhPower);
         }
 
         if ((Math.abs(REARtbhPower - REARLastPower) >= 0.005)) {
             // Apply FRONTtbhPower to motor
             rearShooterMotor.setPower(REARtbhPower);
+            REARLastPower = REARtbhPower;
             telemetry.addData("Set Rear Power to PID", REARtbhPower);
         }
-
-        FRONTLastPower = FRONTtbhPower;
-        REARLastPower = REARtbhPower;
     }
 }

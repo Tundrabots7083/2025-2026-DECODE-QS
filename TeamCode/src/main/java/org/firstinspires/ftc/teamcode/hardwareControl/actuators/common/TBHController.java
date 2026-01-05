@@ -13,6 +13,7 @@ public class TBHController {
     private double driveAtZero = 0.0; // This is the previous motor power at zero error
     private double power = 0.0;
     private Telemetry telemetry;
+    private double lastSetpoint = 0.0;
 
     /**
      * Constructor for TBHController
@@ -35,9 +36,15 @@ public class TBHController {
      */
     public double calculate(double setpoint, double current) {
 
+        if (lastSetpoint != setpoint) {
+            reset();
+            lastSetpoint = setpoint;
+        }
+
         // Calculate error
         double error = setpoint - current;
         telemetry.addData("Error", error);
+        telemetry.addData("isFirstCross", isFirstCross);
 
         if (Math.abs(error) >= 400) {
             isFirstCross = true;
@@ -76,6 +83,7 @@ public class TBHController {
         }
 
         lastError = error;
+        lastSetpoint = setpoint;
 
         return power;
     }

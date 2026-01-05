@@ -8,7 +8,7 @@ import org.firstinspires.ftc.teamcode.hardwareConfig.baseConstants.VelocityMotor
 /// TODO: set values for the arm motor
 public class IntakeConstants {
     static {
-        VelocityMotorConstantsBase.frontMotorName = "leftFront";
+        VelocityMotorConstantsBase.frontMotorName = "Intake";
         VelocityMotorConstantsBase.motorConfigurationType = "clone";
         VelocityMotorConstantsBase.ticksPerRev= 384.5; // gobilda ticks 6000 rpm
         VelocityMotorConstantsBase.achievableMaxRPMFraction =1.0;

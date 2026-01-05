@@ -48,7 +48,7 @@ public class TestMotorOpMode extends LinearOpMode {
         this.shooterController = ShooterController.getInstance();
 
         this.shooterController.reset();
-        this.shooterController.initialize(hardwareMap, joinedTelemetry, this);
+        this.shooterController.initialize(hardwareMap, joinedTelemetry);
         /// End Shooter
 
         while (opModeIsActive()) {
