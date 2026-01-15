@@ -9,11 +9,9 @@ import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigu
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.hardwareConfig.actuators.intake.IntakeConstants;
-import org.firstinspires.ftc.teamcode.hardwareConfig.actuators.intake.IntakeTBHControllerConstants;
 import org.firstinspires.ftc.teamcode.hardwareConfig.baseConstants.MotorConstants;
 import org.firstinspires.ftc.teamcode.hardwareConfig.baseConstants.VelocityMotorConstantsBase;
-import org.firstinspires.ftc.teamcode.hardwareConfig.baseConstants.VelocityTBHControllerConstantBase;
-import org.firstinspires.ftc.teamcode.hardwareControl.actuators.common.TBHController;
+import org.firstinspires.ftc.teamcode.hardwareControl.actuators.common.SimpleVelocityController;
 
 
 @Configurable
@@ -26,15 +24,12 @@ public class IntakeController {
     private double lastPower = 0.0;
 
 
+    /**
+     * velocity gain
+     */
+    public static double Kp = 0.00015;
 
-    /** TBH gain */
-    public static double Kp = 0.0002;
-
-    private double Kf_a;
-    private double Kf_b;
-    private double Kf_c;
-
-    private TBHController tbhController;
+    private SimpleVelocityController velocityController;
     private boolean initialized = false;
 
     private static final IntakeController INSTANCE = new IntakeController();
@@ -49,7 +44,6 @@ public class IntakeController {
     private static void setupConstants() {
         try {
             Class.forName(IntakeConstants.class.getName());
-            Class.forName(IntakeTBHControllerConstants.class.getName());
         } catch (ClassNotFoundException ignored) {}
     }
 
@@ -61,7 +55,7 @@ public class IntakeController {
 
         initializeMotor(hardwareMap);
         initializeConstants();
-        initializeTBH();
+        initializeVelControl();
 
         initialized = true;
     }
@@ -82,14 +76,10 @@ public class IntakeController {
 
     private void initializeConstants() {
         TOLERABLE_ERROR = MotorConstants.tolerableError;
-
-        Kf_a = VelocityTBHControllerConstantBase.FRONT_Kf_a;
-        Kf_b = VelocityTBHControllerConstantBase.FRONT_Kf_b;
-        Kf_c = VelocityTBHControllerConstantBase.FRONT_Kf_c;
     }
 
-    private void initializeTBH() {
-        tbhController = new TBHController(Kp, Kf_a, Kf_b, Kf_c, telemetry);
+    private void initializeVelControl() {
+        velocityController = new SimpleVelocityController(Kp, telemetry);
     }
 
     /** RPM */
@@ -99,11 +89,15 @@ public class IntakeController {
 
     public void spinToTargetVelocity(double newTargetVelocity) {
         if (newTargetVelocity != targetVelocity) {
-            tbhController.reset();
+            velocityController.reset();
             targetVelocity = newTargetVelocity;
         }
 
         update();
+    }
+
+    public void testIntake(double power) {
+        intakeMotor.setPower(power);
     }
 
     public boolean isOnTarget() {
@@ -113,7 +107,7 @@ public class IntakeController {
     public void reset() {
         if (!initialized) return;
 
-        tbhController.reset();
+        velocityController.reset();
         intakeMotor.setMode(MotorConstants.resetMode);
         intakeMotor.setMode(MotorConstants.mode);
         intakeMotor.setDirection(MotorConstants.direction);
@@ -124,13 +118,15 @@ public class IntakeController {
     public void update() {
         double currentVelocity = getCurrentVelocity();
 
-        double power = tbhController.calculate(targetVelocity, currentVelocity);
+        double power = velocityController.calculate(targetVelocity, currentVelocity);
 
-        if (Math.abs(lastPower - power) > 0.001) {
+        if (Math.abs(lastPower - power) > 0.004) {
             intakeMotor.setPower(power);
+            telemetry.addData("ACTUAL MOTOR POWER", power);
+
+            lastPower = power;
         }
 
-        lastPower = power;
 
         telemetry.addData("Intake Target RPM", targetVelocity);
         telemetry.addData("Intake Current RPM", currentVelocity);

@@ -5,11 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.AA_Common.PauseAction;
-import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Ramp.DeployRamp;
-import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Ramp.StoreRamp;
-import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Spindexer.SpinTwoPositions;
-import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Turret.ResetTurret;
+import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Intake.TestIntake;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.Action;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.BehaviorTree;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.BlackBoard;
@@ -68,7 +64,7 @@ public class DisplayTestBehaviorTree {
         this.blackBoard = BlackBoard.getInstance(telemetry);
         this.blackBoard.reset();
 
-        /// Limelight
+       /* /// Limelight
         this.limeLightController = LimeLightController.getInstance();
 
         this.limeLightController.reset();
@@ -81,7 +77,7 @@ public class DisplayTestBehaviorTree {
         this.spindexerController.reset();
         this.spindexerController.initialize(hardwareMap, telemetry);
         ///  End Spindexer
-
+*/
         /// Intake
         this.intakeController = IntakeController.getInstance();
 
@@ -89,7 +85,7 @@ public class DisplayTestBehaviorTree {
         this.intakeController.initialize(hardwareMap, telemetry);
         /// End Intake
 
-        /// Ramp
+      /*  /// Ramp
         this.rampController = RampController.getInstance();
 
         this.rampController.reset();
@@ -101,17 +97,12 @@ public class DisplayTestBehaviorTree {
 
         this.turretController.reset();
         this.turretController.initialize(hardwareMap, telemetry);
-
+*/
         telemetry.clearAll();
 
         this.root = new Sequence(
                 Arrays.asList(
-                        new Action(new DeployRamp(telemetry, rampController), telemetry),
-                        new Action(new PauseAction( 2000,telemetry), telemetry),
-                        new Action(new ResetTurret(telemetry, turretController), telemetry),
-                        new Action(new SpinTwoPositions(telemetry, spindexerController),telemetry),
-                        new Action(new StoreRamp(telemetry, rampController), telemetry),
-                        new Action(new PauseAction( 2000,telemetry), telemetry)
+                        new Action(new TestIntake(telemetry, intakeController), telemetry)
                 ),telemetry);
 
         this.tree = new BehaviorTree(root, blackBoard);

@@ -211,14 +211,12 @@ public class ShooterController {
             // Apply FRONTtbhPower to motor
             frontShooterMotor.setPower(FRONTtbhPower);
             FRONTLastPower = FRONTtbhPower;
-            telemetry.addData("Set Front Power to PID", FRONTtbhPower);
         }
 
         if ((Math.abs(REARtbhPower - REARLastPower) >= 0.005)) {
             // Apply FRONTtbhPower to motor
             rearShooterMotor.setPower(REARtbhPower);
             REARLastPower = REARtbhPower;
-            telemetry.addData("Set Rear Power to PID", REARtbhPower);
         }
     }
 }

@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.opModes.test;
 
 import com.bylazar.telemetry.JoinedTelemetry;
 import com.bylazar.telemetry.PanelsTelemetry;
-import com.bylazar.telemetry.TelemetryManager;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
@@ -15,7 +14,6 @@ import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTree
 public class PatternDisplayOpMode extends LinearOpMode
 {
     DisplayTestBehaviorTree behaviorTree = null;
-    private long count =0;
 
 
     public JoinedTelemetry joinedTelemetry;
@@ -26,7 +24,6 @@ public class PatternDisplayOpMode extends LinearOpMode
     {
 
         joinedTelemetry = new JoinedTelemetry(PanelsTelemetry.INSTANCE.getFtcTelemetry(), telemetry);
-        joinedTelemetry.addData("Display Motif OpMode", "runOpMode started");
         joinedTelemetry.update();
         initialize(this);
         waitForStart();
@@ -34,8 +31,8 @@ public class PatternDisplayOpMode extends LinearOpMode
 
         while (opModeIsActive())
         {
-            count++;
             Status result = this.behaviorTree.tick();
+            telemetry.update();
 
 
 

@@ -10,13 +10,13 @@ public class IntakeConstants {
     static {
         VelocityMotorConstantsBase.frontMotorName = "Intake";
         VelocityMotorConstantsBase.motorConfigurationType = "clone";
-        VelocityMotorConstantsBase.ticksPerRev= 384.5; // gobilda ticks 6000 rpm
+        VelocityMotorConstantsBase.ticksPerRev = 384.5; // gobilda ticks 435 rpm
         VelocityMotorConstantsBase.achievableMaxRPMFraction =1.0;
         VelocityMotorConstantsBase.gearing=1;
         VelocityMotorConstantsBase.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER;
         VelocityMotorConstantsBase.resetMode = DcMotor.RunMode.STOP_AND_RESET_ENCODER;
-        VelocityMotorConstantsBase.frontMotorDirection = DcMotorSimple.Direction.REVERSE;
-        VelocityMotorConstantsBase.rearMotorDirection = DcMotorSimple.Direction.FORWARD;
+        VelocityMotorConstantsBase.frontMotorDirection = DcMotorSimple.Direction.FORWARD;
+        VelocityMotorConstantsBase.rearMotorDirection = DcMotorSimple.Direction.REVERSE;
         VelocityMotorConstantsBase.startPosition =0;
         VelocityMotorConstantsBase.targetPosition =0;
         VelocityMotorConstantsBase.tolerableError=20; //in degrees
