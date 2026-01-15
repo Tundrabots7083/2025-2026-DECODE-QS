@@ -122,8 +122,6 @@ public class IntakeController {
 
         if (Math.abs(lastPower - power) > 0.004) {
             intakeMotor.setPower(power);
-            telemetry.addData("ACTUAL MOTOR POWER", power);
-
             lastPower = power;
         }
 

@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Intake.TestIntake;
+import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.LimitSwitch.TestSwitch;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.Action;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.BehaviorTree;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.BlackBoard;
@@ -17,6 +17,7 @@ import org.firstinspires.ftc.teamcode.hardwareControl.actuators.Spindexer.Spinde
 import org.firstinspires.ftc.teamcode.hardwareControl.actuators.Turret.TurretController;
 import org.firstinspires.ftc.teamcode.hardwareControl.actuators.intake.IntakeController;
 import org.firstinspires.ftc.teamcode.hardwareControl.sensors.limeLight.LimeLightController;
+import org.firstinspires.ftc.teamcode.hardwareControl.sensors.spindexerLimitSwitch.SpindexerLimitSwitchController;
 
 import java.util.Arrays;
 import java.util.List;
@@ -52,6 +53,11 @@ public class DisplayTestBehaviorTree {
 
     ///
 
+    ///
+    protected SpindexerLimitSwitchController switchController;
+
+    ///
+
 
     public DisplayTestBehaviorTree(LinearOpMode opMode, Telemetry telemetry) {
         this.hardwareMap = opMode.hardwareMap;
@@ -77,7 +83,7 @@ public class DisplayTestBehaviorTree {
         this.spindexerController.reset();
         this.spindexerController.initialize(hardwareMap, telemetry);
         ///  End Spindexer
-*/
+
         /// Intake
         this.intakeController = IntakeController.getInstance();
 
@@ -85,7 +91,7 @@ public class DisplayTestBehaviorTree {
         this.intakeController.initialize(hardwareMap, telemetry);
         /// End Intake
 
-      /*  /// Ramp
+        /// Ramp
         this.rampController = RampController.getInstance();
 
         this.rampController.reset();
@@ -97,12 +103,22 @@ public class DisplayTestBehaviorTree {
 
         this.turretController.reset();
         this.turretController.initialize(hardwareMap, telemetry);
-*/
+        /// End Turret
+        */
+
+        /// Switch
+        this.switchController = SpindexerLimitSwitchController.getInstance();
+
+        this.switchController.reset();
+        this.switchController.initialize(hardwareMap, telemetry);
+        /// End Switch
+
+
         telemetry.clearAll();
 
         this.root = new Sequence(
                 Arrays.asList(
-                        new Action(new TestIntake(telemetry, intakeController), telemetry)
+                        new Action(new TestSwitch(telemetry, switchController), telemetry)
                 ),telemetry);
 
         this.tree = new BehaviorTree(root, blackBoard);

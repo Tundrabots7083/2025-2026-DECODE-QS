@@ -43,8 +43,6 @@ public class SimpleVelocityController {
         // Clamp output to motor power limits
         power = Range.clip(power, minPower, maxPower);
 
-        telemetry.addData("Power in TBH", power);
-
         // Doesn't run if this is the first loop, otherwise check if crossed target
         if ((lastError != 0.0) && (Math.signum(error) != Math.signum(lastError))) {
             // Average previous best guess with latest best guess
