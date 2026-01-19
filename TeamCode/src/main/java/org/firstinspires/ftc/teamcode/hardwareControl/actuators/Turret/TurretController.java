@@ -8,12 +8,14 @@ import com.qualcomm.robotcore.hardware.ServoImplEx;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.hardwareConfig.baseConstants.ServoConstants;
+import org.firstinspires.ftc.teamcode.hardwareConfig.actuators.Turret.TurretConstants;
 
 @Configurable
 public class TurretController {
 
     private ServoImplEx turretServo;
+
+    private TurretConstants turretConstants;
 
     private double TARGET_POSITION;
     private double lastTargetPosition = 0.0;
@@ -32,29 +34,24 @@ public class TurretController {
         return INSTANCE;
     }
 
-    private static void setupConstants() {
-        try {
-            Class.forName(TurretController.class.getName());
-        } catch (ClassNotFoundException e) {
-            // ignored intentionally
-        }
-    }
 
     public void initialize(HardwareMap hardwareMap, Telemetry telemetry) {
         if (initialized) return;
 
         setupConstants();
         this.telemetry = telemetry;
-
         initializeServo(hardwareMap);
-
         initialized = true;
     }
 
+    private void setupConstants() {
+        turretConstants = new TurretConstants();
+    }
+
     private void initializeServo(HardwareMap hardwareMap) {
-        turretServo = hardwareMap.get(ServoImplEx.class, ServoConstants.name);
-        MAX_DEGREES = ServoConstants.maxDegrees;
-        MIN_DEGREES = ServoConstants.minDegrees;
+        turretServo = hardwareMap.get(ServoImplEx.class, turretConstants.name);
+        MAX_DEGREES = turretConstants.maxDegrees;
+        MIN_DEGREES = turretConstants.minDegrees;
         turretServo.setPwmRange(new PwmControl.PwmRange(500, 2500));
     }
 
