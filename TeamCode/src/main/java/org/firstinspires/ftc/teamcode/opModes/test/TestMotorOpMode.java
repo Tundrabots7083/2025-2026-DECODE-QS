@@ -61,7 +61,6 @@ public class TestMotorOpMode extends LinearOpMode {
             joinedTelemetry.addData("Loop Time (ms)", loopTimeMs);
 
             count++;
-            joinedTelemetry.addData("Test Shoulder", "runOpMode while started count: %d", count);
             joinedTelemetry.addData("CurrentFrontVelocity", shooterController.getFrontCurrentVelocity());
             joinedTelemetry.addData("CurrentRearVelocity", shooterController.getRearCurrentVelocity());
             joinedTelemetry.addData("TargetVelocity", velocityTargetPosition);

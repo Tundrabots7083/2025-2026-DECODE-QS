@@ -43,13 +43,9 @@ public class TBHController {
 
         // Calculate error
         double error = setpoint - current;
-        telemetry.addData("Error", error);
-        telemetry.addData("isFirstCross", isFirstCross);
 
-        if (Math.abs(error) >= 400) {
+        if (Math.abs(error) > 400) {
             isFirstCross = true;
-            lastError = error;
-            return Math.signum(error);
         } else if(isFirstCross && driveAtZero == 0.0) {
             power = Kf_a
                     + Kf_b * setpoint
@@ -60,6 +56,7 @@ public class TBHController {
             return power;
         } else if (isFirstCross) {
             isFirstCross = false;
+            power = driveAtZero;
             return driveAtZero;
         }
 
@@ -69,8 +66,6 @@ public class TBHController {
 
         // Clamp output to motor power limits
         power = Range.clip(power,minPower,maxPower);
-
-        telemetry.addData("Power in TBH", power);
 
         // Doesn't run if this is the first loop, otherwise check if crossed target
         if ((lastError != 0.0) && (Math.signum(error) != Math.signum(lastError))) {

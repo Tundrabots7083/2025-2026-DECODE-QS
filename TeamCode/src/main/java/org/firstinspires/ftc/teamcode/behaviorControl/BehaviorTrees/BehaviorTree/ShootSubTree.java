@@ -1,9 +1,9 @@
 package org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTree;
 
+import com.bylazar.telemetry.JoinedTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Ramp.DeployRamp;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Shooter.CalculateRPM;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Shooter.SpinUpShooter;
@@ -27,7 +27,7 @@ public class ShootSubTree {
     private BehaviorTree tree;
     private Node root;
     private BlackBoard blackBoard;
-    protected Telemetry telemetry;
+    protected JoinedTelemetry telemetry;
     protected HardwareMap hardwareMap;
     protected LinearOpMode opMode;
 
@@ -59,7 +59,7 @@ public class ShootSubTree {
     ///
 
 
-    public ShootSubTree(LinearOpMode opMode, Telemetry telemetry) {
+    public ShootSubTree(LinearOpMode opMode, JoinedTelemetry telemetry) {
         this.hardwareMap = opMode.hardwareMap;
         this.telemetry = telemetry;
         this.opMode = opMode;

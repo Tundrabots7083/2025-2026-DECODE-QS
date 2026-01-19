@@ -1,11 +1,11 @@
 package org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTree;
 
+import com.bylazar.telemetry.JoinedTelemetry;
 import com.pedropathing.geometry.Pose;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.AA_Common.PauseAction;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.ArtifactTracker.MatchPatternToMotif;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.ColorSensor.DetectArtifactColor;
@@ -41,7 +41,7 @@ public class SampleAutoBehaviorTree {
     private BehaviorTree tree;
     private Node root;
     private BlackBoard blackBoard;
-    protected Telemetry telemetry;
+    protected JoinedTelemetry telemetry;
     protected HardwareMap hardwareMap;
     protected LinearOpMode opMode;
 
@@ -83,7 +83,7 @@ public class SampleAutoBehaviorTree {
     ///
 
 
-    public SampleAutoBehaviorTree(LinearOpMode opMode, Telemetry telemetry) {
+    public SampleAutoBehaviorTree(LinearOpMode opMode, JoinedTelemetry telemetry) {
         this.hardwareMap = opMode.hardwareMap;
         this.telemetry = telemetry;
         this.opMode = opMode;

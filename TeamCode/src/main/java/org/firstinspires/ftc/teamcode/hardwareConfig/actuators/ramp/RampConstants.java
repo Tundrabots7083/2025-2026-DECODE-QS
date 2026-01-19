@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.hardwareConfig.actuators.Ramp;
+package org.firstinspires.ftc.teamcode.hardwareConfig.actuators.ramp;
 
 import org.firstinspires.ftc.teamcode.hardwareConfig.baseConstants.ServoConstants;
 

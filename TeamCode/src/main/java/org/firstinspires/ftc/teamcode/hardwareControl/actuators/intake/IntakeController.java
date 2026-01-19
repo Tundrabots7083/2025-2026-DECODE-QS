@@ -9,8 +9,6 @@ import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigu
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.hardwareConfig.actuators.intake.IntakeConstants;
-import org.firstinspires.ftc.teamcode.hardwareConfig.baseConstants.MotorConstants;
-import org.firstinspires.ftc.teamcode.hardwareConfig.baseConstants.VelocityMotorConstantsBase;
 import org.firstinspires.ftc.teamcode.hardwareControl.actuators.common.SimpleVelocityController;
 
 
@@ -18,6 +16,8 @@ import org.firstinspires.ftc.teamcode.hardwareControl.actuators.common.SimpleVel
 public class IntakeController {
 
     private DcMotorEx intakeMotor;
+
+    private IntakeConstants intakeConstants;
 
     private double TOLERABLE_ERROR;
     private double targetVelocity;
@@ -41,11 +41,6 @@ public class IntakeController {
         return INSTANCE;
     }
 
-    private static void setupConstants() {
-        try {
-            Class.forName(IntakeConstants.class.getName());
-        } catch (ClassNotFoundException ignored) {}
-    }
 
     public void initialize(HardwareMap hardwareMap, Telemetry telemetry) {
         if (initialized) return;
@@ -60,22 +55,26 @@ public class IntakeController {
         initialized = true;
     }
 
+    private void setupConstants() {
+        intakeConstants = new IntakeConstants();
+    }
+    
     private void initializeMotor(HardwareMap hardwareMap) {
-        intakeMotor = hardwareMap.get(DcMotorEx.class, VelocityMotorConstantsBase.frontMotorName);
+        intakeMotor = hardwareMap.get(DcMotorEx.class, intakeConstants.motorName);
 
         MotorConfigurationType type = intakeMotor.getMotorType().clone();
-        type.setTicksPerRev(MotorConstants.ticksPerRev);
-        type.setGearing(MotorConstants.gearing);
-        type.setAchieveableMaxRPMFraction(MotorConstants.achievableMaxRPMFraction);
+        type.setTicksPerRev(intakeConstants.ticksPerRev);
+        type.setGearing(intakeConstants.gearing);
+        type.setAchieveableMaxRPMFraction(intakeConstants.achievableMaxRPMFraction);
 
         intakeMotor.setMotorType(type);
-        intakeMotor.setMode(MotorConstants.resetMode);
-        intakeMotor.setMode(MotorConstants.mode);
-        intakeMotor.setDirection(MotorConstants.direction);
+        intakeMotor.setMode(intakeConstants.resetMode);
+        intakeMotor.setMode(intakeConstants.mode);
+        intakeMotor.setDirection(intakeConstants.motorDirection);
     }
 
     private void initializeConstants() {
-        TOLERABLE_ERROR = MotorConstants.tolerableError;
+        TOLERABLE_ERROR = intakeConstants.tolerableError;
     }
 
     private void initializeVelControl() {
@@ -96,10 +95,6 @@ public class IntakeController {
         update();
     }
 
-    public void testIntake(double power) {
-        intakeMotor.setPower(power);
-    }
-
     public boolean isOnTarget() {
         return Math.abs(targetVelocity - getCurrentVelocity()) <= TOLERABLE_ERROR;
     }
@@ -108,9 +103,9 @@ public class IntakeController {
         if (!initialized) return;
 
         velocityController.reset();
-        intakeMotor.setMode(MotorConstants.resetMode);
-        intakeMotor.setMode(MotorConstants.mode);
-        intakeMotor.setDirection(MotorConstants.direction);
+        intakeMotor.setMode(intakeConstants.resetMode);
+        intakeMotor.setMode(intakeConstants.mode);
+        intakeMotor.setDirection(intakeConstants.motorDirection);
 
         initialized = false;
     }
