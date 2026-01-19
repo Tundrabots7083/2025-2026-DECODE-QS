@@ -1,11 +1,7 @@
 package org.firstinspires.ftc.teamcode.hardwareConfig.actuators.ramp;
 
-import org.firstinspires.ftc.teamcode.hardwareConfig.baseConstants.ServoConstants;
-
 public class RampConstants {
-    static {
-        ServoConstants.name = "Ramp";
-        ServoConstants.maxDegrees = 180;
-        ServoConstants.minDegrees = 0;
-    }
+    public String name = "Ramp";
+    public double maxDegrees = 180;
+    public double minDegrees = 0;
 }

@@ -8,12 +8,14 @@ import com.qualcomm.robotcore.hardware.ServoImplEx;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.hardwareConfig.baseConstants.ServoConstants;
+import org.firstinspires.ftc.teamcode.hardwareConfig.actuators.ramp.RampConstants;
 
 @Configurable
 public class RampController {
 
     private ServoImplEx rampServo;
+
+    private RampConstants rampConstants;
 
     private double TARGET_POSITION;
     private double lastTargetPosition = 0.0;
@@ -32,13 +34,6 @@ public class RampController {
         return INSTANCE;
     }
 
-    private static void setupConstants() {
-        try {
-            Class.forName(RampController.class.getName());
-        } catch (ClassNotFoundException e) {
-            // ignored intentionally
-        }
-    }
 
     public void initialize(HardwareMap hardwareMap, Telemetry telemetry) {
         if (initialized) return;
@@ -51,10 +46,14 @@ public class RampController {
         initialized = true;
     }
 
+    private void setupConstants() {
+        rampConstants = new RampConstants();
+    }
+    
     private void initializeServo(HardwareMap hardwareMap) {
-        rampServo = hardwareMap.get(ServoImplEx.class, ServoConstants.name);
-        MAX_DEGREES = ServoConstants.maxDegrees;
-        MIN_DEGREES = ServoConstants.minDegrees;
+        rampServo = hardwareMap.get(ServoImplEx.class, rampConstants.name);
+        MAX_DEGREES = rampConstants.maxDegrees;
+        MIN_DEGREES = rampConstants.minDegrees;
         rampServo.setPwmRange(new PwmControl.PwmRange(500, 2500));
     }
 

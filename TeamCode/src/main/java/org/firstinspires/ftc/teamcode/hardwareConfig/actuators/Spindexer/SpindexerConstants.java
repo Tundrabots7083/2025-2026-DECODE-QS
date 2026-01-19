@@ -3,20 +3,16 @@ package org.firstinspires.ftc.teamcode.hardwareConfig.actuators.Spindexer;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
-import org.firstinspires.ftc.teamcode.hardwareConfig.baseConstants.MotorConstants;
-
 public class SpindexerConstants {
-    static{
-        MotorConstants.name = "Spindexer";
-        MotorConstants.motorConfigurationType = "clone";
-        MotorConstants.ticksPerRev = 384.5; //placeholder
-        MotorConstants.gearing = 1;
-        MotorConstants.achievableMaxRPMFraction = 1;
-        MotorConstants.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER;
-        MotorConstants.resetMode = DcMotor.RunMode.STOP_AND_RESET_ENCODER;
-        MotorConstants.direction = DcMotorSimple.Direction.FORWARD;
-        MotorConstants.startPosition = 0.0;
-        MotorConstants.tolerableError = 2;
-        MotorConstants.tolerableVelocityError = 5;
-    }
+    public String name = "Spindexer";
+    public String motorConfigurationType = "clone";
+    public double ticksPerRev = 384.5; //placeholder
+    public double gearing = 1;
+    public double achievableMaxRPMFraction = 1;
+    public DcMotor.RunMode mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER;
+    public DcMotor.RunMode resetMode = DcMotor.RunMode.STOP_AND_RESET_ENCODER;
+    public DcMotorSimple.Direction direction = DcMotorSimple.Direction.FORWARD;
+    public double startPosition = 0.0;
+    public double tolerableError = 2;
+    public double tolerableVelocityError = 5;
 }

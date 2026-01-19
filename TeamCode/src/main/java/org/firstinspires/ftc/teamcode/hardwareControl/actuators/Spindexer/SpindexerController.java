@@ -10,14 +10,15 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.hardwareConfig.actuators.Spindexer.SpindexerConstants;
 import org.firstinspires.ftc.teamcode.hardwareConfig.actuators.Spindexer.SpindexerPIDFControllerConstants;
-import org.firstinspires.ftc.teamcode.hardwareConfig.baseConstants.MotorConstants;
-import org.firstinspires.ftc.teamcode.hardwareConfig.baseConstants.PIDFControllerConstants;
 import org.firstinspires.ftc.teamcode.hardwareControl.actuators.common.PIDFController;
 
     @Configurable
     public class SpindexerController {
 
         private DcMotorEx spindexerMotor;
+
+        private SpindexerConstants spindexerConstants;
+        private SpindexerPIDFControllerConstants pidfControllerConstants;
 
         private double TARGET_POSITION;
         private double TOLERABLE_ERROR;
@@ -43,14 +44,6 @@ import org.firstinspires.ftc.teamcode.hardwareControl.actuators.common.PIDFContr
             return INSTANCE;
         }
 
-        private static void setupConstants() {
-            try {
-                Class.forName(SpindexerConstants.class.getName());
-                Class.forName(SpindexerPIDFControllerConstants.class.getName());
-            } catch (ClassNotFoundException e) {
-                // ignored intentionally
-            }
-        }
 
         public void initialize(HardwareMap hardwareMap, Telemetry telemetry) {
             if (initialized) return;
@@ -65,33 +58,38 @@ import org.firstinspires.ftc.teamcode.hardwareControl.actuators.common.PIDFContr
             initialized = true;
         }
 
+        private void setupConstants() {
+            spindexerConstants = new SpindexerConstants();
+            pidfControllerConstants = new SpindexerPIDFControllerConstants();
+        }
+
         private void initializeMotor(HardwareMap hardwareMap) {
-            spindexerMotor = hardwareMap.get(DcMotorEx.class, MotorConstants.name);
+            spindexerMotor = hardwareMap.get(DcMotorEx.class, spindexerConstants.name);
 
             MotorConfigurationType motorConfigurationType =
                     spindexerMotor.getMotorType().clone();
 
-            motorConfigurationType.setTicksPerRev(MotorConstants.ticksPerRev);
-            motorConfigurationType.setGearing(MotorConstants.gearing);
+            motorConfigurationType.setTicksPerRev(spindexerConstants.ticksPerRev);
+            motorConfigurationType.setGearing(spindexerConstants.gearing);
             motorConfigurationType.setAchieveableMaxRPMFraction(
-                    MotorConstants.achievableMaxRPMFraction
+                    spindexerConstants.achievableMaxRPMFraction
             );
 
             spindexerMotor.setMotorType(motorConfigurationType);
-            spindexerMotor.setMode(MotorConstants.resetMode);
-            spindexerMotor.setMode(MotorConstants.mode);
-            spindexerMotor.setDirection(MotorConstants.direction);
+            spindexerMotor.setMode(spindexerConstants.resetMode);
+            spindexerMotor.setMode(spindexerConstants.mode);
+            spindexerMotor.setDirection(spindexerConstants.direction);
         }
 
         private void initializeLocalVariablesWithConstants() {
-            TOLERABLE_ERROR = MotorConstants.tolerableError;
+            TOLERABLE_ERROR = spindexerConstants.tolerableError;
 
-            TOLERABLE_VELOCITY_ERROR = MotorConstants.tolerableVelocityError;
+            TOLERABLE_VELOCITY_ERROR = spindexerConstants.tolerableVelocityError;
 
-            kP = PIDFControllerConstants.kp;
-            kI = PIDFControllerConstants.ki;
-            kD = PIDFControllerConstants.kd;
-            kF = PIDFControllerConstants.kf;
+            kP = pidfControllerConstants.kp;
+            kI = pidfControllerConstants.ki;
+            kD = pidfControllerConstants.kd;
+            kF = pidfControllerConstants.kf;
         }
 
         private void initializePIDFController() {
@@ -103,8 +101,8 @@ import org.firstinspires.ftc.teamcode.hardwareControl.actuators.common.PIDFContr
         }
 
         public void hardwareReset() {
-            spindexerMotor.setMode(MotorConstants.resetMode);
-            spindexerMotor.setMode(MotorConstants.mode);
+            spindexerMotor.setMode(spindexerConstants.resetMode);
+            spindexerMotor.setMode(spindexerConstants.mode);
         }
 
 
@@ -143,7 +141,7 @@ import org.firstinspires.ftc.teamcode.hardwareControl.actuators.common.PIDFContr
             pidfController.reset();
         }
         public double getPosition() {
-            double currentAngle = (spindexerMotor.getCurrentPosition() / MotorConstants.ticksPerRev) * 360; //current position in degrees
+            double currentAngle = (spindexerMotor.getCurrentPosition() / spindexerConstants.ticksPerRev) * 360; //current position in degrees
             return currentAngle;
         }
 
@@ -185,9 +183,9 @@ import org.firstinspires.ftc.teamcode.hardwareControl.actuators.common.PIDFContr
         public void reset() {
             if (!initialized) return;
 
-            spindexerMotor.setMode(MotorConstants.resetMode);
-            spindexerMotor.setMode(MotorConstants.mode);
-            spindexerMotor.setDirection(MotorConstants.direction);
+            spindexerMotor.setMode(spindexerConstants.resetMode);
+            spindexerMotor.setMode(spindexerConstants.mode);
+            spindexerMotor.setDirection(spindexerConstants.direction);
 
             pidfController.reset();
             initialized = false;
