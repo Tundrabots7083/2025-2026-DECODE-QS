@@ -32,7 +32,7 @@ public class SampleAutoPIDFOpMode extends LinearOpMode
     public void runOpMode()
     {
 
-        telemetry.addData("TestMotorOpMode", "runOpMode started");
+        telemetry.addData("TestShooterOpMode", "runOpMode started");
         telemetry.update();
         waitForStart();
 
@@ -52,7 +52,7 @@ public class SampleAutoPIDFOpMode extends LinearOpMode
         while (opModeIsActive())
         {
             count++;
-            telemetry.addData("TestMotorOpMode", "runOpMode while started count: %d",count);
+            telemetry.addData("TestShooterOpMode", "runOpMode while started count: %d", count);
             telemetry.update();
 
             double currentPosition = motor.getCurrentPosition();

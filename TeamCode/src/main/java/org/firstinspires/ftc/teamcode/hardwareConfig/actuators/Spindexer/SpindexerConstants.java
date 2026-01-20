@@ -9,10 +9,11 @@ public class SpindexerConstants {
     public double ticksPerRev = 384.5; //placeholder
     public double gearing = 1;
     public double achievableMaxRPMFraction = 1;
-    public DcMotor.RunMode mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER;
+    public DcMotor.RunMode runMode = DcMotor.RunMode.RUN_WITHOUT_ENCODER;
     public DcMotor.RunMode resetMode = DcMotor.RunMode.STOP_AND_RESET_ENCODER;
     public DcMotorSimple.Direction direction = DcMotorSimple.Direction.FORWARD;
     public double startPosition = 0.0;
     public double tolerableError = 2;
     public double tolerableVelocityError = 5;
+    public double degreeOffset = 30.0;
 }

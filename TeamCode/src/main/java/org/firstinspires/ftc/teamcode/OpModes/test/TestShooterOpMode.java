@@ -13,7 +13,7 @@ import java.util.List;
 
 @Configurable
 @Autonomous(name = "Test Shooter", group = "test")
-public class TestMotorOpMode extends LinearOpMode {
+public class TestShooterOpMode extends LinearOpMode {
 
     public static double velocityTargetPosition = 50;
     ShooterController shooterController;
@@ -40,7 +40,7 @@ public class TestMotorOpMode extends LinearOpMode {
             hub.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
         }
 
-        joinedTelemetry.addData("TestMotorOpMode", "runOpMode started");
+        joinedTelemetry.addData("TestShooterOpMode", "runOpMode started");
         joinedTelemetry.update();
         waitForStart();
 

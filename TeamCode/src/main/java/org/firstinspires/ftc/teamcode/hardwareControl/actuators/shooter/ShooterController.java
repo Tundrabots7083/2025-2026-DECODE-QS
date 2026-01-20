@@ -187,7 +187,8 @@ public class ShooterController {
         // Calculate motor tbhPower using TBH
         double FRONTtbhPower = frontTbhController.calculate(targetVelocity, currentFrontVelocity);
         double REARtbhPower = rearTbhController.calculate(targetVelocity, currentRearVelocity);
-        telemetry.addData("Sent Front power: ", FRONTtbhPower);
+        telemetry.addData("SentFrontpower:", FRONTtbhPower);
+        telemetry.addData("SentRearpower:", REARtbhPower);
 
 
         //Apply power to the motor if this is the first loop
@@ -201,6 +202,7 @@ public class ShooterController {
 
         if ((Math.abs(REARtbhPower - REARLastPower) >= 0.005)) {
             // Apply FRONTtbhPower to motor
+            rearShooterMotor.setPower(REARtbhPower);
             REARLastPower = REARtbhPower;
         }
     }

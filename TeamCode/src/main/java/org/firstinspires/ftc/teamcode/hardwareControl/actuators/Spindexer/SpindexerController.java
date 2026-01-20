@@ -24,6 +24,7 @@ import org.firstinspires.ftc.teamcode.hardwareControl.actuators.common.PIDFContr
         private double TOLERABLE_ERROR;
         private double TOLERABLE_VELOCITY_ERROR;
         private double LAST_POWER;
+        private double DEGREE_OFFSET;
 
         public static double kP = 0.015;
         public static double kI = 0.0015;
@@ -77,14 +78,14 @@ import org.firstinspires.ftc.teamcode.hardwareControl.actuators.common.PIDFContr
 
             spindexerMotor.setMotorType(motorConfigurationType);
             spindexerMotor.setMode(spindexerConstants.resetMode);
-            spindexerMotor.setMode(spindexerConstants.mode);
+            spindexerMotor.setMode(spindexerConstants.runMode);
             spindexerMotor.setDirection(spindexerConstants.direction);
         }
 
         private void initializeLocalVariablesWithConstants() {
             TOLERABLE_ERROR = spindexerConstants.tolerableError;
-
             TOLERABLE_VELOCITY_ERROR = spindexerConstants.tolerableVelocityError;
+            DEGREE_OFFSET = spindexerConstants.degreeOffset;
 
             kP = pidfControllerConstants.kp;
             kI = pidfControllerConstants.ki;
@@ -102,7 +103,7 @@ import org.firstinspires.ftc.teamcode.hardwareControl.actuators.common.PIDFContr
 
         public void hardwareReset() {
             spindexerMotor.setMode(spindexerConstants.resetMode);
-            spindexerMotor.setMode(spindexerConstants.mode);
+            spindexerMotor.setMode(spindexerConstants.runMode);
         }
 
 
@@ -141,7 +142,7 @@ import org.firstinspires.ftc.teamcode.hardwareControl.actuators.common.PIDFContr
             pidfController.reset();
         }
         public double getPosition() {
-            double currentAngle = (spindexerMotor.getCurrentPosition() / spindexerConstants.ticksPerRev) * 360; //current position in degrees
+            double currentAngle = (spindexerMotor.getCurrentPosition() / spindexerConstants.ticksPerRev) * 360 + DEGREE_OFFSET; //current position in degrees
             return currentAngle;
         }
 
@@ -180,11 +181,15 @@ import org.firstinspires.ftc.teamcode.hardwareControl.actuators.common.PIDFContr
             LAST_POWER = power;
         }
 
+        public void setDegreeOffset(double newOffset) {
+            this.DEGREE_OFFSET = newOffset;
+        }
+
         public void reset() {
             if (!initialized) return;
 
             spindexerMotor.setMode(spindexerConstants.resetMode);
-            spindexerMotor.setMode(spindexerConstants.mode);
+            spindexerMotor.setMode(spindexerConstants.runMode);
             spindexerMotor.setDirection(spindexerConstants.direction);
 
             pidfController.reset();

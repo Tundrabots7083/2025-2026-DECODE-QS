@@ -42,8 +42,8 @@ public class PedroDefaultTeleOp extends OpMode {
 
     @Override
     public void start() {
-        //The parameter controls whether the Follower should use break mode on the motors (using it is recommended).
-        //In order to use float mode, add .useBrakeModeInTeleOp(true); to your Drivetrain Constants in Constant.java (for Mecanum)
+        //The parameter controls whether the Follower should use break runMode on the motors (using it is recommended).
+        //In order to use float runMode, add .useBrakeModeInTeleOp(true); to your Drivetrain Constants in Constant.java (for Mecanum)
         //If you don't pass anything in, it uses the default (false)
         follower.startTeleopDrive();
     }
@@ -92,12 +92,12 @@ public class PedroDefaultTeleOp extends OpMode {
             slowMode = !slowMode;
         }
 
-        //Optional way to change slow mode strength
+        //Optional way to change slow runMode strength
         if (gamepad1.xWasPressed()) {
             slowModeMultiplier += 0.25;
         }
 
-        //Optional way to change slow mode strength
+        //Optional way to change slow runMode strength
         if (gamepad2.yWasPressed()) {
             slowModeMultiplier -= 0.25;
         }

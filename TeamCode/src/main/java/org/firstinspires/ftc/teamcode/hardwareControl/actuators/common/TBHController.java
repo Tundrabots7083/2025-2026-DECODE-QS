@@ -43,10 +43,12 @@ public class TBHController {
 
         // Calculate error
         double error = setpoint - current;
+        telemetry.addData("error", error);
 
-        if (Math.abs(error) > 400) {
+        /*if (Math.abs(error) > 400) {
             isFirstCross = true;
-        } else if(isFirstCross && driveAtZero == 0.0) {
+        } else */
+        if (isFirstCross && driveAtZero == 0.0) {
             power = Kf_a
                     + Kf_b * setpoint
                     + Kf_c * Math.pow(setpoint, 2);

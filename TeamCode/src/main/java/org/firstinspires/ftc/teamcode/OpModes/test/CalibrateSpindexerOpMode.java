@@ -4,25 +4,22 @@ package org.firstinspires.ftc.teamcode.opModes.test;
 import com.bylazar.telemetry.JoinedTelemetry;
 import com.bylazar.telemetry.PanelsTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTree.GenericTestBehaviorTree;
+import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTree.SpindexerTestBehaviorTree;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.Status;
 
-@Disabled
-@Autonomous(name="Display Motif BehaviorTree", group="test")
-public class PatternDisplayOpMode extends LinearOpMode
-{
-    GenericTestBehaviorTree behaviorTree = null;
+
+@Autonomous(name = "Calibrate Spindexer BehaviorTree", group = "test")
+public class CalibrateSpindexerOpMode extends LinearOpMode {
+    SpindexerTestBehaviorTree behaviorTree = null;
 
 
     public JoinedTelemetry joinedTelemetry;
 
 
     @Override
-    public void runOpMode()
-    {
+    public void runOpMode() {
 
         joinedTelemetry = new JoinedTelemetry(PanelsTelemetry.INSTANCE.getFtcTelemetry(), telemetry);
         joinedTelemetry.update();
@@ -30,14 +27,12 @@ public class PatternDisplayOpMode extends LinearOpMode
         waitForStart();
 
 
-        while (opModeIsActive())
-        {
+        while (opModeIsActive()) {
             Status result = this.behaviorTree.tick();
             telemetry.update();
 
 
-
-            if(result == Status.SUCCESS){
+            if (result == Status.SUCCESS) {
                 requestOpModeStop();
             }
 
@@ -45,8 +40,8 @@ public class PatternDisplayOpMode extends LinearOpMode
     }
 
 
-    private void initialize(LinearOpMode opMode){
-        this.behaviorTree = new GenericTestBehaviorTree(opMode, joinedTelemetry);
+    private void initialize(LinearOpMode opMode) {
+        this.behaviorTree = new SpindexerTestBehaviorTree(opMode, joinedTelemetry);
     }
 
 

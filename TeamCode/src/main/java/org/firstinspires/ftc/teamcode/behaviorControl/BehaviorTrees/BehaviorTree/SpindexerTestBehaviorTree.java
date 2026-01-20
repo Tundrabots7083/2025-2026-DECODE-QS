@@ -5,8 +5,6 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.LimitSwitch.TestSwitch;
-import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.Action;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.BehaviorTree;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.BlackBoard;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.Node;
@@ -14,16 +12,13 @@ import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTree
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.Status;
 import org.firstinspires.ftc.teamcode.hardwareControl.actuators.Ramp.RampController;
 import org.firstinspires.ftc.teamcode.hardwareControl.actuators.Spindexer.SpindexerController;
-import org.firstinspires.ftc.teamcode.hardwareControl.actuators.Turret.TurretController;
-import org.firstinspires.ftc.teamcode.hardwareControl.actuators.intake.IntakeController;
-import org.firstinspires.ftc.teamcode.hardwareControl.sensors.limeLight.LimeLightController;
 import org.firstinspires.ftc.teamcode.hardwareControl.sensors.spindexerLimitSwitch.SpindexerLimitSwitchController;
 
 import java.util.Arrays;
 import java.util.List;
 
 
-public class DisplayTestBehaviorTree {
+public class SpindexerTestBehaviorTree {
     private BehaviorTree tree;
     private Node root;
     private BlackBoard blackBoard;
@@ -31,26 +26,12 @@ public class DisplayTestBehaviorTree {
     protected HardwareMap hardwareMap;
     protected LinearOpMode opMode;
 
-    /// Limelight
-    protected LimeLightController limeLightController;
-
-    ///
-
     ///
     protected SpindexerController spindexerController;
     ///
 
     ///
-    protected IntakeController intakeController;
-    ///
-
-    ///
     protected RampController rampController;
-    ///
-
-    ///
-    protected TurretController turretController;
-
     ///
 
     ///
@@ -59,7 +40,7 @@ public class DisplayTestBehaviorTree {
     ///
 
 
-    public DisplayTestBehaviorTree(LinearOpMode opMode, Telemetry telemetry) {
+    public SpindexerTestBehaviorTree(LinearOpMode opMode, Telemetry telemetry) {
         this.hardwareMap = opMode.hardwareMap;
         this.telemetry = telemetry;
         this.opMode = opMode;
@@ -70,13 +51,6 @@ public class DisplayTestBehaviorTree {
         this.blackBoard = BlackBoard.getInstance(telemetry);
         this.blackBoard.reset();
 
-       /* /// Limelight
-        this.limeLightController = LimeLightController.getInstance();
-
-        this.limeLightController.reset();
-        this.limeLightController.initialize(hardwareMap, telemetry);
-        /// End Limelight
-
         /// Spindexer
         this.spindexerController = SpindexerController.getInstance();
 
@@ -84,27 +58,12 @@ public class DisplayTestBehaviorTree {
         this.spindexerController.initialize(hardwareMap, telemetry);
         ///  End Spindexer
 
-        /// Intake
-        this.intakeController = IntakeController.getInstance();
-
-        this.intakeController.reset();
-        this.intakeController.initialize(hardwareMap, telemetry);
-        /// End Intake
-
         /// Ramp
         this.rampController = RampController.getInstance();
 
         this.rampController.reset();
         this.rampController.initialize(hardwareMap,telemetry);
         /// End Ramp
-
-        /// Turret
-        this.turretController = TurretController.getInstance();
-
-        this.turretController.reset();
-        this.turretController.initialize(hardwareMap, telemetry);
-        /// End Turret
-        */
 
         /// Switch
         this.switchController = SpindexerLimitSwitchController.getInstance();
@@ -118,7 +77,8 @@ public class DisplayTestBehaviorTree {
 
         this.root = new Sequence(
                 Arrays.asList(
-                        new Action(new TestSwitch(telemetry, switchController), telemetry)
+                        new CalibrateSpindexerSubTree(opMode, telemetry).getRoot()
+
                 ),telemetry);
 
         this.tree = new BehaviorTree(root, blackBoard);

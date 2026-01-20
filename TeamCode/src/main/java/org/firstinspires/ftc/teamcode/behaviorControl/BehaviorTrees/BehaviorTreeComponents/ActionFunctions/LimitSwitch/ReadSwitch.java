@@ -9,23 +9,22 @@ import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTree
 import org.firstinspires.ftc.teamcode.hardwareControl.sensors.spindexerLimitSwitch.SpindexerLimitSwitchController;
 
 @Configurable
-public class TestSwitch implements ActionFunction {
+public class ReadSwitch implements ActionFunction {
 
     Telemetry telemetry;
     SpindexerLimitSwitchController switchController;
-    Status lastStatus = Status.FAILURE;
     Status status;
 
-    public TestSwitch(Telemetry telemetry, SpindexerLimitSwitchController switchController) {
+    public ReadSwitch(Telemetry telemetry, SpindexerLimitSwitchController switchController) {
         this.telemetry = telemetry;
         this.switchController = switchController;
     }
 
     public Status perform(BlackBoard blackBoard) {
 
-        // button is pressed if value returned is LOW or false.
-        telemetry.addData("Switch State", switchController.getState());
-        status = Status.RUNNING;
+        // switch is pressed if value returned is LOW or false.
+        blackBoard.setValue("LimitSwitchState", switchController.getState());
+        status = Status.SUCCESS;
 
         return status;
     }

@@ -39,6 +39,7 @@ public class BlackBoard {
     public void setValue(String key, Object value) {
         data.put(key, value);
     }
+
     public Object removeValue(String key) {
         return data.remove(key);
     }
