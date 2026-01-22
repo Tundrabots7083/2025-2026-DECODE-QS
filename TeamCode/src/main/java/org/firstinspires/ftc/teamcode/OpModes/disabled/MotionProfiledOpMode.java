@@ -1,5 +1,6 @@
-package org.firstinspires.ftc.teamcode.opModes.test;
+package org.firstinspires.ftc.teamcode.opModes.disabled;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -8,6 +9,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import org.firstinspires.ftc.teamcode.hardwareControl.actuators.common.MotionProfiler;
 import org.firstinspires.ftc.teamcode.hardwareControl.actuators.common.PIDFController;
 
+@Disabled
 @TeleOp(name="Motion Profiled PIDF OpMode")
 public class MotionProfiledOpMode extends LinearOpMode {
     private DcMotor motor;

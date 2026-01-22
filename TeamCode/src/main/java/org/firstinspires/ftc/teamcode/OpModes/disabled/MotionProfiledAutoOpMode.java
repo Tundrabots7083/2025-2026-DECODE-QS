@@ -1,7 +1,8 @@
-package org.firstinspires.ftc.teamcode.opModes.test;
+package org.firstinspires.ftc.teamcode.opModes.disabled;
 
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -11,7 +12,7 @@ import org.firstinspires.ftc.teamcode.hardwareControl.actuators.common.MotionPro
 import org.firstinspires.ftc.teamcode.hardwareControl.actuators.common.PIDFController;
 
 
-
+@Disabled
 @Autonomous(name="Motion Profiled Auto OpMode", group="specimens")
 public class MotionProfiledAutoOpMode extends LinearOpMode
 {

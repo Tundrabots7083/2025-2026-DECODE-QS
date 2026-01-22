@@ -1,13 +1,14 @@
-package org.firstinspires.ftc.teamcode.opModes.test;
+package org.firstinspires.ftc.teamcode.opModes.disabled;
 
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTree.FrontZoneScoringBehaviorTree;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.Status;
 
-
+@Disabled
 @Autonomous(name="BT Front zone Scoring", group="test")
 public class DecodeScoringOpMode extends LinearOpMode
 {
