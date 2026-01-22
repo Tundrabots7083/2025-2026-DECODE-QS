@@ -42,12 +42,12 @@ public class TestColorSensorOpMode extends LinearOpMode {
         joinedTelemetry.update();
         waitForStart();
 
-        /// Shooter
+        /// Color Sensor
         this.colorSensorController = IntakeColorSensorController.getInstance();
 
         this.colorSensorController.reset();
         this.colorSensorController.initialize(hardwareMap, joinedTelemetry);
-        /// End Shooter
+        /// End Color Sensor
 
         while (opModeIsActive()) {
 
