@@ -5,6 +5,9 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Spindexer.RunSpindexer;
+import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Spindexer.SpinOnePosition;
+import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.Action;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.BehaviorTree;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.BlackBoard;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.Node;
@@ -77,8 +80,9 @@ public class SpindexerTestBehaviorTree {
 
         this.root = new Sequence(
                 Arrays.asList(
-                        new CalibrateSpindexerSubTree(opMode, telemetry).getRoot()
-
+                        new CalibrateSpindexerSubTree(opMode, telemetry).getRoot(),
+                        new Action(new RunSpindexer(telemetry, spindexerController), telemetry),
+                        new Action(new SpinOnePosition(telemetry, spindexerController), telemetry)
                 ),telemetry);
 
         this.tree = new BehaviorTree(root, blackBoard);

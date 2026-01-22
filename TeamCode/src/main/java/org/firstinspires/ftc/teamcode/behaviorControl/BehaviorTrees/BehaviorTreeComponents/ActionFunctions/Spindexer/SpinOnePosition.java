@@ -29,13 +29,7 @@ public class SpinOnePosition implements ActionFunction {
             targetPosition = currentPosition + 120;
             spindexerController.moveToPosition(targetPosition);
 
-        if (!spindexerController.isOnTarget()) {
-            spindexerController.update();
-            status = Status.RUNNING;
-        } else {
             status = Status.SUCCESS;
-        }
-
         lastStatus = status;
         return status;
     }

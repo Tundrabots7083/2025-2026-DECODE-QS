@@ -22,7 +22,7 @@ public class ReadSwitch implements ActionFunction {
 
     public Status perform(BlackBoard blackBoard) {
 
-        // switch is pressed if value returned is LOW or false.
+        // switch is pressed if value returned is HIGH or true.
         blackBoard.setValue("LimitSwitchState", switchController.getState());
         status = Status.SUCCESS;
 

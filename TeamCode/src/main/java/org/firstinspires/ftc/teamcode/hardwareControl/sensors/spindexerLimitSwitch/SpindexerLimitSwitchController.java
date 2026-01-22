@@ -41,7 +41,7 @@ public class SpindexerLimitSwitchController {
         limitSwitch.setMode(DigitalChannel.Mode.INPUT);
     }
 
-    // button is pressed if value returned is LOW or false.
+    // button is pressed if value returned is HIGH or true.
     public boolean getState() {
         return limitSwitch.getState();
     }

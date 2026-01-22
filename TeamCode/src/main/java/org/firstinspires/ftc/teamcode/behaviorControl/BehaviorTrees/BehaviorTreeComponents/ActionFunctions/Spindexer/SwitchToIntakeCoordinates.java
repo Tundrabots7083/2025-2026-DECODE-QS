@@ -13,7 +13,7 @@ public class SwitchToIntakeCoordinates implements ActionFunction {
     Status status;
     Status lastStatus = Status.FAILURE;
 
-    private double intakeDegreeOffset = 30.0;
+    private double intakeDegreeOffset = 0.0;
 
     public SwitchToIntakeCoordinates(Telemetry telemetry, SpindexerController spindexerController) {
         this.telemetry = telemetry;

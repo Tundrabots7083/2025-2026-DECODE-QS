@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.hardwareControl.actuators.Spindexer;
 
 
-import com.bylazar.configurables.annotations.Configurable;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
@@ -12,7 +11,6 @@ import org.firstinspires.ftc.teamcode.hardwareConfig.actuators.Spindexer.Spindex
 import org.firstinspires.ftc.teamcode.hardwareConfig.actuators.Spindexer.SpindexerPIDFControllerConstants;
 import org.firstinspires.ftc.teamcode.hardwareControl.actuators.common.PIDFController;
 
-    @Configurable
     public class SpindexerController {
 
         private DcMotorEx spindexerMotor;
@@ -26,11 +24,10 @@ import org.firstinspires.ftc.teamcode.hardwareControl.actuators.common.PIDFContr
         private double LAST_POWER;
         private double DEGREE_OFFSET;
 
-        public static double kP = 0.015;
-        public static double kI = 0.0015;
-        public static double kD = 0.0003;
-        public static double kF = 0;
-
+        private double kP;
+        private double kI;
+        private double kD;
+        private double kF;
         private PIDFController pidfController;
 
         private boolean initialized = false;

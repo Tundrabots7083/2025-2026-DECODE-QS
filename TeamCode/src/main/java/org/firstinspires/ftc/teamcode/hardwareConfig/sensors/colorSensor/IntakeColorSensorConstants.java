@@ -1,8 +1,5 @@
 package org.firstinspires.ftc.teamcode.hardwareConfig.sensors.colorSensor;
 
-import com.bylazar.configurables.annotations.Configurable;
-
-@Configurable
 public class IntakeColorSensorConstants {
     public String name = "ColorSensor";
     public static float gain = 50;

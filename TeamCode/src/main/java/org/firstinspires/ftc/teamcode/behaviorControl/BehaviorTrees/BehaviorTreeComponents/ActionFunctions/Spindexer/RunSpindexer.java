@@ -6,35 +6,22 @@ import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTree
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.Status;
 import org.firstinspires.ftc.teamcode.hardwareControl.actuators.Spindexer.SpindexerController;
 
-public class RunSpindexerToReference implements ActionFunction {
+public class RunSpindexer implements ActionFunction {
 
     Telemetry telemetry;
-
     SpindexerController spindexerController;
-    private Status lastStatus = Status.FAILURE;
+    Status status;
 
-    public RunSpindexerToReference(Telemetry telemetry, SpindexerController spindexerController) {
+
+    public RunSpindexer(Telemetry telemetry, SpindexerController spindexerController) {
         this.telemetry = telemetry;
         this.spindexerController = spindexerController;
     }
 
     public Status perform(BlackBoard blackBoard) {
-        if (lastStatus == Status.SUCCESS) {
-            return lastStatus;
-        }
+        spindexerController.update();
 
-        boolean switchState = (boolean) blackBoard.getValue("LimitSwitchState");
-
-        // switch is pressed if value returned is LOW or false.
-        if (!switchState) {
-            spindexerController.spinSlowly();
-            return Status.RUNNING;
-        } else {
-            spindexerController.stop();
-            spindexerController.hardwareReset();
-            lastStatus = Status.SUCCESS;
-            return lastStatus;
-        }
-
+        status = Status.SUCCESS;
+        return status;
     }
 }
