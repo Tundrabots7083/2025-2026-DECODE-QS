@@ -1,14 +1,13 @@
 package org.firstinspires.ftc.teamcode.hardwareConfig.sensors.colorSensor;
 
-import org.firstinspires.ftc.teamcode.hardwareConfig.baseConstants.ColorSensorConstants;
+import com.bylazar.configurables.annotations.Configurable;
 
+@Configurable
 public class IntakeColorSensorConstants {
-    static {
-        ColorSensorConstants.name = "StarboardStorageColorSensor";
-        ColorSensorConstants.gain = 50;
-        ColorSensorConstants.maxGreen = 160;
-        ColorSensorConstants.minGreen = 150;
-        ColorSensorConstants.maxPurple = 233;
-        ColorSensorConstants.minPurple = 220;
-    }
+    public String name = "ColorSensor";
+    public static float gain = 50;
+    public static double maxGreen = 160;
+    public static double minGreen = 150;
+    public static double maxPurple = 233;
+    public static double minPurple = 220;
 }

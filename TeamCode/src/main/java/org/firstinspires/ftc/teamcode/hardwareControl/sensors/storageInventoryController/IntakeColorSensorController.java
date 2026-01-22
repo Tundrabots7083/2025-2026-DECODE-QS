@@ -2,13 +2,11 @@ package org.firstinspires.ftc.teamcode.hardwareControl.sensors.storageInventoryC
 
 import android.graphics.Color;
 
-import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.hardwareConfig.baseConstants.ColorSensorConstants;
 import org.firstinspires.ftc.teamcode.hardwareConfig.sensors.colorSensor.IntakeColorSensorConstants;
 
 public class IntakeColorSensorController {
@@ -17,6 +15,7 @@ public class IntakeColorSensorController {
     // Private static instance (eager initialization)
     private static final IntakeColorSensorController INSTANCE = new IntakeColorSensorController();
     private Telemetry telemetry;
+    private IntakeColorSensorConstants colorSensorConstants;
 
     private NormalizedColorSensor colorSensor;
 
@@ -33,30 +32,25 @@ public class IntakeColorSensorController {
         return INSTANCE;
     }
 
-    private static void setupConstants() {
-        try {
-
-            Class.forName(IntakeColorSensorConstants.class.getName());
-        } catch (ClassNotFoundException e) {
-            //e.printStackTrace();
-        }
-    }
 
     // Initialization method — must be called once at the beginning
     public void initialize(HardwareMap hardwareMap, Telemetry telemetry) {
         if (initialized) {
             return;
-            //throw new IllegalStateException("FrontDistanceSensorController has already been initialized.");
         }
         setupConstants();
         this.telemetry = telemetry;
 
-        colorSensor = hardwareMap.get(RevColorSensorV3.class, ColorSensorConstants.name);
+        colorSensor = hardwareMap.get(NormalizedColorSensor.class, colorSensorConstants.name);
 
         colors = colorSensor.getNormalizedColors();
-        colorSensor.setGain(ColorSensorConstants.gain);
+        colorSensor.setGain(colorSensorConstants.gain);
 
         initialized = true;
+    }
+
+    private void setupConstants() {
+        colorSensorConstants = new IntakeColorSensorConstants();
     }
 
     public void reset() {
@@ -67,7 +61,11 @@ public class IntakeColorSensorController {
         final float[] hsvValues = new float[3];
         colors = colorSensor.getNormalizedColors();
 
+
         Color.colorToHSV(colors.toColor(), hsvValues);
+        telemetry.addData("Hue Values", hsvValues[0]);
+        telemetry.addData("Saturation Values", hsvValues[1]);
+        telemetry.addData("Value Values", hsvValues[2]);
         boolean isPurple = colorIsPurple(hsvValues[0]);
         boolean isGreen = colorIsGreen(hsvValues[0]);
 
@@ -86,11 +84,11 @@ public class IntakeColorSensorController {
     }
 
     private boolean colorIsGreen(float hue) {
-        return hue >= ColorSensorConstants.minGreen && hue <= ColorSensorConstants.maxGreen;
+        return hue >= colorSensorConstants.minGreen && hue <= colorSensorConstants.maxGreen;
     }
 
     private boolean colorIsPurple(float hue) {
-        return hue >= ColorSensorConstants.minPurple && hue <= ColorSensorConstants.maxPurple;
+        return hue >= colorSensorConstants.minPurple && hue <= colorSensorConstants.maxPurple;
     }
 }
 
