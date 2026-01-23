@@ -22,6 +22,8 @@ public class TurretController {
     private double MAX_DEGREES;
     private double MIN_DEGREES;
 
+    private double servoPosition = 0.0;
+
     private boolean initialized = false;
 
     // Singleton instance
@@ -56,10 +58,8 @@ public class TurretController {
     }
 
     public void setTargetPosition(double targetPosition) {
-        if ((targetPosition == lastTargetPosition) || (targetPosition - lastTargetPosition <= 1)) {
-            return;
-        }
-        lastTargetPosition = targetPosition;
+
+        targetPosition += 112.5;
 
         targetPosition = targetPosition % 360;
 
@@ -67,11 +67,12 @@ public class TurretController {
             targetPosition += 360;
         }
 
-        this.TARGET_POSITION = Range.clip(targetPosition, MIN_DEGREES, MAX_DEGREES);
+        targetPosition = Range.clip(targetPosition, MIN_DEGREES, MAX_DEGREES);
 
-        double servoPosition = this.TARGET_POSITION / 360;
+        servoPosition = targetPosition / 339.267;
 
         turretServo.setPosition(servoPosition);
+        telemetry.addData("Servo Target", servoPosition);
         telemetry.addData("Turret Target", this.TARGET_POSITION);
     }
 
