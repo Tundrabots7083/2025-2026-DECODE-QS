@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.ServoImplEx;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.hardwareConfig.actuators.ramp.RampConstants;
+import org.firstinspires.ftc.teamcode.hardwareConfig.actuators.Ramp.RampConstants;
 
 @Configurable
 public class RampController {
@@ -18,7 +18,6 @@ public class RampController {
     private RampConstants rampConstants;
 
     private double TARGET_POSITION;
-    private double lastTargetPosition = 0.0;
     private double MAX_DEGREES;
     private double MIN_DEGREES;
 
@@ -58,12 +57,8 @@ public class RampController {
     }
 
     public void setTargetPosition(double targetPosition) {
-        if ((targetPosition == lastTargetPosition) || (targetPosition - lastTargetPosition <= 1)) {
-            return;
-        }
-        lastTargetPosition = targetPosition;
 
-        targetPosition = targetPosition % MAX_DEGREES;
+        targetPosition = targetPosition % 360;
 
         if(targetPosition < 0) {
             targetPosition += 360;
@@ -75,6 +70,8 @@ public class RampController {
 
         rampServo.setPosition(servoPosition);
         telemetry.addData("Ramp Target", TARGET_POSITION);
+        telemetry.addData("Servo Target", servoPosition);
+
     }
 
     public double getPosition() {

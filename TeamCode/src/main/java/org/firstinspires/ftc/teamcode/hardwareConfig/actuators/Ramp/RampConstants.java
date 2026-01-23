@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.hardwareConfig.actuators.ramp;
+package org.firstinspires.ftc.teamcode.hardwareConfig.actuators.Ramp;
 
 public class RampConstants {
     public String name = "Ramp";

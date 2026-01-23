@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.opModes.test;
+package org.firstinspires.ftc.teamcode.opModes.test.actuators;
 
 
 import com.bylazar.telemetry.JoinedTelemetry;

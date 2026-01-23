@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.opModes.test;
+package org.firstinspires.ftc.teamcode.opModes.test.actuators;
 
 import com.bylazar.configurables.annotations.Configurable;
 import com.bylazar.telemetry.JoinedTelemetry;
@@ -7,15 +7,16 @@ import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.hardwareControl.sensors.storageInventoryController.IntakeColorSensorController;
+import org.firstinspires.ftc.teamcode.hardwareControl.actuators.shooter.ShooterController;
 
 import java.util.List;
 
 @Configurable
-@Autonomous(name = "Test Color Sensor", group = "test")
-public class TestColorSensorOpMode extends LinearOpMode {
+@Autonomous(name = "Test Shooter", group = "test")
+public class TestShooterOpMode extends LinearOpMode {
 
-    IntakeColorSensorController colorSensorController;
+    public static double velocityTargetPosition = 50;
+    ShooterController shooterController;
 
     private long lastTime = System.nanoTime();
 
@@ -38,18 +39,19 @@ public class TestColorSensorOpMode extends LinearOpMode {
             hub.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
         }
 
-        joinedTelemetry.addData("TestColorSensorOpMode", "initialized");
+        joinedTelemetry.addData("TestShooterOpMode", "runOpMode started");
         joinedTelemetry.update();
         waitForStart();
 
-        /// Color Sensor
-        this.colorSensorController = IntakeColorSensorController.getInstance();
+        /// Shooter
+        this.shooterController = ShooterController.getInstance();
 
-        this.colorSensorController.reset();
-        this.colorSensorController.initialize(hardwareMap, joinedTelemetry);
-        /// End Color Sensor
+        this.shooterController.reset();
+        this.shooterController.initialize(hardwareMap, joinedTelemetry);
+        /// End Shooter
 
         while (opModeIsActive()) {
+            shooterController.spinToTargetVelocity(velocityTargetPosition);
 
             long currentTime = System.nanoTime();
             double loopTimeMs = (currentTime - lastTime) / 1e6;
@@ -58,7 +60,9 @@ public class TestColorSensorOpMode extends LinearOpMode {
             joinedTelemetry.addData("Loop Time (ms)", loopTimeMs);
 
             count++;
-            joinedTelemetry.addData("CurrentDetection", colorSensorController.getColor());
+            joinedTelemetry.addData("CurrentFrontVelocity", shooterController.getFrontCurrentVelocity());
+            joinedTelemetry.addData("CurrentRearVelocity", shooterController.getRearCurrentVelocity());
+            joinedTelemetry.addData("TargetVelocity", velocityTargetPosition);
             joinedTelemetry.update();
 
             // Clear the bulk cache for each Lynx module hub. This must be performed once per loop
