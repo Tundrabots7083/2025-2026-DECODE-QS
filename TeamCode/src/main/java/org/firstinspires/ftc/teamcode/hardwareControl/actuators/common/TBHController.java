@@ -45,10 +45,9 @@ public class TBHController {
         double error = setpoint - current;
         telemetry.addData("error", error);
 
-        /*if (Math.abs(error) > 400) {
+        if (Math.abs(error) > 400) {
             isFirstCross = true;
-        } else */
-        if (isFirstCross && driveAtZero == 0.0) {
+        } else if (isFirstCross && driveAtZero == 0.0) {
             power = Kf_a
                     + Kf_b * setpoint
                     + Kf_c * Math.pow(setpoint, 2);
@@ -71,10 +70,10 @@ public class TBHController {
 
         // Doesn't run if this is the first loop, otherwise check if crossed target
         if ((lastError != 0.0) && (Math.signum(error) != Math.signum(lastError))) {
-                // Average previous best guess with latest best guess
-                power = 0.5 * (power + driveAtZero);
+            // Average previous best guess with latest best guess (Latest guess is worth more)
+            power = 0.2 * (3 * power + 2 * driveAtZero);
 
-            // Store the latest best guess at the correct motor power
+            // Store the latest best guess for the correct motor power to maintain target velocity
             driveAtZero = power;
 
         }
@@ -97,7 +96,7 @@ public class TBHController {
     }
 
     /**
-     * Getters and setters for PIDF coefficients
+     * Getters and setters for kP
      */
     public void setP(double Kp) {
         this.Kp = Kp;

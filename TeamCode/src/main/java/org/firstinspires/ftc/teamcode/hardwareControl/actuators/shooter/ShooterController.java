@@ -171,12 +171,7 @@ public class ShooterController {
 
     public void spinToTargetVelocity(double newTargetVelocity){
 
-        if(newTargetVelocity != targetVelocity) {
-            frontTbhController.reset();
-            rearTbhController.reset();
-
-            targetVelocity = newTargetVelocity;
-        }
+        targetVelocity = newTargetVelocity;
 
         update();
     }
