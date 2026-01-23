@@ -159,6 +159,16 @@ public class ShooterController {
         return rearShooterMotor.getVelocity(AngleUnit.DEGREES) / 6;
     }
 
+    private void setFrontPower(double power) {
+        frontShooterMotor.setPower(power);
+        telemetry.addData("SentFrontpower:", power);
+    }
+
+    private void setRearPower(double power) {
+        rearShooterMotor.setPower(power);
+        telemetry.addData("SentRearpower:", power);
+    }
+
     public void spinToTargetVelocity(double newTargetVelocity){
 
         if(newTargetVelocity != targetVelocity) {
