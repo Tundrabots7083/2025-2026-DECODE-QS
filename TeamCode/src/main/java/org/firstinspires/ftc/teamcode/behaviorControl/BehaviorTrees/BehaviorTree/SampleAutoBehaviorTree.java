@@ -187,7 +187,7 @@ public class SampleAutoBehaviorTree {
                         // drive to shoot and sort
                         new ShootSubTree(opMode, telemetry).getRoot(),
                         // drive to park position
-                        new Action(new PauseAction(2000, telemetry), telemetry)
+                        new Action(new PauseAction(telemetry, 2000), telemetry)
                 ), telemetry);
 
         this.tree = new BehaviorTree(root, blackBoard);

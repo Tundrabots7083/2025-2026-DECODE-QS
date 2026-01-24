@@ -5,8 +5,13 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.AA_Common.PauseAction;
+import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Intake.RetainArtifacts;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Intake.RunIntake;
+import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Intake.StartIntake;
+import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Shooter.RunShooter;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Spindexer.RunSpindexer;
+import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Spindexer.SpinOnePosition;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Spindexer.SpinToZeroPosition;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Spindexer.SwitchToShootCoordinates;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.Action;
@@ -18,13 +23,14 @@ import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTree
 import org.firstinspires.ftc.teamcode.hardwareControl.actuators.Ramp.RampController;
 import org.firstinspires.ftc.teamcode.hardwareControl.actuators.Spindexer.SpindexerController;
 import org.firstinspires.ftc.teamcode.hardwareControl.actuators.intake.IntakeController;
+import org.firstinspires.ftc.teamcode.hardwareControl.actuators.shooter.ShooterController;
 import org.firstinspires.ftc.teamcode.hardwareControl.sensors.spindexerLimitSwitch.SpindexerLimitSwitchController;
 
 import java.util.Arrays;
 import java.util.List;
 
 
-public class SpindexerTestBehaviorTree {
+public class AllUpTestBehaviorTree {
     private BehaviorTree tree;
     private Node root;
     private BlackBoard blackBoard;
@@ -50,14 +56,20 @@ public class SpindexerTestBehaviorTree {
 
     ///
 
+    ///
+    protected ShooterController shooterController;
 
-    public SpindexerTestBehaviorTree(LinearOpMode opMode, Telemetry telemetry) {
+    ///
+
+
+    public AllUpTestBehaviorTree(LinearOpMode opMode, Telemetry telemetry) {
         this.hardwareMap = opMode.hardwareMap;
         this.telemetry = telemetry;
         this.opMode = opMode;
 
         Init();
     }
+
     private void Init() {
         this.blackBoard = BlackBoard.getInstance(telemetry);
         this.blackBoard.reset();
@@ -73,7 +85,7 @@ public class SpindexerTestBehaviorTree {
         this.rampController = RampController.getInstance();
 
         this.rampController.reset();
-        this.rampController.initialize(hardwareMap,telemetry);
+        this.rampController.initialize(hardwareMap, telemetry);
         /// End Ramp
 
         /// Switch
@@ -90,17 +102,36 @@ public class SpindexerTestBehaviorTree {
         this.intakeController.initialize(hardwareMap, telemetry);
         /// End Intake
 
+        /// Shooter
+        this.shooterController = ShooterController.getInstance();
+
+        this.shooterController.reset();
+        this.shooterController.initialize(hardwareMap, telemetry);
+        /// End Shooter
+
 
         telemetry.clearAll();
 
         this.root = new Sequence(
                 Arrays.asList(
                         new Action(new RunIntake(telemetry, intakeController), telemetry),
+                        new Action(new RunShooter(telemetry, shooterController), telemetry),
                         new CalibrateSpindexerSubTree(opMode, telemetry).getRoot(),
                         new Action(new RunSpindexer(telemetry, spindexerController), telemetry),
                         new Action(new SwitchToShootCoordinates(telemetry, spindexerController), telemetry),
-                        new Action(new SpinToZeroPosition(telemetry, spindexerController), telemetry)
-                ),telemetry);
+                        new Action(new SpinToZeroPosition(telemetry, spindexerController), telemetry),
+                        new Action(new StartIntake(telemetry, intakeController), telemetry),
+                        // Intake 3 Artifacts
+                        new Action(new PauseAction(telemetry, 2000), telemetry),
+                        new Action(new SpinOnePosition(telemetry, spindexerController), telemetry),
+                        new Action(new PauseAction(telemetry, 2000), telemetry),
+                        new Action(new SpinOnePosition(telemetry, spindexerController), telemetry),
+                        new Action(new PauseAction(telemetry, 2000), telemetry),
+                        new Action(new SpinOnePosition(telemetry, spindexerController), telemetry),
+                        new Action(new RetainArtifacts(telemetry, intakeController), telemetry),
+                        new Action(new PauseAction(telemetry, 2000), telemetry),
+                        new ShootSubTree(opMode, telemetry).getRoot()
+                ), telemetry);
 
         this.tree = new BehaviorTree(root, blackBoard);
     }

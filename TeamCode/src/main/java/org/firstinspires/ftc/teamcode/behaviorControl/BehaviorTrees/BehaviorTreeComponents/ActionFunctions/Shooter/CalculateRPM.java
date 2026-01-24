@@ -33,11 +33,15 @@ public class CalculateRPM implements ActionFunction {
         if (blackBoard.getValue("DistanceToGoal") != null) {
             distanceToShoot = (double) blackBoard.getValue("DistanceToGoal");
 
+            //Todo: actually calculate rpm
             blackBoard.setValue("TargetShooterRPM", calculateRPM());
-            status = Status.SUCCESS;
+
         } else {
             status = Status.FAILURE;
         }
+
+        blackBoard.setValue("TargetShooterRPM", 3500);
+        status = Status.SUCCESS;
 
         return status;
 

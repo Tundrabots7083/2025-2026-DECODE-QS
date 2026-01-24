@@ -13,8 +13,8 @@ public class DeployRamp implements ActionFunction {
 
     Telemetry telemetry;
     RampController rampController;
-    public static double DEPLOYED_RAMP = 100; //degrees at which the ramp is deployed
-    Status lastStatus;
+    public static double DEPLOYED_RAMP = 175; //degrees at which the ramp is deployed
+    Status lastStatus = Status.FAILURE;
 
     public DeployRamp(Telemetry telemetry, RampController rampController) {
         this.telemetry = telemetry;

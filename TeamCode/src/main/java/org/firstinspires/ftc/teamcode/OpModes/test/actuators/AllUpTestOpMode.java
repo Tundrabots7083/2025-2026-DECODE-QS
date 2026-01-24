@@ -1,0 +1,50 @@
+package org.firstinspires.ftc.teamcode.opModes.test.actuators;
+
+
+import com.bylazar.telemetry.JoinedTelemetry;
+import com.bylazar.telemetry.PanelsTelemetry;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+
+import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTree.AllUpTestBehaviorTree;
+import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.Status;
+
+
+@Autonomous(name = "All Mechanisms Test", group = "test")
+public class AllUpTestOpMode extends LinearOpMode {
+    AllUpTestBehaviorTree behaviorTree = null;
+
+
+    public JoinedTelemetry joinedTelemetry;
+
+
+    @Override
+    public void runOpMode() {
+
+        joinedTelemetry = new JoinedTelemetry(PanelsTelemetry.INSTANCE.getFtcTelemetry(), telemetry);
+        joinedTelemetry.update();
+        initialize(this);
+        waitForStart();
+
+
+        while (opModeIsActive()) {
+            Status result = this.behaviorTree.tick();
+            telemetry.update();
+
+
+            if (result == Status.SUCCESS) {
+                requestOpModeStop();
+            }
+
+        }
+    }
+
+
+    private void initialize(LinearOpMode opMode) {
+        this.behaviorTree = new AllUpTestBehaviorTree(opMode, joinedTelemetry);
+    }
+
+
+}
+
+

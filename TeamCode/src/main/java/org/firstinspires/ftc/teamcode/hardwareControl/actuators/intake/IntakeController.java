@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.hardwareControl.actuators.intake;
 
 
-import com.bylazar.configurables.annotations.Configurable;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
@@ -12,7 +11,6 @@ import org.firstinspires.ftc.teamcode.hardwareConfig.actuators.intake.IntakeCons
 import org.firstinspires.ftc.teamcode.hardwareControl.actuators.common.SimpleVelocityController;
 
 
-@Configurable
 public class IntakeController {
 
     private DcMotorEx intakeMotor;
@@ -27,7 +25,7 @@ public class IntakeController {
     /**
      * velocity gain
      */
-    public static double Kp = 0.00015;
+    private double Kp = 0.00015;
 
     private SimpleVelocityController velocityController;
     private boolean initialized = false;

@@ -18,9 +18,9 @@ public class PauseAction implements ActionFunction {
 
     protected Status lastStatus = Status.FAILURE;
 
-    public PauseAction (long pauseDuration, Telemetry telemetry) {
+    public PauseAction(Telemetry telemetry, long pauseDuration_ms) {
         this.telemetry = telemetry;
-        this.pauseDuration = pauseDuration;
+        this.pauseDuration = pauseDuration_ms;
     }
 
 
@@ -36,11 +36,9 @@ public class PauseAction implements ActionFunction {
         }
 
         if (System.currentTimeMillis() < endTime) {
-            telemetry.addData("PauseAction", "perform start");
             status = Status.RUNNING;
         } else {
             status = Status.SUCCESS;
-            telemetry.addData("PauseAction", "perform finish");
         }
 
         return status;

@@ -13,7 +13,7 @@ public class SpinOnePosition implements ActionFunction {
     Status status;
     Status lastStatus = Status.FAILURE;
 
-    private double currentPosition;
+    private double currentTarget;
     private double targetPosition;
 
     public SpinOnePosition(Telemetry telemetry, SpindexerController spindexerController) {
@@ -25,11 +25,19 @@ public class SpinOnePosition implements ActionFunction {
         if (lastStatus == Status.SUCCESS) {
             return lastStatus;
         }
-            currentPosition = spindexerController.getPosition();
-            targetPosition = currentPosition + 120;
-            spindexerController.moveToPosition(targetPosition);
 
+        if (lastStatus == Status.FAILURE) {
+            currentTarget = spindexerController.getTargetPosition();
+            targetPosition = currentTarget + 120;
+            spindexerController.moveToPosition(targetPosition);
+        }
+
+        if (!spindexerController.isOnTarget()) {
+            status = Status.RUNNING;
+        } else {
             status = Status.SUCCESS;
+        }
+
         lastStatus = status;
         return status;
     }

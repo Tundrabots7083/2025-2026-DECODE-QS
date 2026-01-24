@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.hardwareControl.actuators.common;
 
+import com.qualcomm.robotcore.util.Range;
+
 public class PIDFController {
     private double kP, kI, kD, kF; // PIDF coefficients
     private double integralSum = 0.0;
@@ -62,7 +64,8 @@ public class PIDFController {
         if (deltaTime > 0) {
             integralSum += error * deltaTime;
             // Anti-windup: limit integral sum
-            integralSum = Math.max(Math.min(integralSum, maxIntegralSum), -maxIntegralSum);
+            integralSum = Range.clip(integralSum, -maxIntegralSum, maxIntegralSum);
+
         }
         double iTerm = kI * integralSum;
 
@@ -71,7 +74,7 @@ public class PIDFController {
         lastError = error;
 
         // Feedforward term
-        double fTerm = kF * setpoint;
+        double fTerm = kF * Math.signum(error);
 
         // Calculate total output
         double output = pTerm + iTerm + dTerm + fTerm;

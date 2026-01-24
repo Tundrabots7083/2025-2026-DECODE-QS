@@ -2,11 +2,11 @@ package org.firstinspires.ftc.teamcode.hardwareControl.actuators.shooter;
 
 
 import com.bylazar.configurables.annotations.Configurable;
-import com.bylazar.telemetry.JoinedTelemetry;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.hardwareConfig.actuators.shooter.ShooterConstants;
 import org.firstinspires.ftc.teamcode.hardwareConfig.actuators.shooter.ShooterTBHControllerConstants;
@@ -52,7 +52,7 @@ public class ShooterController {
 
     // Private static instance (eager initialization)
     private static final ShooterController INSTANCE = new ShooterController();
-    private JoinedTelemetry telemetry;
+    private Telemetry telemetry;
 
     // Private constructor to prevent instantiation
     private ShooterController() {
@@ -66,7 +66,7 @@ public class ShooterController {
 
 
     // Initialization method — must be called once at the beginning
-    public void initialize(HardwareMap hardwareMap, JoinedTelemetry telemetry) {
+    public void initialize(HardwareMap hardwareMap, Telemetry telemetry) {
         if (initialized) {
             return;
         }

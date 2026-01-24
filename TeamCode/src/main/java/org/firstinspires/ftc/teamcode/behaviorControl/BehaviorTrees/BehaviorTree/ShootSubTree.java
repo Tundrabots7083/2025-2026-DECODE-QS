@@ -1,9 +1,9 @@
 package org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTree;
 
-import com.bylazar.telemetry.JoinedTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Ramp.DeployRamp;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Shooter.CalculateRPM;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Shooter.SpinUpShooter;
@@ -27,7 +27,7 @@ public class ShootSubTree {
     private BehaviorTree tree;
     private Node root;
     private BlackBoard blackBoard;
-    protected JoinedTelemetry telemetry;
+    protected Telemetry telemetry;
     protected HardwareMap hardwareMap;
     protected LinearOpMode opMode;
 
@@ -59,7 +59,7 @@ public class ShootSubTree {
     ///
 
 
-    public ShootSubTree(LinearOpMode opMode, JoinedTelemetry telemetry) {
+    public ShootSubTree(LinearOpMode opMode, Telemetry telemetry) {
         this.hardwareMap = opMode.hardwareMap;
         this.telemetry = telemetry;
         this.opMode = opMode;
@@ -72,45 +72,27 @@ public class ShootSubTree {
         this.blackBoard.reset();
 
         /// Limelight
-        this.limeLightController = LimeLightController.getInstance();
-
-        this.limeLightController.reset();
-        this.limeLightController.initialize(hardwareMap, telemetry);
+//        this.limeLightController = LimeLightController.getInstance();
         /// End Limelight
 
         /// Spindexer
         this.spindexerController = SpindexerController.getInstance();
-
-        this.spindexerController.reset();
-        this.spindexerController.initialize(hardwareMap, telemetry);
         ///  End Spindexer
 
         /// Intake
         this.intakeController = IntakeController.getInstance();
-
-        this.intakeController.reset();
-        this.intakeController.initialize(hardwareMap, telemetry);
         /// End Intake
 
         /// Ramp
         this.rampController = RampController.getInstance();
-
-        this.rampController.reset();
-        this.rampController.initialize(hardwareMap, telemetry);
         /// End Ramp
 
         /// Turret
         this.turretController = TurretController.getInstance();
-
-        this.turretController.reset();
-        this.turretController.initialize(hardwareMap, telemetry);
         /// End Turret
 
         /// Shooter
         this.shooterController = ShooterController.getInstance();
-
-        this.shooterController.reset();
-        this.shooterController.initialize(hardwareMap, telemetry);
         /// End Shooter
 
 
@@ -119,8 +101,8 @@ public class ShootSubTree {
         this.root = new Sequence(
                 Arrays.asList(
                         new Action(new CalculateRPM(telemetry, shooterController), telemetry),
-                        new Action(new SpinUpShooter(telemetry, shooterController), telemetry),
                         new Action(new DeployRamp(telemetry, rampController), telemetry),
+                        new Action(new SpinUpShooter(telemetry, shooterController), telemetry),
                         new Action(new SpinOnePosition(telemetry, spindexerController), telemetry),
                         new Action(new SpinUpShooter(telemetry, shooterController), telemetry),
                         new Action(new SpinOnePosition(telemetry, spindexerController), telemetry),

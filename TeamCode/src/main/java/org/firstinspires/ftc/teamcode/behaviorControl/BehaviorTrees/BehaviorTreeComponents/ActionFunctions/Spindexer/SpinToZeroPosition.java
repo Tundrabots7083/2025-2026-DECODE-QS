@@ -42,7 +42,6 @@ public class SpinToZeroPosition implements ActionFunction {
         }
 
         if (!spindexerController.isOnTarget()) {
-            spindexerController.update();
             status = Status.RUNNING;
         } else {
             status = Status.SUCCESS;
