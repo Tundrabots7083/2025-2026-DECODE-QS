@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.hardwareControl.actuators.Spindexer.SpindexerController;
+import org.firstinspires.ftc.teamcode.hardwareControl.actuators.intake.IntakeController;
 
 import java.util.List;
 
@@ -15,8 +16,11 @@ import java.util.List;
 @Autonomous(name = "Test Spindexer", group = "test")
 public class TestSpindexerOpMode extends LinearOpMode {
 
-    public static double targetPosition = 0;
+    public static double targetSpindexPosition = 0;
+    public static double targetIntakeVel = 0;
+
     SpindexerController spindexerController;
+    IntakeController intakeController;
 
     private long lastTime = System.nanoTime();
 
@@ -50,8 +54,17 @@ public class TestSpindexerOpMode extends LinearOpMode {
         this.spindexerController.initialize(hardwareMap, joinedTelemetry);
         /// End Shooter
 
+        /// Intake
+        this.intakeController = IntakeController.getInstance();
+
+        this.intakeController.reset();
+        this.intakeController.initialize(hardwareMap, telemetry);
+        /// End Intake
+
+
         while (opModeIsActive()) {
-            spindexerController.moveToPosition(targetPosition);
+            spindexerController.moveToPosition(targetSpindexPosition);
+            intakeController.spinToTargetVelocity(targetIntakeVel);
 
             long currentTime = System.nanoTime();
             double loopTimeMs = (currentTime - lastTime) / 1e6;
@@ -60,8 +73,6 @@ public class TestSpindexerOpMode extends LinearOpMode {
             joinedTelemetry.addData("Loop Time (ms)", loopTimeMs);
 
             count++;
-            joinedTelemetry.addData("Current Position", spindexerController.getPosition());
-            joinedTelemetry.addData("Target Position", spindexerController.getTargetPosition());
             joinedTelemetry.update();
 
             // Clear the bulk cache for each Lynx module hub. This must be performed once per loop
@@ -71,6 +82,5 @@ public class TestSpindexerOpMode extends LinearOpMode {
             }
         }
     }
-
 }
 

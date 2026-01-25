@@ -77,7 +77,6 @@ import org.firstinspires.ftc.teamcode.hardwareControl.actuators.common.PIDFContr
                     spindexerMotor.getMotorType().clone();
 
             motorConfigurationType.setTicksPerRev(spindexerConstants.ticksPerRev);
-            motorConfigurationType.setGearing(spindexerConstants.gearing);
             motorConfigurationType.setAchieveableMaxRPMFraction(spindexerConstants.achievableMaxRPMFraction);
             this.GEARING = spindexerConstants.gearing;
 
@@ -123,22 +122,17 @@ import org.firstinspires.ftc.teamcode.hardwareControl.actuators.common.PIDFContr
 
             if (targetPosition != lastTargetPosition) {
                 pidfController.reset();
-                motionProfiler.generateProfile(spindexerMotor.getCurrentPosition(), targetPosition);
+                double startPosition = getPosition();
+                motionProfiler.generateProfile(startPosition, targetPosition);
                 startTime = System.currentTimeMillis();
+                lastTargetPosition = targetPosition;
             }
 
-            currentTime = System.currentTimeMillis();
-            lastTargetPosition = targetPosition;
-
-            double currentPosition = getPosition();
-            double elapsedTime = currentTime - startTime;
-
-            double power = pidfController.calculate(motionProfiler.getMotionState(elapsedTime).position, currentPosition);
-
-            spindexerMotor.setPower(power);
-
-            LAST_POWER = power;
-
+            try {
+                update();
+            } catch (InterruptedException e) {
+                //throw new RuntimeException(e);
+            }
         }
 
         public boolean isOnTarget() {
@@ -160,6 +154,11 @@ import org.firstinspires.ftc.teamcode.hardwareControl.actuators.common.PIDFContr
         public double getPosition() {
             double currentAngle = (spindexerMotor.getCurrentPosition() / spindexerConstants.ticksPerRev) * 360 * GEARING + DEGREE_OFFSET; //current position in degrees
             return currentAngle;
+        }
+
+        public double getRPMVelocity() {
+            double currentDegPerSecond = spindexerMotor.getVelocity(AngleUnit.DEGREES);
+            return currentDegPerSecond / 6; // Current RPM
         }
 
         public double getTargetPosition() {
@@ -185,24 +184,38 @@ import org.firstinspires.ftc.teamcode.hardwareControl.actuators.common.PIDFContr
             return spindexerMotor.isBusy();
         }
 
-        public void update() {
+        public void update() throws InterruptedException {
 
+            currentTime = System.currentTimeMillis();
             double currentPosition = getPosition();
-            double elapsedTime = currentTime - startTime;
+            double elapsedTime = (currentTime - startTime) / 1000.0; // Need seconds for Motion profile
 
+            double error = getTargetPosition() - currentPosition;
             double power = pidfController.calculate(motionProfiler.getMotionState(elapsedTime).position, currentPosition);
-
-            spindexerMotor.setPower(power);
+            double feedForwardPower = power + kF * motionProfiler.getMotionState(elapsedTime).velocity;
 
             telemetry.addData("Spindexer Target", lastTargetPosition);
             telemetry.addData("Spindexer Position", currentPosition);
-            telemetry.addData("Spindexer Power", power);
+            telemetry.addData("Spindexer PID Power", power);
+            telemetry.addData("Spindexer kF Power", feedForwardPower);
+            telemetry.addData("Spindexer Error", error);
+            telemetry.addData("Spindexer Velocity", spindexerMotor.getVelocity(AngleUnit.DEGREES));
 
-            if(Math.abs(LAST_POWER - power) > 0.001) {
-                spindexerMotor.setPower(power);
+
+            if (Math.abs(LAST_POWER - power) > 0.01) {
+                spindexerMotor.setPower(feedForwardPower);
                 LAST_POWER = power;
             }
 
+            if (Math.abs((feedForwardPower * 235) - getRPMVelocity()) >= 55.5
+                    && feedForwardPower > 0.1) {
+                spindexerMotor.setPower(0.0);
+                telemetry.addData("SPINDEXER KF POWER THROW", feedForwardPower * 235);
+                telemetry.addData("SPINDEXER VELOCITY THROW", getRPMVelocity());
+                telemetry.update();
+                Thread.sleep(50);
+                throw new RuntimeException("Spindexer is stuck!");
+            }
         }
 
         public void setDegreeOffset(double newOffset) {
@@ -219,6 +232,8 @@ import org.firstinspires.ftc.teamcode.hardwareControl.actuators.common.PIDFContr
             spindexerMotor.setMode(spindexerConstants.resetMode);
             spindexerMotor.setMode(spindexerConstants.runMode);
             spindexerMotor.setDirection(spindexerConstants.direction);
+
+            lastTargetPosition = -1.0;
 
             pidfController.reset();
             initialized = false;

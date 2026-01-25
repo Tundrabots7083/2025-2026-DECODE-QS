@@ -29,7 +29,6 @@ public class SpinToShootPosition implements ActionFunction {
         spindexerController.moveToPosition(targetPosition);
 
         if (!spindexerController.isOnTarget()) {
-            spindexerController.update();
             status = Status.RUNNING;
         } else {
             status = Status.SUCCESS;
