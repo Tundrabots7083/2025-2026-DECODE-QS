@@ -45,8 +45,9 @@ public class TBHController {
         double error = setpoint - current;
         telemetry.addData("error", error);
 
-        if (Math.abs(error) > 400) {
+        if (Math.abs(error) > 450) {
             isFirstCross = true;
+            return Math.signum(error);
         } else if (isFirstCross && driveAtZero == 0.0) {
             power = Kf_a
                     + Kf_b * setpoint
@@ -71,7 +72,7 @@ public class TBHController {
         // Doesn't run if this is the first loop, otherwise check if crossed target
         if ((lastError != 0.0) && (Math.signum(error) != Math.signum(lastError))) {
             // Average previous best guess with latest best guess (Latest guess is worth more)
-            power = 0.2 * (3 * power + 2 * driveAtZero);
+            power = 0.5 * (power + driveAtZero);
 
             // Store the latest best guess for the correct motor power to maintain target velocity
             driveAtZero = power;
