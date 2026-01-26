@@ -191,6 +191,7 @@ import org.firstinspires.ftc.teamcode.hardwareControl.actuators.common.PIDFContr
             double feedForwardPower = power + kF * motionProfiler.getMotionState(elapsedTime).velocity;
 
             telemetry.addData("Spindexer Target", lastTargetPosition);
+            telemetry.addData("Spindexer Profile Target", motionProfiler.getMotionState(elapsedTime).position);
             telemetry.addData("Spindexer Position", currentPosition);
             telemetry.addData("Spindexer PID Power", power);
             telemetry.addData("Spindexer kF Power", feedForwardPower);
