@@ -25,7 +25,7 @@ public class IntakeController {
     /**
      * velocity gain
      */
-    private double Kp = 0.00015;
+    private double Kp = 0.00025;
 
     private SimpleVelocityController velocityController;
     private boolean initialized = false;
@@ -119,9 +119,9 @@ public class IntakeController {
         }
 
 
-        telemetry.addData("Intake Target RPM", targetVelocity);
-        telemetry.addData("Intake Current RPM", currentVelocity);
-        telemetry.addData("Intake Power", power);
+//        telemetry.addData("Intake Target RPM", targetVelocity);
+//        telemetry.addData("Intake Current RPM", currentVelocity);
+//        telemetry.addData("Intake Power", power);
     }
 }
 

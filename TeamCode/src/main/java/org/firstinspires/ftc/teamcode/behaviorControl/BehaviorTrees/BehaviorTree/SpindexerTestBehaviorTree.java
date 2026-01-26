@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.AA_Common.PauseAction;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Intake.RunIntake;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Spindexer.RunSpindexer;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Spindexer.SpinToZeroPosition;
@@ -97,6 +98,7 @@ public class SpindexerTestBehaviorTree {
                 Arrays.asList(
                         new Action(new RunIntake(telemetry, intakeController), telemetry),
                         new CalibrateSpindexerSubTree(opMode, telemetry).getRoot(),
+                        new Action(new PauseAction(telemetry, 50), telemetry),
                         new Action(new RunSpindexer(telemetry, spindexerController), telemetry),
                         new Action(new SwitchToShootCoordinates(telemetry, spindexerController), telemetry),
                         new Action(new SpinToZeroPosition(telemetry, spindexerController), telemetry)

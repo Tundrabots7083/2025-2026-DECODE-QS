@@ -12,7 +12,7 @@ public class RetainArtifacts implements ActionFunction {
     IntakeController intakeController;
     Status lastStatus;
     Status status;
-    private final double RETAIN_VELOCITY = 100;
+    private final double RETAIN_VELOCITY = 180;
 
     public RetainArtifacts(Telemetry telemetry, IntakeController intakeController) {
         this.telemetry = telemetry;

@@ -16,6 +16,7 @@ public class CalibrateSpindexerOpMode extends LinearOpMode {
 
 
     public JoinedTelemetry joinedTelemetry;
+    private long lastTime = System.nanoTime();
 
 
     @Override
@@ -29,6 +30,11 @@ public class CalibrateSpindexerOpMode extends LinearOpMode {
 
         while (opModeIsActive()) {
             Status result = this.behaviorTree.tick();
+            long currentTime = System.nanoTime();
+            double loopTimeMs = (currentTime - lastTime) / 1e6;
+            lastTime = currentTime;
+
+            joinedTelemetry.addData("Loop Time (ms)", loopTimeMs);
             telemetry.update();
 
 

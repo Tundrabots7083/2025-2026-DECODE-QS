@@ -20,11 +20,8 @@ public class RunSpindexer implements ActionFunction {
 
     public Status perform(BlackBoard blackBoard) {
 
-        try {
             spindexerController.update();
-        } catch (InterruptedException e) {
 
-        }
         status = Status.SUCCESS;
         return status;
     }

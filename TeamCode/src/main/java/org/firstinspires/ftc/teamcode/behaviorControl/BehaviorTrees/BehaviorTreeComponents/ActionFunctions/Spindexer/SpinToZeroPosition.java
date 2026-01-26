@@ -28,7 +28,7 @@ public class SpinToZeroPosition implements ActionFunction {
         }
 
         if (!hasRun) {
-            currentPosition = spindexerController.getPosition();
+            currentPosition = spindexerController.getPosition() % 360;
 
             if (currentPosition > 240) {
                 spindexerController.moveToPosition(360);
