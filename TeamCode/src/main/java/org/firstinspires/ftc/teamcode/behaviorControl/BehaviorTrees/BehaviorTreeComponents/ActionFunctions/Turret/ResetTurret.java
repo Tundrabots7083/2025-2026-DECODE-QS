@@ -11,7 +11,6 @@ public class ResetTurret implements ActionFunction {
     Telemetry telemetry;
     TurretController turretController;
     Status lastStatus;
-    private final double RESET_POSITION = 0.5;
 
     public ResetTurret(Telemetry telemetry, TurretController turretController) {
         this.telemetry = telemetry;
@@ -23,7 +22,7 @@ public class ResetTurret implements ActionFunction {
             return lastStatus;
         }
 
-        turretController.setTargetPosition(RESET_POSITION);
+        turretController.reset();
         lastStatus = Status.SUCCESS;
         return lastStatus;
     }
