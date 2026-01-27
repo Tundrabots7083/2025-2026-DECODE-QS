@@ -58,7 +58,7 @@ public class TestTurretOpMode extends LinearOpMode {
 
             joinedTelemetry.addData("Loop Time (ms)", loopTimeMs);
 
-            turretController.setTargetPosition(position);
+            turretController.setTurretTargetAngle(position);
             count++;
             joinedTelemetry.update();
 
