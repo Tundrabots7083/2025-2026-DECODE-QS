@@ -6,24 +6,28 @@ import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTree
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.Status;
 import org.firstinspires.ftc.teamcode.hardwareControl.actuators.Spindexer.SpindexerController;
 
-public class RunSpindexer implements ActionFunction {
+public class UnstickSpindexer implements ActionFunction {
 
     Telemetry telemetry;
     SpindexerController spindexerController;
     Status status;
-    double currentTarget;
 
 
-    public RunSpindexer(Telemetry telemetry, SpindexerController spindexerController) {
+    public UnstickSpindexer(Telemetry telemetry, SpindexerController spindexerController) {
         this.telemetry = telemetry;
         this.spindexerController = spindexerController;
     }
 
     public Status perform(BlackBoard blackBoard) {
 
-            spindexerController.update();
+        boolean isStuck = spindexerController.isStuck;
 
-        status = Status.SUCCESS;
+        if (isStuck) {
+            status = Status.RUNNING;
+        } else {
+            status = Status.SUCCESS;
+        }
+
         return status;
     }
 }

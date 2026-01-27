@@ -9,6 +9,7 @@ import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTree
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Intake.RetainArtifacts;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Intake.RunIntake;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Intake.StartIntake;
+import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Ramp.StoreRamp;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Shooter.RunShooter;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Spindexer.RunSpindexer;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Spindexer.SpinOnePosition;
@@ -127,10 +128,10 @@ public class AllUpTestBehaviorTree {
                         new Action(new PauseAction(telemetry, 2000), telemetry),
                         new Action(new SpinOnePosition(telemetry, spindexerController), telemetry),
                         new Action(new PauseAction(telemetry, 2000), telemetry),
-                        new Action(new SpinOnePosition(telemetry, spindexerController), telemetry),
                         new Action(new RetainArtifacts(telemetry, intakeController), telemetry),
-                        new Action(new PauseAction(telemetry, 2000), telemetry),
-                        new ShootSubTree(opMode, telemetry).getRoot()
+                        new ShootSubTree(opMode, telemetry).getRoot(),
+                        new Action(new StoreRamp(telemetry, rampController), telemetry),
+                        new Action(new PauseAction(telemetry, 500), telemetry)
                 ), telemetry);
 
         this.tree = new BehaviorTree(root, blackBoard);

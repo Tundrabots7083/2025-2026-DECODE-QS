@@ -1,9 +1,9 @@
 package org.firstinspires.ftc.teamcode.hardwareControl.actuators.Spindexer;
 
-
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
+import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -12,236 +12,277 @@ import org.firstinspires.ftc.teamcode.hardwareConfig.actuators.Spindexer.Spindex
 import org.firstinspires.ftc.teamcode.hardwareControl.actuators.common.MotionProfiler;
 import org.firstinspires.ftc.teamcode.hardwareControl.actuators.common.PIDFController;
 
-    public class SpindexerController {
+public class SpindexerController {
 
-        private DcMotorEx spindexerMotor;
+    private DcMotorEx spindexerMotor;
 
-        private SpindexerConstants spindexerConstants;
-        private SpindexerPIDFControllerConstants pidfControllerConstants;
+    private SpindexerConstants spindexerConstants;
+    private SpindexerPIDFControllerConstants pidfControllerConstants;
 
-        private double lastTargetPosition;
-        private double TOLERABLE_ERROR;
-        private double TOLERABLE_VELOCITY_ERROR;
-        private double LAST_POWER;
-        private double DEGREE_OFFSET;
-        private double MAX_INTEGRAL_SUM;
-        private double GEARING;
-        private double MAX_VELOCITY;
-        private double MAX_ACCELERATION;
-        private double startTime;
-        private double currentTime;
+    private double lastTargetPosition;
+    private double TOLERABLE_ERROR;
+    private double TOLERABLE_VELOCITY_ERROR;
+    private double LAST_POWER;
+    private double DEGREE_OFFSET;
+    private double MAX_INTEGRAL_SUM;
+    private double GEARING;
+    private double MAX_VELOCITY;
+    private double MAX_ACCELERATION;
+    private double startTime;
+    private double currentTime;
 
+    // Latched stuck flag; controller owns this entirely
+    public boolean isStuck = false;
 
-        private double kP;
-        private double kI;
-        private double kD;
-        private double kF;
-        private PIDFController pidfController;
-        private MotionProfiler motionProfiler;
+    private double kP;
+    private double kI;
+    private double kD;
+    private double kF;
+    private PIDFController pidfController;
+    private MotionProfiler motionProfiler;
 
-        private boolean initialized = false;
+    private boolean initialized = false;
+    private static final SpindexerController INSTANCE = new SpindexerController();
+    private Telemetry telemetry;
 
-        // Singleton instance
-        private static final SpindexerController INSTANCE = new SpindexerController();
-        private Telemetry telemetry;
+    // ----- Recovery FSM -----
+    private enum SpindexerState {
+        IDLE,
+        MOVING_TO_TARGET,
+        RECOVERY_BACKOFF,
+        RECOVERY_RETURN
+    }
 
-        private SpindexerController() {}
+    private SpindexerState spindexerState = SpindexerState.IDLE;
+    private double recoveryTarget;
+    private double savedGoalPosition;
+    private static final long RECOVERY_TIMEOUT_MS = 1000; // ms per stage
+    private static final double RECOVERY_OFFSET_DEG = 60; // backoff amount
 
-        public static SpindexerController getInstance() {
-            return INSTANCE;
-        }
+    private SpindexerController() {
+    }
 
+    public static SpindexerController getInstance() {
+        return INSTANCE;
+    }
 
-        public void initialize(HardwareMap hardwareMap, Telemetry telemetry) {
-            if (initialized) return;
+    public void initialize(HardwareMap hardwareMap, Telemetry telemetry) {
+        if (initialized) return;
 
-            setupConstants();
-            this.telemetry = telemetry;
+        setupConstants();
+        this.telemetry = telemetry;
 
-            initializeMotor(hardwareMap);
-            initializeLocalVariablesWithConstants();
-            initializePIDFController();
+        initializeMotor(hardwareMap);
+        initializeLocalVariablesWithConstants();
+        initializePIDFController();
 
-            initialized = true;
-        }
+        initialized = true;
+    }
 
-        private void setupConstants() {
-            spindexerConstants = new SpindexerConstants();
-            pidfControllerConstants = new SpindexerPIDFControllerConstants();
-        }
+    private void setupConstants() {
+        spindexerConstants = new SpindexerConstants();
+        pidfControllerConstants = new SpindexerPIDFControllerConstants();
+    }
 
-        private void initializeMotor(HardwareMap hardwareMap) {
-            spindexerMotor = hardwareMap.get(DcMotorEx.class, spindexerConstants.name);
+    private void initializeMotor(HardwareMap hardwareMap) {
+        spindexerMotor = hardwareMap.get(DcMotorEx.class, spindexerConstants.name);
 
-            MotorConfigurationType motorConfigurationType =
-                    spindexerMotor.getMotorType().clone();
+        MotorConfigurationType motorConfigurationType =
+                spindexerMotor.getMotorType().clone();
 
-            motorConfigurationType.setTicksPerRev(spindexerConstants.ticksPerRev);
-            motorConfigurationType.setAchieveableMaxRPMFraction(spindexerConstants.achievableMaxRPMFraction);
-            this.GEARING = spindexerConstants.gearing;
+        motorConfigurationType.setTicksPerRev(spindexerConstants.ticksPerRev);
+        motorConfigurationType.setAchieveableMaxRPMFraction(spindexerConstants.achievableMaxRPMFraction);
+        this.GEARING = spindexerConstants.gearing;
 
+        spindexerMotor.setMotorType(motorConfigurationType);
+        spindexerMotor.setMode(spindexerConstants.resetMode);
+        spindexerMotor.setMode(spindexerConstants.runMode);
+        spindexerMotor.setDirection(spindexerConstants.direction);
+    }
 
-            spindexerMotor.setMotorType(motorConfigurationType);
-            spindexerMotor.setMode(spindexerConstants.resetMode);
-            spindexerMotor.setMode(spindexerConstants.runMode);
-            spindexerMotor.setDirection(spindexerConstants.direction);
-        }
+    private void initializeLocalVariablesWithConstants() {
+        TOLERABLE_ERROR = spindexerConstants.tolerableError;
+        TOLERABLE_VELOCITY_ERROR = spindexerConstants.tolerableVelocityError;
+        DEGREE_OFFSET = spindexerConstants.degreeOffset;
+        MAX_INTEGRAL_SUM = pidfControllerConstants.maxIntegralSum;
+        MAX_VELOCITY = pidfControllerConstants.maxVelocity;
+        MAX_ACCELERATION = pidfControllerConstants.maxAcceleration;
 
-        private void initializeLocalVariablesWithConstants() {
-            TOLERABLE_ERROR = spindexerConstants.tolerableError;
-            TOLERABLE_VELOCITY_ERROR = spindexerConstants.tolerableVelocityError;
-            DEGREE_OFFSET = spindexerConstants.degreeOffset;
-            MAX_INTEGRAL_SUM = pidfControllerConstants.maxIntegralSum;
-            MAX_VELOCITY = pidfControllerConstants.maxVelocity;
-            MAX_ACCELERATION = pidfControllerConstants.maxAcceleration;
+        kP = pidfControllerConstants.kp;
+        kI = pidfControllerConstants.ki;
+        kD = pidfControllerConstants.kd;
+        kF = pidfControllerConstants.kf;
+    }
 
-            kP = pidfControllerConstants.kp;
-            kI = pidfControllerConstants.ki;
-            kD = pidfControllerConstants.kd;
-            kF = pidfControllerConstants.kf;
-        }
+    private void initializePIDFController() {
+        pidfController = new PIDFController(kP, kI, kD, kF);
+        pidfController.setMaxIntegralSum(MAX_INTEGRAL_SUM);
+        motionProfiler = new MotionProfiler(MAX_VELOCITY, MAX_ACCELERATION);
+    }
 
-        private void initializePIDFController() {
-            pidfController = new PIDFController(
-                    kP,
-                    kI,
-                    kD,
-                    kF            );
+    public void hardwareReset() {
+        spindexerMotor.setMode(spindexerConstants.resetMode);
+        spindexerMotor.setMode(spindexerConstants.runMode);
+    }
 
-            pidfController.setMaxIntegralSum(MAX_INTEGRAL_SUM);
-            motionProfiler = new MotionProfiler(MAX_VELOCITY, MAX_ACCELERATION);
-        }
+    public void moveToPosition(double targetPosition) {
 
-        public void hardwareReset() {
-            spindexerMotor.setMode(spindexerConstants.resetMode);
-            spindexerMotor.setMode(spindexerConstants.runMode);
-        }
-
-
-        public void moveToPosition(double targetPosition) {
-
-            if (targetPosition != lastTargetPosition) {
-                pidfController.reset();
-                double startPosition = getPosition();
-                motionProfiler.generateProfile(startPosition, targetPosition);
-                startTime = System.currentTimeMillis();
-                lastTargetPosition = targetPosition;
-            }
-
-                update();
-        }
-
-        public boolean isOnTarget() {
-            boolean isInDeadband = Math.abs(lastTargetPosition - getPosition())
-                    <= TOLERABLE_ERROR;
-            boolean isVelocityLow = Math.abs(spindexerMotor.getVelocity(AngleUnit.DEGREES))
-                    <= TOLERABLE_VELOCITY_ERROR;
-            return isInDeadband && isVelocityLow;
-        }
-
-        public void spinSlowly() {
-            spindexerMotor.setPower(0.3);
-        }
-
-        public void stop() {
-            spindexerMotor.setPower(0);
+        // Only generate new motion profile if not in recovery
+        if (spindexerState == SpindexerState.IDLE || spindexerState == SpindexerState.MOVING_TO_TARGET && lastTargetPosition != targetPosition) {
             pidfController.reset();
-        }
-        public double getPosition() {
-            double currentAngle = (spindexerMotor.getCurrentPosition() / spindexerConstants.ticksPerRev) * 360 * GEARING + DEGREE_OFFSET; //current position in degrees
-            return currentAngle;
-        }
+            double startPosition = getPosition();
+            motionProfiler.generateProfile(startPosition, targetPosition);
+            startTime = System.currentTimeMillis();
+            spindexerState = SpindexerState.MOVING_TO_TARGET;
 
-        public double getRPMVelocity() {
-            double currentDegPerSecond = spindexerMotor.getVelocity(AngleUnit.DEGREES);
-            return currentDegPerSecond / 6; // Current RPM
+            // Always store goal
+            lastTargetPosition = targetPosition;
         }
 
-        public double getTargetPosition() {
-            return lastTargetPosition;
+
+        update();
+    }
+
+    public boolean isOnTarget() {
+        boolean isInDeadband = Math.abs(lastTargetPosition - getPosition()) <= TOLERABLE_ERROR;
+        boolean isVelocityLow = Math.abs(spindexerMotor.getVelocity(AngleUnit.DEGREES)) <= TOLERABLE_VELOCITY_ERROR;
+        return isInDeadband && isVelocityLow;
+    }
+
+    public void spinSlowly() {
+        spindexerMotor.setPower(0.3);
+    }
+
+    public void stop() {
+        spindexerMotor.setPower(0);
+        pidfController.reset();
+    }
+
+    public double getPosition() {
+        double currentAngle = (spindexerMotor.getCurrentPosition() / spindexerConstants.ticksPerRev) * 360 * GEARING + DEGREE_OFFSET;
+        return currentAngle;
+    }
+
+    public double getRPMVelocity() {
+        double currentDegPerSecond = spindexerMotor.getVelocity(AngleUnit.DEGREES);
+        return currentDegPerSecond / 6; // Convert to RPM
+    }
+
+    public double getTargetPosition() {
+        return lastTargetPosition;
+    }
+
+    public int getSlotPosition() {
+        double currentAngle = getPosition() % 360;
+        if (currentAngle < 0) currentAngle += 360;
+
+        if (currentAngle < 120) return 0;
+        else if (currentAngle < 240) return 1;
+        else return 2;
+    }
+
+    public boolean isBusy() {
+        return spindexerMotor.isBusy();
+    }
+
+    public void update() {
+        currentTime = System.currentTimeMillis();
+        double currentPosition = getPosition();
+        double elapsedTime = (currentTime - startTime) / 1000.0;
+
+        // ----- Normal motion -----
+        double power = pidfController.calculate(motionProfiler.getMotionState(elapsedTime).position, currentPosition);
+        double feedForwardPower = power + kF * motionProfiler.getMotionState(elapsedTime).velocity;
+        feedForwardPower = Range.clip(feedForwardPower, -1, 1);
+
+        if (Math.abs(LAST_POWER - feedForwardPower) > 0.01) {
+            spindexerMotor.setPower(feedForwardPower);
+            LAST_POWER = feedForwardPower;
         }
 
-        public int getSlotPosition() {
-            double currentAngle = getPosition() % 360;
-            if (currentAngle < 0) {
-                currentAngle += 360;
-            }
+        // ----- Stuck detection and recovery -----
+        detectStuck(elapsedTime);
 
-            if (currentAngle < 120) {
-                return 0;
-            } else if (currentAngle < 240) {
-                return 1;
-            } else {
-                return 2;
-            }
+        switch (spindexerState) {
+            case RECOVERY_BACKOFF:
+                // Step 1: move to backoff target
+                if (isOnTarget() || System.currentTimeMillis() - startTime > RECOVERY_TIMEOUT_MS) {
+                    spindexerState = SpindexerState.RECOVERY_RETURN;
+                    startTime = System.currentTimeMillis();
+                    pidfController.reset();
+                    motionProfiler.generateProfile(getPosition(), savedGoalPosition);
+                }
+                break;
+
+            case RECOVERY_RETURN:
+                // Step 2: move back to original goal
+                if (isOnTarget() || System.currentTimeMillis() - startTime > RECOVERY_TIMEOUT_MS) {
+                    spindexerState = SpindexerState.MOVING_TO_TARGET;
+                    isStuck = false; // auto-clear flag
+                }
+                break;
+
+            case MOVING_TO_TARGET:
+            case IDLE:
+            default:
+                break;
         }
 
-        public boolean isBusy() {
-            return spindexerMotor.isBusy();
-        }
+        telemetry.addData("Spindexer isStuck?", isStuck);
+        telemetry.addData("Spindexer State", spindexerState);
+    }
 
-        public void update() {
+    private void detectStuck(double elapsedTime) {
+        double currentVelocity = getRPMVelocity();
+        double predictedVelocity = (LAST_POWER - (Math.signum(LAST_POWER) * 0.07)) * 240;
+        double predictedVelocityError = predictedVelocity - currentVelocity;
 
-            currentTime = System.currentTimeMillis();
-            double currentPosition = getPosition();
-            double elapsedTime = (currentTime - startTime) / 1000.0; // Need seconds for Motion profile
+        if (!isStuck &&
+                predictedVelocityError >= 100 &&
+                Math.abs(currentVelocity) < 0.5 &&
+                Math.abs(LAST_POWER) > 0.1 &&
+                elapsedTime > 0.5) {
 
-            double error = getTargetPosition() - currentPosition;
-            double power = pidfController.calculate(motionProfiler.getMotionState(elapsedTime).position, currentPosition);
-            double feedForwardPower = power + kF * motionProfiler.getMotionState(elapsedTime).velocity;
+            // Latch stuck flag
+            isStuck = true;
 
-            telemetry.addData("Spindexer Target", lastTargetPosition);
-            telemetry.addData("Spindexer Profile Target", motionProfiler.getMotionState(elapsedTime).position);
-            telemetry.addData("Spindexer Position", currentPosition);
-            telemetry.addData("Spindexer PID Power", power);
-            telemetry.addData("Spindexer kF Power", feedForwardPower);
-            telemetry.addData("Spindexer Error", error);
-            telemetry.addData("Spindexer Velocity", getRPMVelocity());
-
-
-            if (Math.abs(LAST_POWER - feedForwardPower) > 0.01) {
-                spindexerMotor.setPower(feedForwardPower);
-                LAST_POWER = feedForwardPower;
-            }
-
-            double currentVelocity = getRPMVelocity();
-            double predictedVelocity = (feedForwardPower - (Math.signum(feedForwardPower) * 0.07)) * 240;
-            double predictedVelocityError = predictedVelocity - currentVelocity;
-            if (predictedVelocityError >= 100
-                    && currentVelocity >= -0.01
-                    && Math.abs(feedForwardPower) > 0.1
-                    && elapsedTime > 0.5
-                    && elapsedTime < motionProfiler.getTotalTime()) {
-                spindexerMotor.setPower(0.0);
-                System.out.println("SPINDEXER KF POWER THROW: " + predictedVelocity);
-                System.out.println("SPINDEXER VELOCITY THROW: " + currentVelocity);
-                System.out.println("SPINDEXER VELOCITY ERROR: " + predictedVelocityError);
-                throw new RuntimeException("Spindexer is stuck!");
-            }
-        }
-
-        public void setDegreeOffset(double newOffset) {
-            this.DEGREE_OFFSET = newOffset;
-        }
-
-        public void testSpindexer(double power) {
-            spindexerMotor.setPower(power);
-        }
-
-        public void setKf(double newkF) {
-            pidfController.setPIDF(kP, kI, kD, newkF);
-        }
-
-        public void reset() {
-            if (!initialized) return;
-
-            spindexerMotor.setMode(spindexerConstants.resetMode);
-            spindexerMotor.setMode(spindexerConstants.runMode);
-            spindexerMotor.setDirection(spindexerConstants.direction);
-
-            lastTargetPosition = getPosition();
-
+            // Initialize recovery FSM
+            startTime = System.currentTimeMillis();
+            savedGoalPosition = lastTargetPosition;
+            recoveryTarget = getPosition() - RECOVERY_OFFSET_DEG;
             pidfController.reset();
-            initialized = false;
+            motionProfiler.generateProfile(getPosition(), recoveryTarget);
+
+            spindexerState = SpindexerState.RECOVERY_BACKOFF;
+
+            // Stop motor to prevent stress
+            spindexerMotor.setPower(0.0);
         }
     }
+
+    public void setDegreeOffset(double newOffset) {
+        this.DEGREE_OFFSET = newOffset;
+    }
+
+    public void testSpindexer(double power) {
+        spindexerMotor.setPower(power);
+    }
+
+    public void setKf(double newkF) {
+        pidfController.setPIDF(kP, kI, kD, newkF);
+    }
+
+    public void reset() {
+        if (!initialized) return;
+
+        spindexerMotor.setMode(spindexerConstants.resetMode);
+        spindexerMotor.setMode(spindexerConstants.runMode);
+        spindexerMotor.setDirection(spindexerConstants.direction);
+
+        lastTargetPosition = getPosition();
+        pidfController.reset();
+        isStuck = false;
+        initialized = false;
+        spindexerState = SpindexerState.IDLE;
+    }
+}

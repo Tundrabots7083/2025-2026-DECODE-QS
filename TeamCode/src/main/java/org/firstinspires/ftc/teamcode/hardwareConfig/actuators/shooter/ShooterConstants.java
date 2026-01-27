@@ -17,5 +17,5 @@ public class ShooterConstants {
     public DcMotorSimple.Direction rearMotorDirection = DcMotorSimple.Direction.FORWARD;
     public double startPosition = 0;
     public double targetPosition = 0;
-    public double tolerableError = 20; //rpm
+    public double tolerableError = 60; //rpm
 }

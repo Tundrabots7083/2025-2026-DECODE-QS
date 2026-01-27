@@ -27,6 +27,9 @@ public class TestSpindexerOpMode extends LinearOpMode {
     JoinedTelemetry joinedTelemetry = new JoinedTelemetry(telemetry, PanelsTelemetry.INSTANCE.getFtcTelemetry());
 
     private long count = 0;
+    boolean isStuckHasRun = false;
+    double currentTarget = 0.0;
+
 
     // All lynx module hubs
     public List<LynxModule> allHubs;
@@ -63,24 +66,27 @@ public class TestSpindexerOpMode extends LinearOpMode {
 
 
         while (opModeIsActive()) {
+
+            // --- Spindexer ---
+            // Always feed the desired goal; controller decides whether it is honored
             spindexerController.moveToPosition(targetSpindexPosition);
+
+            // --- Intake ---
             intakeController.spinToTargetVelocity(targetIntakeVel);
 
+            // --- Telemetry / timing ---
             long currentTime = System.nanoTime();
             double loopTimeMs = (currentTime - lastTime) / 1e6;
             lastTime = currentTime;
 
             joinedTelemetry.addData("Loop Time (ms)", loopTimeMs);
-
-            count++;
             joinedTelemetry.update();
 
-            // Clear the bulk cache for each Lynx module hub. This must be performed once per loop
-            // as the bulk read caches are being handled manually.
+            // --- Bulk cache clear ---
             for (LynxModule hub : allHubs) {
                 hub.clearBulkCache();
             }
-        }
-    }
-}
+        } // end while loop
+    } // end runOpMode
+} // end class
 
