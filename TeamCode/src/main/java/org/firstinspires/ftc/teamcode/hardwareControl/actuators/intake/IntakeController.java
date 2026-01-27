@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigu
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.teamcode.hardwareConfig.actuators.intake.IntakeConstants;
 import org.firstinspires.ftc.teamcode.hardwareControl.actuators.common.SimpleVelocityController;
 
@@ -20,6 +21,22 @@ public class IntakeController {
     private double TOLERABLE_ERROR;
     private double targetVelocity;
     private double lastPower = 0.0;
+
+    // --- Effort-based stuck detection ---
+    private boolean isStuck = false;
+
+    private static final double STUCK_CURRENT = 2.15;   // amps of large effort
+    private static final long STUCK_TIME_MS = 100;
+
+    private long effortStartTime = -1;
+
+    // --- Unstick ---
+    private static final long UNSTICK_DURATION_MS = 340;
+    private static final double UNSTICK_REVERSE_POWER = -0.5;
+
+    private boolean unsticking = false;
+    private long unstickStartTime = 0;
+
 
 
     /**
@@ -112,20 +129,81 @@ public class IntakeController {
         initialized = false;
     }
 
+    public boolean isStuck() {
+        return isStuck;
+    }
+
+    public boolean isUnsticking() {
+        return unsticking;
+    }
+
+    public void clearStuck() {
+        isStuck = false;
+        effortStartTime = -1;
+    }
+
+    private void detectStuck(double current) {
+        if (Math.abs(targetVelocity) < 10) {
+            clearStuck();
+            return;
+        }
+
+        boolean highEffort =
+                Math.abs(current) > STUCK_CURRENT;
+
+        if (highEffort) {
+            if (effortStartTime < 0) {
+                effortStartTime = System.currentTimeMillis();
+            } else if (System.currentTimeMillis() - effortStartTime > STUCK_TIME_MS) {
+                isStuck = true;
+            }
+        } else {
+            clearStuck();
+        }
+    }
+
+    private void startUnstick() {
+        unsticking = true;
+        unstickStartTime = System.currentTimeMillis();
+        velocityController.reset();
+        intakeMotor.setPower(UNSTICK_REVERSE_POWER);
+    }
+
+
     public void update() {
+
+        if (unsticking) {
+            telemetry.addData("Intake Unsticking", true);
+            if (System.currentTimeMillis() - unstickStartTime >= UNSTICK_DURATION_MS) {
+                unsticking = false;
+                clearStuck();
+                velocityController.reset();
+            } else {
+                return; // hold reverse pulse
+            }
+        }
+
         double currentVelocity = getCurrentVelocity();
 
         double power = velocityController.calculate(targetVelocity, currentVelocity);
+        double intakeCurrent = intakeMotor.getCurrent(CurrentUnit.AMPS);
 
         if (Math.abs(lastPower - power) > 0.004) {
             intakeMotor.setPower(power);
             lastPower = power;
         }
 
+        telemetry.addData("Intake Target RPM", targetVelocity);
+        telemetry.addData("Intake Current RPM", currentVelocity);
+        telemetry.addData("Intake Power", power);
+        telemetry.addData("Intake Current", intakeCurrent);
 
-//        telemetry.addData("Intake Target RPM", targetVelocity);
-//        telemetry.addData("Intake Current RPM", currentVelocity);
-//        telemetry.addData("Intake Power", power);
+
+        detectStuck(intakeCurrent);
+
+        if (isStuck && !unsticking) {
+            startUnstick();
+        }
     }
 }
 
