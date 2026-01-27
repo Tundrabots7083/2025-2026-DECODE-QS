@@ -61,7 +61,7 @@ public class TestSpindexerOpMode extends LinearOpMode {
         this.intakeController = IntakeController.getInstance();
 
         this.intakeController.reset();
-        this.intakeController.initialize(hardwareMap, telemetry);
+        this.intakeController.initialize(hardwareMap, joinedTelemetry);
         /// End Intake
 
 
