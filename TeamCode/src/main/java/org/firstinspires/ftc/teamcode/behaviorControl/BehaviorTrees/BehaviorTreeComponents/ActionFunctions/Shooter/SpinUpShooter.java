@@ -29,7 +29,6 @@ public class SpinUpShooter implements ActionFunction {
         // Activate the shooter mechanism
         shooterController.spinToTargetVelocity(targetVelocity);
 
-        telemetry.addData("got in here", "arejaklewrjalwkejrklajwelrk");
 
         if (!shooterController.isOnTarget()) {
             status = Status.RUNNING;

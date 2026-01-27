@@ -26,9 +26,8 @@ public class ShooterController {
     private double targetVelocity;
 
 
-    public static double FRONT_Kp = 0.000005;
-    public static double REAR_Kp = 0.000005;
-
+    public static double FRONT_Kp;
+    public static double REAR_Kp;
     private double FRONT_Kf_a;
     private double FRONT_Kf_b;
     private double FRONT_Kf_c;
@@ -96,11 +95,13 @@ public class ShooterController {
         frontShooterMotor.setMode(shooterConstants.resetMode);
         frontShooterMotor.setMode(shooterConstants.mode);
         frontShooterMotor.setDirection(shooterConstants.frontMotorDirection);
+        frontShooterMotor.setPower(0.0);
 
         rearShooterMotor.setMotorType(motorConfigurationType);
         rearShooterMotor.setMode(shooterConstants.resetMode);
         rearShooterMotor.setMode(shooterConstants.mode);
         rearShooterMotor.setDirection(shooterConstants.rearMotorDirection);
+        rearShooterMotor.setPower(0.0);
     }
 
     private void initializeLocalVariablesWithConstants(){
@@ -108,6 +109,9 @@ public class ShooterController {
 
         START_VELOCITY = shooterConstants.startPosition;
         TOLERABLE_ERROR = shooterConstants.tolerableError;
+
+        FRONT_Kp = tbhConstants.FRONT_Kp;
+        REAR_Kp = tbhConstants.REAR_Kp;
 
         FRONT_Kf_a = tbhConstants.FRONT_Kf_a;
         FRONT_Kf_b = tbhConstants.FRONT_Kf_b;
@@ -194,6 +198,10 @@ public class ShooterController {
         double REARtbhPower = rearTbhController.calculate(targetVelocity, currentRearVelocity);
         telemetry.addData("SentFrontpower:", FRONTtbhPower);
         telemetry.addData("SentRearpower:", REARtbhPower);
+
+        telemetry.addData("CurrentFrontVelocity", getFrontCurrentVelocity());
+        telemetry.addData("CurrentRearVelocity", getRearCurrentVelocity());
+        telemetry.addData("TargetVelocity", targetVelocity);
 
 
         //Apply power to the motor if this is the first loop

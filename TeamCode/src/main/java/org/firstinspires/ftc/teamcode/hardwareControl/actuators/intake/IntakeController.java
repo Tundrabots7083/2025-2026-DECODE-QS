@@ -84,6 +84,10 @@ public class IntakeController {
         return intakeMotor.getVelocity(AngleUnit.DEGREES) / 6.0;
     }
 
+    public double getTargetVelocity() {
+        return targetVelocity;
+    }
+
     public void spinToTargetVelocity(double newTargetVelocity) {
         if (newTargetVelocity != targetVelocity) {
             velocityController.reset();

@@ -26,7 +26,6 @@ public class DriveTrainController {
     public void initialize(HardwareMap hardwareMap, Pose startPose) {
         if (initialized) {
             return;
-            //throw new IllegalStateException("DriveTrainController has already been initialized.");
         }
 
         follower = Constants.createFollower(hardwareMap);
@@ -84,6 +83,14 @@ public class DriveTrainController {
     }
     public void breakFollowing() {
          follower.breakFollowing();
+    }
+
+    public void startTeleOpDrive() {
+        follower.startTeleOpDrive();
+    }
+
+    public void setTeleOpDrive(double forward, double strafe, double turn, boolean isRobotCentric) {
+        follower.setTeleOpDrive(forward, strafe, turn, isRobotCentric);
     }
 }
 

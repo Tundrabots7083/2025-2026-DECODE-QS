@@ -11,6 +11,7 @@ public class RunSpindexer implements ActionFunction {
     Telemetry telemetry;
     SpindexerController spindexerController;
     Status status;
+    double currentTarget;
 
 
     public RunSpindexer(Telemetry telemetry, SpindexerController spindexerController) {

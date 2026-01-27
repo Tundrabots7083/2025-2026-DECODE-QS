@@ -7,6 +7,7 @@ import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTree
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.BlackBoard;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.Status;
 import org.firstinspires.ftc.teamcode.hardwareControl.actuators.intake.IntakeController;
+import org.firstinspires.ftc.teamcode.hardwareControl.sensors.gamepad.GamepadDelta;
 
 @Configurable
     public class StartIntake implements ActionFunction {
@@ -15,8 +16,8 @@ import org.firstinspires.ftc.teamcode.hardwareControl.actuators.intake.IntakeCon
         IntakeController intakeController;
         Status lastStatus = Status.FAILURE;
         Status status;
+    GamepadDelta gamepad_1_Delta;
     public static double INTAKE_VELOCITY = 320;
-    private double lastVelocity = 0;
 
         public StartIntake(Telemetry telemetry, IntakeController intakeController) {
             this.telemetry = telemetry;
@@ -24,20 +25,25 @@ import org.firstinspires.ftc.teamcode.hardwareControl.actuators.intake.IntakeCon
         }
 
         public Status perform(BlackBoard blackBoard) {
-            if (lastStatus == Status.SUCCESS && INTAKE_VELOCITY == lastVelocity) {
-                return Status.SUCCESS;
+            if (lastStatus == Status.SUCCESS) {
+                return lastStatus;
             }
 
-            // Activate the intake mechanism
-            intakeController.spinToTargetVelocity(INTAKE_VELOCITY);
+            if (blackBoard.getValue("gamepad1Delta") != null) {
+                gamepad_1_Delta = (GamepadDelta) blackBoard.getValue("gamepad1Delta");
 
-            if(!intakeController.isOnTarget()){
+                if (gamepad_1_Delta.aPressed) {
+                    // Activate the intake mechanism
+                    intakeController.spinToTargetVelocity(INTAKE_VELOCITY);
+                }
+            }
+
+            if (!intakeController.isOnTarget() || intakeController.getTargetVelocity() != INTAKE_VELOCITY) {
                 status = Status.RUNNING;
             } else {
                 status = Status.SUCCESS;
             }
 
-            lastVelocity = INTAKE_VELOCITY;
             lastStatus = status;
             return status;
         }
