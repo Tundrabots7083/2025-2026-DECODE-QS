@@ -146,11 +146,13 @@ public class SpindexerController {
     public boolean isOnTarget() {
         boolean isInDeadband = Math.abs(lastTargetPosition - getPosition()) <= TOLERABLE_ERROR;
         boolean isVelocityLow = Math.abs(spindexerMotor.getVelocity(AngleUnit.DEGREES)) <= TOLERABLE_VELOCITY_ERROR;
-        return isInDeadband && isVelocityLow;
+        boolean isRecovering = spindexerState == SpindexerState.RECOVERY_BACKOFF || spindexerState == SpindexerState.RECOVERY_RETURN;
+        return isInDeadband && isVelocityLow && !isRecovering;
     }
 
     public void spinSlowly() {
         spindexerMotor.setPower(0.3);
+        telemetry.addData("Spindex State", spindexerState);
     }
 
     public void stop() {
@@ -228,8 +230,6 @@ public class SpindexerController {
                 break;
         }
 
-        telemetry.addData("Spindexer isStuck?", isStuck);
-        telemetry.addData("Spindexer State", spindexerState);
     }
 
     private void detectStuck(double elapsedTime) {

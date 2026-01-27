@@ -1,11 +1,17 @@
 package org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTree;
 
+import com.pedropathing.geometry.Pose;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.AA_Common.PauseAction;
+import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.DriveTrain.RunDrivetrain;
+import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.DriveTrain.TeleOpDrive;
+import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Gamepad.ComputeGamepad_1_Delta;
+import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Gamepad.ComputeGamepad_2_Delta;
+import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Gamepad.ReadGamepadsSnapshot;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Intake.RetainArtifacts;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Intake.RunIntake;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Intake.StartIntake;
@@ -23,6 +29,7 @@ import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTree
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.Status;
 import org.firstinspires.ftc.teamcode.hardwareControl.actuators.Ramp.RampController;
 import org.firstinspires.ftc.teamcode.hardwareControl.actuators.Spindexer.SpindexerController;
+import org.firstinspires.ftc.teamcode.hardwareControl.actuators.driveTrain.DriveTrainController;
 import org.firstinspires.ftc.teamcode.hardwareControl.actuators.intake.IntakeController;
 import org.firstinspires.ftc.teamcode.hardwareControl.actuators.shooter.ShooterController;
 import org.firstinspires.ftc.teamcode.hardwareControl.sensors.spindexerLimitSwitch.SpindexerLimitSwitchController;
@@ -38,6 +45,8 @@ public class AllUpTestBehaviorTree {
     protected Telemetry telemetry;
     protected HardwareMap hardwareMap;
     protected LinearOpMode opMode;
+
+    private final Pose startPose = new Pose(0, 0, 0);
 
     ///
     protected SpindexerController spindexerController;
@@ -62,6 +71,10 @@ public class AllUpTestBehaviorTree {
 
     ///
 
+    ///
+    protected DriveTrainController driveTrainController;
+
+    ///
 
     public AllUpTestBehaviorTree(LinearOpMode opMode, Telemetry telemetry) {
         this.hardwareMap = opMode.hardwareMap;
@@ -110,6 +123,13 @@ public class AllUpTestBehaviorTree {
         this.shooterController.initialize(hardwareMap, telemetry);
         /// End Shooter
 
+        /// Drivetrain
+        this.driveTrainController = DriveTrainController.getInstance();
+
+        this.driveTrainController.reset();
+        this.driveTrainController.initialize(hardwareMap, startPose);
+        /// End Drivetrain
+
 
         telemetry.clearAll();
 
@@ -117,6 +137,11 @@ public class AllUpTestBehaviorTree {
                 Arrays.asList(
                         new Action(new RunIntake(telemetry, intakeController), telemetry),
                         new Action(new RunShooter(telemetry, shooterController), telemetry),
+                        new Action(new RunDrivetrain(telemetry, driveTrainController), telemetry),
+                        new Action(new ReadGamepadsSnapshot(telemetry, opMode), telemetry),
+                        new Action(new ComputeGamepad_1_Delta(), telemetry),
+                        new Action(new ComputeGamepad_2_Delta(), telemetry),
+                        new Action(new TeleOpDrive(telemetry, driveTrainController), telemetry),
                         new CalibrateSpindexerSubTree(opMode, telemetry).getRoot(),
                         new Action(new RunSpindexer(telemetry, spindexerController), telemetry),
                         new Action(new SwitchToShootCoordinates(telemetry, spindexerController), telemetry),
@@ -129,7 +154,7 @@ public class AllUpTestBehaviorTree {
                         new Action(new SpinOnePosition(telemetry, spindexerController), telemetry),
                         new Action(new PauseAction(telemetry, 2000), telemetry),
                         new Action(new RetainArtifacts(telemetry, intakeController), telemetry),
-                        new ShootSubTree(opMode, telemetry).getRoot(),
+                        //new ShootSubTree(opMode, telemetry).getRoot(),
                         new Action(new StoreRamp(telemetry, rampController), telemetry),
                         new Action(new PauseAction(telemetry, 500), telemetry)
                 ), telemetry);
