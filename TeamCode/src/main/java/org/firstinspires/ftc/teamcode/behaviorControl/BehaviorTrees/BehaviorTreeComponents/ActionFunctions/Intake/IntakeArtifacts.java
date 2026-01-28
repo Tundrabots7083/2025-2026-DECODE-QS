@@ -10,7 +10,7 @@ import org.firstinspires.ftc.teamcode.hardwareControl.actuators.intake.IntakeCon
 import org.firstinspires.ftc.teamcode.hardwareControl.sensors.gamepad.GamepadDelta;
 
 @Configurable
-public class StartIntake implements ActionFunction {
+public class IntakeArtifacts implements ActionFunction {
 
     Telemetry telemetry;
     IntakeController intakeController;
@@ -20,7 +20,7 @@ public class StartIntake implements ActionFunction {
     private final double RETAIN_VELOCITY = 125;
     private boolean isIntaking = false;
 
-    public StartIntake(Telemetry telemetry, IntakeController intakeController) {
+    public IntakeArtifacts(Telemetry telemetry, IntakeController intakeController) {
         this.telemetry = telemetry;
         this.intakeController = intakeController;
     }
@@ -30,7 +30,7 @@ public class StartIntake implements ActionFunction {
         if (blackBoard.getValue("gamepad1Delta") != null) {
             gamepad_1_Delta = (GamepadDelta) blackBoard.getValue("gamepad1Delta");
 
-            if (gamepad_1_Delta.aPressed) {
+            if (gamepad_1_Delta.dpadUpPressed) {
                 // Activate the intake mechanism
                 isIntaking = !isIntaking;
             }

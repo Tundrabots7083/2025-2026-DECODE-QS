@@ -22,7 +22,7 @@ public class SpindexerIsFull implements Condition {
     }
 
     public boolean check(BlackBoard blackBoard) {
-        artifactTracker.getCurrentPatternSnapshot();
+        currentPattern = artifactTracker.getCurrentPatternSnapshot();
         numGreen = 0;
         numPurple = 0;
         return countArtifacts();

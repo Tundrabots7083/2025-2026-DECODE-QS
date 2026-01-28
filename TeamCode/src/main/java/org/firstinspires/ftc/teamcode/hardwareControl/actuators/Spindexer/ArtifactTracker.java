@@ -34,7 +34,7 @@ public class ArtifactTracker {
         this.telemetry = telemetry;
         currentPattern = new ArtifactColor[PATTERN_SIZE];
         clearPattern();
-
+        telemetry.addLine("HasBeenInitialized");
         initialized = true;
     }
 
@@ -42,7 +42,6 @@ public class ArtifactTracker {
      * Clears stored artifacts but keeps tracker usable
      */
     public void clearPattern() {
-        ensureInitialized();
         for (int i = 0; i < PATTERN_SIZE; i++) {
             currentPattern[i] = ArtifactColor.NONE;
         }
@@ -52,7 +51,6 @@ public class ArtifactTracker {
      * Sets artifact color at a given index
      */
     public void setArtifact(int position, ArtifactColor artifactColor) {
-        ensureInitialized();
 
         if (position < 0 || position >= PATTERN_SIZE) {
             throw new IllegalArgumentException(
@@ -67,7 +65,6 @@ public class ArtifactTracker {
      * Safe read-only access
      */
     public ArtifactColor getArtifact(int position) {
-        ensureInitialized();
 
         if (position < 0 || position >= PATTERN_SIZE) {
             throw new IllegalArgumentException(
@@ -82,8 +79,7 @@ public class ArtifactTracker {
      * Returns a defensive copy to prevent external mutation
      */
     public ArtifactColor[] getCurrentPatternSnapshot() {
-        ensureInitialized();
-        return currentPattern.clone();
+        return currentPattern;
     }
 
     /** Explicit lifecycle reset */
@@ -93,17 +89,4 @@ public class ArtifactTracker {
         telemetry = null;
     }
 
-    /**
-     * Optional periodic hook
-     */
-    public void update() {
-        ensureInitialized();
-        // no-op for now
-    }
-
-    private void ensureInitialized() {
-        if (!initialized) {
-            initialize(telemetry);
-        }
-    }
 }

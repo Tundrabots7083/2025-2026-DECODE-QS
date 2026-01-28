@@ -137,6 +137,10 @@ public class IntakeController {
         return unsticking;
     }
 
+    public void stop() {
+        intakeMotor.setPower(0.0);
+    }
+
     public void clearStuck() {
         isStuck = false;
         effortStartTime = -1;

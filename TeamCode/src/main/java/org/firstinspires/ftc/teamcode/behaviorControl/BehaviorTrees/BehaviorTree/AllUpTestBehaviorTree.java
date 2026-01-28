@@ -7,16 +7,14 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.AA_Common.PauseAction;
-import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.DistanceSensor.DetectArtifact;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Gamepad.ComputeGamepad_1_Delta;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Gamepad.ComputeGamepad_2_Delta;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Gamepad.ReadGamepadsSnapshot;
+import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Intake.IntakeArtifacts;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Intake.RunIntake;
-import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Intake.StartIntake;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.Action;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.BehaviorTree;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.BlackBoard;
-import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.Conditional;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.Node;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.Sequence;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.Status;
@@ -151,8 +149,7 @@ public class AllUpTestBehaviorTree {
 //                        new Action(new RunSpindexer(telemetry, spindexerController), telemetry),
 //                        new Action(new SwitchToShootCoordinates(telemetry, spindexerController), telemetry),
 //                        new Action(new SpinToZeroPosition(telemetry, spindexerController), telemetry),
-                        new Conditional(new DetectArtifact(telemetry, distanceSensorController)),
-                        new Action(new StartIntake(telemetry, intakeController), telemetry),
+                        new Action(new IntakeArtifacts(telemetry, intakeController), telemetry),
                         // Intake 3 Artifacts
                         new Action(new PauseAction(telemetry, 30000), telemetry)//,
 //                        new Action(new SpinOnePosition(telemetry, spindexerController), telemetry),

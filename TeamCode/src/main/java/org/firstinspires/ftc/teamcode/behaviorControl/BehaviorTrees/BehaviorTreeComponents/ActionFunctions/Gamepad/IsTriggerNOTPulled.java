@@ -16,7 +16,7 @@ public class IsTriggerNOTPulled implements Condition {
     public boolean check(BlackBoard blackBoard) {
 
         if (blackBoard.getValue("gamepad1Delta") != null) {
-            GamepadDelta gamepad_1_Delta = (GamepadDelta) blackBoard.getValue("ArtifactColor");
+            GamepadDelta gamepad_1_Delta = (GamepadDelta) blackBoard.getValue("gamepad1Delta");
             return !gamepad_1_Delta.rightTriggerPulling && !gamepad_1_Delta.leftTriggerPulling;
         } else {
             return false;

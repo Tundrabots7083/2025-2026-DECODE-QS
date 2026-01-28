@@ -4,7 +4,7 @@ import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.hardwareConfig.sensors.colorSensor.IntakeColorSensorConstants;
+import org.firstinspires.ftc.teamcode.hardwareConfig.sensors.colorSensor.LEFTIntakeColorSensorConstants;
 
 public class LeftIntakeColorSensorController {
     private boolean initialized = false;
@@ -12,7 +12,7 @@ public class LeftIntakeColorSensorController {
     // Private static instance (eager initialization)
     private static final LeftIntakeColorSensorController INSTANCE = new LeftIntakeColorSensorController();
     private Telemetry telemetry;
-    private IntakeColorSensorConstants colorSensorConstants;
+    private LEFTIntakeColorSensorConstants colorSensorConstants;
 
     private RevColorSensorV3 colorSensor;
 
@@ -48,7 +48,7 @@ public class LeftIntakeColorSensorController {
     }
 
     private void setupConstants() {
-        colorSensorConstants = new IntakeColorSensorConstants();
+        colorSensorConstants = new LEFTIntakeColorSensorConstants();
     }
 
     public void reset() {

@@ -10,9 +10,9 @@ import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTree
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.ArtifactTracker.MatchPatternToMotif;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.ColorSensor.DetectArtifactColor;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.DriveTrain.Relocalize;
+import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Intake.IntakeArtifacts;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Intake.RetainArtifacts;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Intake.RunIntake;
-import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Intake.StartIntake;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.LimeLight.DetectMotifPattern;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.LimeLight.DetectRobotPose;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Shooter.RunShooter;
@@ -180,7 +180,7 @@ public class SampleAutoBehaviorTree {
                         // simultaneously sort artifacts
                         new ShootSubTree(opMode, telemetry).getRoot(),
                         // drive to intake position
-                        new Action(new StartIntake(telemetry, intakeController), telemetry),
+                        new Action(new IntakeArtifacts(telemetry, intakeController), telemetry),
                         // drive through pile
                         new Action(new DetectArtifactColor(telemetry, rightIntakeColorSensorController, leftIntakeColorSensorController), telemetry),
                         //conditional to check if took in an artifact
