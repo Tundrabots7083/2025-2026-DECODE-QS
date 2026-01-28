@@ -25,8 +25,8 @@ public class IntakeController {
     // --- Effort-based stuck detection ---
     private boolean isStuck = false;
 
-    private static final double STUCK_CURRENT = 2.15;   // amps of large effort
-    private static final long STUCK_TIME_MS = 100;
+    private static final double STUCK_CURRENT = 2.2;   // amps of large effort
+    private static final long STUCK_TIME_MS = 150;
 
     private long effortStartTime = -1;
 

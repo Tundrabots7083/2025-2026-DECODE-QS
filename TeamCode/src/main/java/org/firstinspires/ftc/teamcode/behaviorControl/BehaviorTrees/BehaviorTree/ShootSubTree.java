@@ -5,8 +5,11 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.AA_Common.PauseAction;
+import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Gamepad.IsTriggerNOTHeld;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Gamepad.IsTriggerNOTPulled;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Ramp.DeployRamp;
+import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Ramp.IsRampDeployed;
+import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Ramp.StoreRamp;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Shooter.CalculateRPM;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Shooter.SpinUpShooter;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Spindexer.SpinOnePosition;
@@ -28,37 +31,31 @@ import java.util.Arrays;
 
 
 public class ShootSubTree {
-    private BehaviorTree tree;
-    private Node root;
-    private BlackBoard blackBoard;
     protected Telemetry telemetry;
     protected HardwareMap hardwareMap;
     protected LinearOpMode opMode;
-
     /// Limelight
     protected LimeLightController limeLightController;
-
-    ///
-
     ///
     protected SpindexerController spindexerController;
     ///
-
-    ///
     protected IntakeController intakeController;
     ///
-
-    ///
     protected RampController rampController;
-    ///
 
+    ///
     ///
     protected TurretController turretController;
-
     ///
-
     ///
     protected ShooterController shooterController;
+    ///
+    private BehaviorTree tree;
+    ///
+    private Node root;
+
+    ///
+    private BlackBoard blackBoard;
 
     ///
 
@@ -104,20 +101,43 @@ public class ShootSubTree {
 
         this.root = new Sequence(
                 Arrays.asList(
+                        // Sequence
                         new Action(new CalculateRPM(telemetry, shooterController), telemetry),
                         new Selector(
                                 Arrays.asList(
+                                        //Selector
                                         new Conditional(new IsTriggerNOTPulled(telemetry)),
                                         new Sequence(
                                                 Arrays.asList(
-                                                        new Action(new DeployRamp(telemetry, rampController), telemetry),
-                                                        new Action(new PauseAction(telemetry, 400), telemetry),
+                                                        new Selector(
+                                                                Arrays.asList(
+                                                                        // Selector
+                                                                        new Conditional(new IsRampDeployed(telemetry, rampController)),
+                                                                        new Sequence(
+                                                                                Arrays.asList(
+                                                                                        //Sequence
+                                                                                        new Action(new DeployRamp(telemetry, rampController), telemetry),
+                                                                                        new Action(new PauseAction(telemetry, 400), telemetry)
+                                                                                ), telemetry
+                                                                        )
+                                                                ), telemetry
+                                                        ),
+                                                        // Sequence
                                                         new Action(new SpinUpShooter(telemetry, shooterController), telemetry),
                                                         new Action(new SpinOnePosition(telemetry, spindexerController), telemetry),
-                                                        new Action(new SpinUpShooter(telemetry, shooterController), telemetry),
-                                                        new Action(new SpinOnePosition(telemetry, spindexerController), telemetry),
-                                                        new Action(new SpinUpShooter(telemetry, shooterController), telemetry),
-                                                        new Action(new SpinOnePosition(telemetry, spindexerController), telemetry)
+                                                        new Selector(
+                                                                Arrays.asList(
+                                                                        // Selector
+                                                                        new Conditional(new IsTriggerNOTHeld(telemetry)),
+                                                                        new Sequence(
+                                                                                Arrays.asList(
+                                                                                        //Sequence
+                                                                                        new Action(new StoreRamp(telemetry, rampController), telemetry),
+                                                                                        new Action(new PauseAction(telemetry, 400), telemetry)
+                                                                                ), telemetry
+                                                                        )
+                                                                ), telemetry
+                                                        )
                                                 ), telemetry)
                                 ), telemetry
                         )
