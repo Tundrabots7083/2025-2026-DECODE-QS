@@ -26,10 +26,14 @@ public class TrackDetectedArtifact implements ActionFunction {
 
     public Status perform(BlackBoard blackBoard) {
 
+        if (blackBoard.getValue("ArtifactColor") != null) {
         ArtifactColor artifactColor = (ArtifactColor) blackBoard.getValue("ArtifactColor");
         int currentSlot = spindexerController.getSlotPosition();
 
-        artifactTracker.addArtifact(currentSlot, artifactColor);
+            artifactTracker.setArtifact(currentSlot, artifactColor);
         return Status.SUCCESS;
+        } else {
+            return Status.FAILURE;
+        }
     }
 }

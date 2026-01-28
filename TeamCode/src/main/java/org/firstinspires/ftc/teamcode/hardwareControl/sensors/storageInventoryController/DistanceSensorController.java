@@ -4,7 +4,6 @@ import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.hardwareConfig.sensors.intakeDistanceSensor.IntakeDistanceSensorConstants;
 
 public class DistanceSensorController {
@@ -50,7 +49,7 @@ public class DistanceSensorController {
     }
 
     public double getDistance() {
-        return distanceSensor.getDistance(DistanceUnit.MM);
+        return distanceSensor.getDistance(distanceSensorConstants.distanceUnit);
     }
 
     public void update() {

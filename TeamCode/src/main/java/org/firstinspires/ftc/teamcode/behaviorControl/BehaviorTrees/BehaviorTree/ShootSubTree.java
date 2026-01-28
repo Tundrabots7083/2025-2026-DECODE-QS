@@ -4,6 +4,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.AA_Common.PauseAction;
+import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Gamepad.IsTriggerNOTPulled;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Ramp.DeployRamp;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Shooter.CalculateRPM;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Shooter.SpinUpShooter;
@@ -11,7 +13,9 @@ import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTree
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.Action;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.BehaviorTree;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.BlackBoard;
+import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.Conditional;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.Node;
+import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.Selector;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.Sequence;
 import org.firstinspires.ftc.teamcode.hardwareControl.actuators.Ramp.RampController;
 import org.firstinspires.ftc.teamcode.hardwareControl.actuators.Spindexer.SpindexerController;
@@ -101,13 +105,22 @@ public class ShootSubTree {
         this.root = new Sequence(
                 Arrays.asList(
                         new Action(new CalculateRPM(telemetry, shooterController), telemetry),
-                        new Action(new DeployRamp(telemetry, rampController), telemetry),
-                        new Action(new SpinUpShooter(telemetry, shooterController), telemetry),
-                        new Action(new SpinOnePosition(telemetry, spindexerController), telemetry),
-                        new Action(new SpinUpShooter(telemetry, shooterController), telemetry),
-                        new Action(new SpinOnePosition(telemetry, spindexerController), telemetry),
-                        new Action(new SpinUpShooter(telemetry, shooterController), telemetry),
-                        new Action(new SpinOnePosition(telemetry, spindexerController), telemetry)
+                        new Selector(
+                                Arrays.asList(
+                                        new Conditional(new IsTriggerNOTPulled(telemetry)),
+                                        new Sequence(
+                                                Arrays.asList(
+                                                        new Action(new DeployRamp(telemetry, rampController), telemetry),
+                                                        new Action(new PauseAction(telemetry, 400), telemetry),
+                                                        new Action(new SpinUpShooter(telemetry, shooterController), telemetry),
+                                                        new Action(new SpinOnePosition(telemetry, spindexerController), telemetry),
+                                                        new Action(new SpinUpShooter(telemetry, shooterController), telemetry),
+                                                        new Action(new SpinOnePosition(telemetry, spindexerController), telemetry),
+                                                        new Action(new SpinUpShooter(telemetry, shooterController), telemetry),
+                                                        new Action(new SpinOnePosition(telemetry, spindexerController), telemetry)
+                                                ), telemetry)
+                                ), telemetry
+                        )
                 ), telemetry);
 
     }

@@ -7,7 +7,7 @@ import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.hardwareControl.sensors.storageInventoryController.IntakeColorSensorController;
+import org.firstinspires.ftc.teamcode.hardwareControl.sensors.storageInventoryController.RightIntakeColorSensorController;
 
 import java.util.List;
 
@@ -15,7 +15,7 @@ import java.util.List;
 @Autonomous(name = "Test Color Sensor", group = "test")
 public class TestColorSensorOpMode extends LinearOpMode {
 
-    IntakeColorSensorController colorSensorController;
+    RightIntakeColorSensorController colorSensorController;
 
     private long lastTime = System.nanoTime();
 
@@ -43,7 +43,7 @@ public class TestColorSensorOpMode extends LinearOpMode {
         waitForStart();
 
         /// Color Sensor
-        this.colorSensorController = IntakeColorSensorController.getInstance();
+        this.colorSensorController = RightIntakeColorSensorController.getInstance();
 
         this.colorSensorController.reset();
         this.colorSensorController.initialize(hardwareMap, joinedTelemetry);

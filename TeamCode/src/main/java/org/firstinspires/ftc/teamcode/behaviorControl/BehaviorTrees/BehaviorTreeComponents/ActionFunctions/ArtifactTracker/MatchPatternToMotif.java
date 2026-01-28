@@ -35,7 +35,7 @@ public class MatchPatternToMotif implements ActionFunction {
     }
 
     public Status perform(BlackBoard blackBoard) {
-        currentPattern = artifactTracker.getCurrentPattern();
+        currentPattern = artifactTracker.getCurrentPatternSnapshot();
         countArtifacts();
 
         if (isNotFull) {

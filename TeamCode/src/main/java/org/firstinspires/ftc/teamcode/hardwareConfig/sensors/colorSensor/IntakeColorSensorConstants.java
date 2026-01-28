@@ -2,9 +2,9 @@ package org.firstinspires.ftc.teamcode.hardwareConfig.sensors.colorSensor;
 
 public class IntakeColorSensorConstants {
     public String name = "ColorSensor";
-    public static float gain = 50;
-    public static double maxGreen = 160;
-    public static double minGreen = 150;
-    public static double maxPurple = 233;
-    public static double minPurple = 220;
+    public float gain = 50;
+    public double redScalar = 1.3;
+    public double blueScalar = 1.3;
+    public double greenScalar = 233;
+    public double minGreen = 250;
 }

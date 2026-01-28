@@ -7,23 +7,16 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.AA_Common.PauseAction;
-import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.DriveTrain.RunDrivetrain;
-import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.DriveTrain.TeleOpDrive;
+import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.DistanceSensor.DetectArtifact;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Gamepad.ComputeGamepad_1_Delta;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Gamepad.ComputeGamepad_2_Delta;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Gamepad.ReadGamepadsSnapshot;
-import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Intake.RetainArtifacts;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Intake.RunIntake;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Intake.StartIntake;
-import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Ramp.StoreRamp;
-import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Shooter.RunShooter;
-import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Spindexer.RunSpindexer;
-import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Spindexer.SpinOnePosition;
-import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Spindexer.SpinToZeroPosition;
-import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Spindexer.SwitchToShootCoordinates;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.Action;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.BehaviorTree;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.BlackBoard;
+import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.Conditional;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.Node;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.Sequence;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.Status;
@@ -33,6 +26,7 @@ import org.firstinspires.ftc.teamcode.hardwareControl.actuators.driveTrain.Drive
 import org.firstinspires.ftc.teamcode.hardwareControl.actuators.intake.IntakeController;
 import org.firstinspires.ftc.teamcode.hardwareControl.actuators.shooter.ShooterController;
 import org.firstinspires.ftc.teamcode.hardwareControl.sensors.spindexerLimitSwitch.SpindexerLimitSwitchController;
+import org.firstinspires.ftc.teamcode.hardwareControl.sensors.storageInventoryController.DistanceSensorController;
 
 import java.util.Arrays;
 import java.util.List;
@@ -76,6 +70,11 @@ public class AllUpTestBehaviorTree {
 
     ///
 
+    ///
+    protected DistanceSensorController distanceSensorController;
+
+    ///
+
     public AllUpTestBehaviorTree(LinearOpMode opMode, Telemetry telemetry) {
         this.hardwareMap = opMode.hardwareMap;
         this.telemetry = telemetry;
@@ -89,24 +88,24 @@ public class AllUpTestBehaviorTree {
         this.blackBoard.reset();
 
         /// Spindexer
-        this.spindexerController = SpindexerController.getInstance();
-
-        this.spindexerController.reset();
-        this.spindexerController.initialize(hardwareMap, telemetry);
+//        this.spindexerController = SpindexerController.getInstance();
+//
+//        this.spindexerController.reset();
+//        this.spindexerController.initialize(hardwareMap, telemetry);
         ///  End Spindexer
 
         /// Ramp
-        this.rampController = RampController.getInstance();
-
-        this.rampController.reset();
-        this.rampController.initialize(hardwareMap, telemetry);
+//        this.rampController = RampController.getInstance();
+//
+//        this.rampController.reset();
+//        this.rampController.initialize(hardwareMap, telemetry);
         /// End Ramp
 
         /// Switch
-        this.switchController = SpindexerLimitSwitchController.getInstance();
-
-        this.switchController.reset();
-        this.switchController.initialize(hardwareMap, telemetry);
+//        this.switchController = SpindexerLimitSwitchController.getInstance();
+//
+//        this.switchController.reset();
+//        this.switchController.initialize(hardwareMap, telemetry);
         /// End Switch
 
         /// Intake
@@ -117,46 +116,53 @@ public class AllUpTestBehaviorTree {
         /// End Intake
 
         /// Shooter
-        this.shooterController = ShooterController.getInstance();
-
-        this.shooterController.reset();
-        this.shooterController.initialize(hardwareMap, telemetry);
+//        this.shooterController = ShooterController.getInstance();
+//
+//        this.shooterController.reset();
+//        this.shooterController.initialize(hardwareMap, telemetry);
         /// End Shooter
 
         /// Drivetrain
-        this.driveTrainController = DriveTrainController.getInstance();
-
-        this.driveTrainController.reset();
-        this.driveTrainController.initialize(hardwareMap, startPose);
+//        this.driveTrainController = DriveTrainController.getInstance();
+//
+//        this.driveTrainController.reset();
+//        this.driveTrainController.initialize(hardwareMap, startPose);
         /// End Drivetrain
 
+        /// DistanceSensor
+        this.distanceSensorController = DistanceSensorController.getInstance();
+
+        this.distanceSensorController.reset();
+        this.distanceSensorController.initialize(hardwareMap, telemetry);
+        /// End DistanceSensor
 
         telemetry.clearAll();
 
         this.root = new Sequence(
                 Arrays.asList(
                         new Action(new RunIntake(telemetry, intakeController), telemetry),
-                        new Action(new RunShooter(telemetry, shooterController), telemetry),
-                        new Action(new RunDrivetrain(telemetry, driveTrainController), telemetry),
+//                        new Action(new RunShooter(telemetry, shooterController), telemetry),
+//                        new Action(new RunDrivetrain(telemetry, driveTrainController), telemetry),
                         new Action(new ReadGamepadsSnapshot(telemetry, opMode), telemetry),
                         new Action(new ComputeGamepad_1_Delta(), telemetry),
                         new Action(new ComputeGamepad_2_Delta(), telemetry),
-                        new Action(new TeleOpDrive(telemetry, driveTrainController), telemetry),
-                        new CalibrateSpindexerSubTree(opMode, telemetry).getRoot(),
-                        new Action(new RunSpindexer(telemetry, spindexerController), telemetry),
-                        new Action(new SwitchToShootCoordinates(telemetry, spindexerController), telemetry),
-                        new Action(new SpinToZeroPosition(telemetry, spindexerController), telemetry),
+//                        new Action(new TeleOpDrive(telemetry, driveTrainController), telemetry),
+//                        new CalibrateSpindexerSubTree(opMode, telemetry).getRoot(),
+//                        new Action(new RunSpindexer(telemetry, spindexerController), telemetry),
+//                        new Action(new SwitchToShootCoordinates(telemetry, spindexerController), telemetry),
+//                        new Action(new SpinToZeroPosition(telemetry, spindexerController), telemetry),
+                        new Conditional(new DetectArtifact(telemetry, distanceSensorController)),
                         new Action(new StartIntake(telemetry, intakeController), telemetry),
                         // Intake 3 Artifacts
-                        new Action(new PauseAction(telemetry, 2000), telemetry),
-                        new Action(new SpinOnePosition(telemetry, spindexerController), telemetry),
-                        new Action(new PauseAction(telemetry, 2000), telemetry),
-                        new Action(new SpinOnePosition(telemetry, spindexerController), telemetry),
-                        new Action(new PauseAction(telemetry, 2000), telemetry),
-                        new Action(new RetainArtifacts(telemetry, intakeController), telemetry),
-                        //new ShootSubTree(opMode, telemetry).getRoot(),
-                        new Action(new StoreRamp(telemetry, rampController), telemetry),
-                        new Action(new PauseAction(telemetry, 500), telemetry)
+                        new Action(new PauseAction(telemetry, 30000), telemetry)//,
+//                        new Action(new SpinOnePosition(telemetry, spindexerController), telemetry),
+//                        new Action(new PauseAction(telemetry, 2000), telemetry),
+//                        new Action(new SpinOnePosition(telemetry, spindexerController), telemetry),
+//                        new Action(new PauseAction(telemetry, 2000), telemetry),
+//                        new Action(new RetainArtifacts(telemetry, intakeController), telemetry),
+//                        new ShootSubTree(opMode, telemetry).getRoot(),
+//                        new Action(new StoreRamp(telemetry, rampController), telemetry),
+//                        new Action(new PauseAction(telemetry, 500), telemetry)
                 ), telemetry);
 
         this.tree = new BehaviorTree(root, blackBoard);

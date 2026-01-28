@@ -10,41 +10,39 @@ import org.firstinspires.ftc.teamcode.hardwareControl.actuators.intake.IntakeCon
 import org.firstinspires.ftc.teamcode.hardwareControl.sensors.gamepad.GamepadDelta;
 
 @Configurable
-    public class StartIntake implements ActionFunction {
+public class StartIntake implements ActionFunction {
 
-        Telemetry telemetry;
-        IntakeController intakeController;
-        Status lastStatus = Status.FAILURE;
-        Status status;
+    Telemetry telemetry;
+    IntakeController intakeController;
+    Status status;
     GamepadDelta gamepad_1_Delta;
     public static double INTAKE_VELOCITY = 320;
+    private final double RETAIN_VELOCITY = 125;
+    private boolean isIntaking = false;
 
-        public StartIntake(Telemetry telemetry, IntakeController intakeController) {
-            this.telemetry = telemetry;
-            this.intakeController = intakeController;
-        }
-
-        public Status perform(BlackBoard blackBoard) {
-            if (lastStatus == Status.SUCCESS) {
-                return lastStatus;
-            }
-
-            if (blackBoard.getValue("gamepad1Delta") != null) {
-                gamepad_1_Delta = (GamepadDelta) blackBoard.getValue("gamepad1Delta");
-
-                if (gamepad_1_Delta.aPressed) {
-                    // Activate the intake mechanism
-                    intakeController.spinToTargetVelocity(INTAKE_VELOCITY);
-                }
-            }
-
-            if (!intakeController.isOnTarget() || intakeController.getTargetVelocity() != INTAKE_VELOCITY) {
-                status = Status.RUNNING;
-            } else {
-                status = Status.SUCCESS;
-            }
-
-            lastStatus = status;
-            return status;
-        }
+    public StartIntake(Telemetry telemetry, IntakeController intakeController) {
+        this.telemetry = telemetry;
+        this.intakeController = intakeController;
     }
+
+    public Status perform(BlackBoard blackBoard) {
+
+        if (blackBoard.getValue("gamepad1Delta") != null) {
+            gamepad_1_Delta = (GamepadDelta) blackBoard.getValue("gamepad1Delta");
+
+            if (gamepad_1_Delta.aPressed) {
+                // Activate the intake mechanism
+                isIntaking = !isIntaking;
+            }
+            if (isIntaking) {
+                intakeController.spinToTargetVelocity(INTAKE_VELOCITY);
+            } else {
+                intakeController.spinToTargetVelocity(RETAIN_VELOCITY);
+            }
+        }
+
+
+        status = Status.SUCCESS;
+        return status;
+    }
+}

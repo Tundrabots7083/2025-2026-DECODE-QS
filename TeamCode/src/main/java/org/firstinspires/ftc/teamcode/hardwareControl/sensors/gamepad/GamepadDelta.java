@@ -27,10 +27,10 @@ public final class GamepadDelta {
     public final float leftTriggerDelta;
     public final float rightTriggerDelta;
 
-    public final boolean leftTriggerRising;
-    public final boolean leftTriggerFalling;
-    public final boolean rightTriggerRising;
-    public final boolean rightTriggerFalling;
+    public final boolean leftTriggerPulling;
+    public final boolean leftTriggerReleasing;
+    public final boolean rightTriggerPulling;
+    public final boolean rightTriggerReleasing;
 
     /* ===================== Sticks ===================== */
 
@@ -80,19 +80,19 @@ public final class GamepadDelta {
         leftTriggerDelta = curr.leftTrigger - prev.leftTrigger;
         rightTriggerDelta = curr.rightTrigger - prev.rightTrigger;
 
-        leftTriggerRising =
+        leftTriggerPulling =
                 prev.leftTrigger < TRIGGER_THRESHOLD &&
                         curr.leftTrigger >= TRIGGER_THRESHOLD;
 
-        leftTriggerFalling =
+        leftTriggerReleasing =
                 prev.leftTrigger >= TRIGGER_THRESHOLD &&
                         curr.leftTrigger < TRIGGER_THRESHOLD;
 
-        rightTriggerRising =
+        rightTriggerPulling =
                 prev.rightTrigger < TRIGGER_THRESHOLD &&
                         curr.rightTrigger >= TRIGGER_THRESHOLD;
 
-        rightTriggerFalling =
+        rightTriggerReleasing =
                 prev.rightTrigger >= TRIGGER_THRESHOLD &&
                         curr.rightTrigger < TRIGGER_THRESHOLD;
 
