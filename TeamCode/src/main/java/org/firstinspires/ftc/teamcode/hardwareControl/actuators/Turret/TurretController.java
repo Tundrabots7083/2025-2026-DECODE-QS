@@ -91,6 +91,7 @@ public class TurretController {
 
     public void moveToTargetPosition(Pose3D robotPose, Position targetPosition){
         double turretTargetAngle = this.getTurretAngleDegrees(robotPose, targetPosition, TURRET_X_OFFSET, TURRET_Y_OFFSET);
+
         TURRET_TARGET_POSITION = turretTargetAngle;
         setTurretTargetAngle(turretTargetAngle);
     }
@@ -110,7 +111,7 @@ public class TurretController {
     /**
      * Normalize angle to (-180, 180]
      */
-    private static double normalizeDegrees(double angleDeg) {
+    private double normalizeDegrees(double angleDeg) {
         while (angleDeg <= -180.0) angleDeg += 360.0;
         while (angleDeg > 180.0) angleDeg -= 360.0;
         return angleDeg;

@@ -15,6 +15,7 @@ public class DeployRamp implements ActionFunction {
     RampController rampController;
     public static double DEPLOYED_RAMP = 175; //degrees at which the ramp is deployed
     Status lastStatus = Status.FAILURE;
+    boolean isAutonomous;
 
     public DeployRamp(Telemetry telemetry, RampController rampController) {
         this.telemetry = telemetry;
@@ -22,7 +23,8 @@ public class DeployRamp implements ActionFunction {
     }
 
     public Status perform(BlackBoard blackBoard) {
-        if (lastStatus == Status.SUCCESS) {
+        isAutonomous = (boolean) blackBoard.getValue("isAutonomous");
+        if (lastStatus == Status.SUCCESS && isAutonomous) {
             return lastStatus;
         }
 

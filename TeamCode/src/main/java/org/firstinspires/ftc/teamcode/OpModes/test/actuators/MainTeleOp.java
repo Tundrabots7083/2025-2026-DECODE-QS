@@ -26,7 +26,6 @@ public class MainTeleOp extends LinearOpMode {
     public void runOpMode() {
 
         joinedTelemetry = new JoinedTelemetry(PanelsTelemetry.INSTANCE.getFtcTelemetry(), telemetry);
-        joinedTelemetry.update();
         initialize(this);
 
         while (!isBotInitialized) {
@@ -46,7 +45,7 @@ public class MainTeleOp extends LinearOpMode {
 
         while (opModeIsActive()) {
             Status result = this.mainBehaviorTree.tick();
-            telemetry.update();
+            joinedTelemetry.update();
 
 
             if (result == Status.FAILURE) {

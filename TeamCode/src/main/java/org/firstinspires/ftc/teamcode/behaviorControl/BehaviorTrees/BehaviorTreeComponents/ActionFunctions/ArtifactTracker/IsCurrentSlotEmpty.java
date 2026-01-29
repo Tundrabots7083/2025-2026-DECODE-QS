@@ -16,8 +16,10 @@ public class IsCurrentSlotEmpty implements Condition {
     public boolean check(BlackBoard blackBoard) {
 
         if (blackBoard.getValue("ArtifactColor") != null) {
+            telemetry.addLine("HIIIIIIIIIIIIIIIIIIIIIIIIIII");
             return blackBoard.getValue("ArtifactColor") == ArtifactColor.NONE;
         } else {
+            telemetry.addLine("HIIIelooooooooooooooooooooooo");
             return false;
         }
     }

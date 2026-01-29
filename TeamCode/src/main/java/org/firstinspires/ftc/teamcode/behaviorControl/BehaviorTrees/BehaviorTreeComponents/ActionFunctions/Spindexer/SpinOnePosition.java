@@ -12,6 +12,8 @@ public class SpinOnePosition implements ActionFunction {
     SpindexerController spindexerController;
     Status status;
     Status lastStatus = Status.FAILURE;
+    boolean isAutonomous;
+    boolean hasSpun = false;
 
     private double currentTarget;
     private double targetPosition;
@@ -22,19 +24,22 @@ public class SpinOnePosition implements ActionFunction {
     }
 
     public Status perform(BlackBoard blackBoard) {
-        if (lastStatus == Status.SUCCESS) {
+        isAutonomous = (boolean) blackBoard.getValue("isAutonomous");
+        if (lastStatus == Status.SUCCESS && (isAutonomous)) {
             return lastStatus;
         }
 
-        if (lastStatus == Status.FAILURE) {
+        if (!hasSpun) {
             currentTarget = spindexerController.getTargetPosition();
             targetPosition = currentTarget + 120;
             spindexerController.moveToPosition(targetPosition);
+            hasSpun = true;
         }
 
         if (!spindexerController.isOnTarget()) {
             status = Status.RUNNING;
         } else {
+            hasSpun = false;
             status = Status.SUCCESS;
         }
 

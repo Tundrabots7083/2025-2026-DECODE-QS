@@ -21,6 +21,7 @@ import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTree
 import org.firstinspires.ftc.teamcode.hardwareControl.actuators.Ramp.RampController;
 import org.firstinspires.ftc.teamcode.hardwareControl.actuators.Spindexer.ArtifactTracker;
 import org.firstinspires.ftc.teamcode.hardwareControl.actuators.Spindexer.SpindexerController;
+import org.firstinspires.ftc.teamcode.hardwareControl.actuators.Turret.TurretController;
 import org.firstinspires.ftc.teamcode.hardwareControl.actuators.intake.IntakeController;
 import org.firstinspires.ftc.teamcode.hardwareControl.sensors.spindexerLimitSwitch.SpindexerLimitSwitchController;
 import org.firstinspires.ftc.teamcode.hardwareControl.sensors.storageInventoryController.LeftIntakeColorSensorController;
@@ -69,6 +70,12 @@ public class TeleOpInitializeBehaviorTree {
     protected ArtifactTracker artifactTracker;
 
     ///
+
+    ///
+    protected TurretController turretController;
+
+    ///
+
 
     public TeleOpInitializeBehaviorTree(LinearOpMode opMode, Telemetry telemetry) {
         this.hardwareMap = opMode.hardwareMap;
@@ -124,7 +131,6 @@ public class TeleOpInitializeBehaviorTree {
 
         /// End ColorSensors
 
-
         /// Artifact Tracker
         this.artifactTracker = ArtifactTracker.getInstance();
 
@@ -132,8 +138,14 @@ public class TeleOpInitializeBehaviorTree {
         this.artifactTracker.initialize(telemetry);
         /// End Artifact Tracker
 
+        /// Artifact Tracker
+        this.turretController = TurretController.getInstance();
 
-//        telemetry.clearAll();
+        this.turretController.reset();
+        this.turretController.initialize(hardwareMap, telemetry);
+        /// End Artifact Tracker
+
+        telemetry.clearAll();
 
 
         this.root = new Sequence(

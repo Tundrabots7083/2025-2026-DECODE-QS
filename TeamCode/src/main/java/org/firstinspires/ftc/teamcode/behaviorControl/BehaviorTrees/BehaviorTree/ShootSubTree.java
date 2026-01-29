@@ -5,16 +5,17 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.AA_Common.PauseAction;
-import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Gamepad.IsTriggerNOTHeld;
-import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Gamepad.IsTriggerNOTPulled;
+import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Gamepad.CheckTriggers;
+import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Gamepad.HasTriggerNotTripped;
+import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Gamepad.ResetTriggers;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Ramp.DeployRamp;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Ramp.IsRampDeployed;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Ramp.StoreRamp;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Shooter.CalculateRPM;
-import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Shooter.SpinUpShooter;
+import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Spindexer.HasSpindexerSpun;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Spindexer.SpinOnePosition;
+import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Spindexer.SwitchSpindexerState;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.Action;
-import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.BehaviorTree;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.BlackBoard;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.Conditional;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.Node;
@@ -42,7 +43,6 @@ public class ShootSubTree {
     protected IntakeController intakeController;
     ///
     protected RampController rampController;
-
     ///
     ///
     protected TurretController turretController;
@@ -50,7 +50,6 @@ public class ShootSubTree {
     ///
     protected ShooterController shooterController;
     ///
-    private BehaviorTree tree;
     ///
     private Node root;
 
@@ -102,13 +101,15 @@ public class ShootSubTree {
         this.root = new Sequence(
                 Arrays.asList(
                         // Sequence
-                        new Action(new CalculateRPM(telemetry, shooterController), telemetry),
+                        new Action(new CheckTriggers(telemetry), telemetry),
                         new Selector(
                                 Arrays.asList(
                                         //Selector
-                                        new Conditional(new IsTriggerNOTPulled(telemetry)),
+                                        new Conditional(new HasTriggerNotTripped(telemetry)),
                                         new Sequence(
                                                 Arrays.asList(
+                                                        // Sequence
+                                                        new Action(new CalculateRPM(telemetry, shooterController), telemetry),
                                                         new Selector(
                                                                 Arrays.asList(
                                                                         // Selector
@@ -123,17 +124,30 @@ public class ShootSubTree {
                                                                 ), telemetry
                                                         ),
                                                         // Sequence
-                                                        new Action(new SpinUpShooter(telemetry, shooterController), telemetry),
-                                                        new Action(new SpinOnePosition(telemetry, spindexerController), telemetry),
+//                                                        new Action(new SpinUpShooter(telemetry, shooterController), telemetry),
+                                                        new Selector(
+                                                                Arrays.asList(
+                                                                        new Conditional(new HasSpindexerSpun(telemetry)),
+                                                                        new Sequence(
+                                                                                Arrays.asList(
+                                                                                        new Action(new SpinOnePosition(telemetry, spindexerController), telemetry),
+                                                                                        new Action(new SwitchSpindexerState(telemetry), telemetry)
+                                                                                ), telemetry
+                                                                        )
+                                                                ), telemetry
+                                                        ),
                                                         new Selector(
                                                                 Arrays.asList(
                                                                         // Selector
-                                                                        new Conditional(new IsTriggerNOTHeld(telemetry)),
+//                                                                        new Conditional(new IsTriggerNOTHeld(telemetry)),
                                                                         new Sequence(
                                                                                 Arrays.asList(
                                                                                         //Sequence
                                                                                         new Action(new StoreRamp(telemetry, rampController), telemetry),
-                                                                                        new Action(new PauseAction(telemetry, 400), telemetry)
+                                                                                        new Action(new PauseAction(telemetry, 400), telemetry),
+                                                                                        new Action(new ResetTriggers(telemetry), telemetry),
+                                                                                        new Action(new SwitchSpindexerState(telemetry), telemetry)
+
                                                                                 ), telemetry
                                                                         )
                                                                 ), telemetry

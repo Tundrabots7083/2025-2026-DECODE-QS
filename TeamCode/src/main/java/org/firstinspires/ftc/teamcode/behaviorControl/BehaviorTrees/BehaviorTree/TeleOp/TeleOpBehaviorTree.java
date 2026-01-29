@@ -7,12 +7,11 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTree.ShootSubTree;
+import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.AA_Common.SetTeleOp;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.ArtifactTracker.IsCurrentSlotEmpty;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.ArtifactTracker.SpindexerIsFull;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.ArtifactTracker.TrackDetectedArtifact;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.ColorSensor.DetectArtifactColor;
-import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.DriveTrain.RunDrivetrain;
-import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.DriveTrain.TeleOpDrive;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Gamepad.ComputeGamepad_1_Delta;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Gamepad.ComputeGamepad_2_Delta;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Gamepad.ReadGamepadsSnapshot;
@@ -110,23 +109,14 @@ public class TeleOpBehaviorTree {
 
         /// Ramp
         this.rampController = RampController.getInstance();
-//
-//        this.rampController.reset();
-//        this.rampController.initialize(hardwareMap, telemetry);
         /// End Ramp
 
         /// Switch
         this.switchController = SpindexerLimitSwitchController.getInstance();
-//
-//        this.switchController.reset();
-//        this.switchController.initialize(hardwareMap, telemetry);
         /// End Switch
 
         /// Intake
         this.intakeController = IntakeController.getInstance();
-
-        this.intakeController.reset();
-        this.intakeController.initialize(hardwareMap, telemetry);
         /// End Intake
 
         /// Shooter
@@ -137,41 +127,34 @@ public class TeleOpBehaviorTree {
         /// End Shooter
 
         /// Drivetrain
-        this.driveTrainController = DriveTrainController.getInstance();
-
-        this.driveTrainController.reset();
-        this.driveTrainController.initialize(hardwareMap, startPose);
+//        this.driveTrainController = DriveTrainController.getInstance();
+//
+//        this.driveTrainController.reset();
+//        this.driveTrainController.initialize(hardwareMap, startPose);
         /// End Drivetrain
 
         /// Right Color Sensor
         this.rightColorSensorController = RightIntakeColorSensorController.getInstance();
-//
-//        this.rightColorSensorController.reset();
-//        this.rightColorSensorController.initialize(hardwareMap, telemetry);
         /// End Right Color Sensor
 
         /// Left Color Sensor
         this.leftColorSensorController = LeftIntakeColorSensorController.getInstance();
 
-//        this.leftColorSensorController.reset();
-//        this.leftColorSensorController.initialize(hardwareMap, telemetry);
         /// End Left Color Sensor
 
         /// Artifact Tracker
         this.artifactTracker = ArtifactTracker.getInstance();
-//
-//        this.artifactTracker.reset();
-//        this.artifactTracker.initialize(telemetry);
         /// End Artifact Tracker
 
         telemetry.clearAll();
 
         this.root = new Sequence(
                 Arrays.asList(
+                        new Action(new SetTeleOp(telemetry), telemetry),
                         new Action(new RunIntake(telemetry, intakeController), telemetry),
                         new Action(new RunShooter(telemetry, shooterController), telemetry),
                         new Action(new RunSpindexer(telemetry, spindexerController), telemetry),
-                        new Action(new RunDrivetrain(telemetry, driveTrainController), telemetry),
+//                        new Action(new RunDrivetrain(telemetry, driveTrainController), telemetry),
                         new Action(new ReadGamepadsSnapshot(telemetry, opMode), telemetry),
                         new Action(new ComputeGamepad_1_Delta(), telemetry),
                         new Action(new ComputeGamepad_2_Delta(), telemetry),
@@ -188,7 +171,7 @@ public class TeleOpBehaviorTree {
                                         new Action(new SpinOnePosition(telemetry, spindexerController), telemetry)
                                 ), telemetry
                         ),
-                        new Action(new TeleOpDrive(telemetry, driveTrainController), telemetry),
+//                        new Action(new TeleOpDrive(telemetry, driveTrainController), telemetry),
                         // Press dPadUp on GP1 to start or stop intake
                         new Action(new IntakeArtifacts(telemetry, intakeController), telemetry)
                 ), telemetry);

@@ -141,6 +141,8 @@ public class ShooterController {
                 rearShooterMotor.setMode(shooterConstants.resetMode);
                 rearShooterMotor.setMode(shooterConstants.mode);
                 rearShooterMotor.setDirection(shooterConstants.rearMotorDirection);
+
+                targetVelocity = 0.0;
             }
             initialized = false;
         }
@@ -165,12 +167,10 @@ public class ShooterController {
 
     private void setFrontPower(double power) {
         frontShooterMotor.setPower(power);
-        telemetry.addData("SentFrontpower:", power);
     }
 
     private void setRearPower(double power) {
         rearShooterMotor.setPower(power);
-        telemetry.addData("SentRearpower:", power);
     }
 
     public void spinToTargetVelocity(double newTargetVelocity){
@@ -196,12 +196,12 @@ public class ShooterController {
         // Calculate motor tbhPower using TBH
         double FRONTtbhPower = frontTbhController.calculate(targetVelocity, currentFrontVelocity);
         double REARtbhPower = rearTbhController.calculate(targetVelocity, currentRearVelocity);
-        telemetry.addData("SentFrontpower:", FRONTtbhPower);
-        telemetry.addData("SentRearpower:", REARtbhPower);
+        telemetry.addData("[ShooterController] SentFrontpower:", FRONTtbhPower);
+        telemetry.addData("[ShooterController] SentRearpower:", REARtbhPower);
 
-        telemetry.addData("CurrentFrontVelocity", getFrontCurrentVelocity());
-        telemetry.addData("CurrentRearVelocity", getRearCurrentVelocity());
-        telemetry.addData("TargetVelocity", targetVelocity);
+        telemetry.addData("[ShooterController] CurrentFrontVelocity", getFrontCurrentVelocity());
+        telemetry.addData("[ShooterController] CurrentRearVelocity", getRearCurrentVelocity());
+        telemetry.addData("[ShooterController] TargetVelocity", targetVelocity);
 
 
         //Apply power to the motor if this is the first loop

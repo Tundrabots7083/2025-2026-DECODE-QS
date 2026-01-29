@@ -60,9 +60,9 @@ public class RightIntakeColorSensorController {
         green = colorSensor.green();
         blue = colorSensor.blue();
 
-        telemetry.addData("Red", red);
-        telemetry.addData("Green", green);
-        telemetry.addData("Blue", blue);
+//        telemetry.addData("Red", red);
+//        telemetry.addData("Green", green);
+//        telemetry.addData("Blue", blue);
         boolean isGreen = colorIsGreen();
         boolean isPurple = colorIsPurple();
 
