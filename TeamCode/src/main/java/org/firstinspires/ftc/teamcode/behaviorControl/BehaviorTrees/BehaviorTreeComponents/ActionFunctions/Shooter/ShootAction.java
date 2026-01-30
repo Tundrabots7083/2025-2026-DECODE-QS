@@ -9,13 +9,20 @@ import org.firstinspires.ftc.teamcode.hardwareControl.actuators.Spindexer.Spinde
 import org.firstinspires.ftc.teamcode.hardwareControl.actuators.shooter.ShooterController;
 import org.firstinspires.ftc.teamcode.hardwareControl.sensors.gamepad.GamepadDelta;
 
+enum ShootState {
+    IDLE,
+    SPIN_UP,
+    DEPLOY_RAMP,
+    FEED,
+    RETRACT
+}
+
 public class ShootAction implements ActionFunction {
+    protected Status lastStatus = Status.FAILURE;
     Telemetry telemetry;
     ShooterController shooterController;
     RampController rampController;
     SpindexerController spindexerController;
-
-    protected Status lastStatus = Status.FAILURE;
     ShootState state = ShootState.IDLE;
     boolean wasTriggerTripped = false;
 
@@ -53,21 +60,22 @@ public class ShootAction implements ActionFunction {
                 }
                 break;
             case SPIN_UP:
-                shooterController.spinToTargetVelocity(100);
-                if (shooterController.isOnTarget()) {
-                    state = ShootState.FEED;
-                }
+                shooterController.spinToTargetVelocity(3500);
+                state = ShootState.FEED;
                 break;
             case FEED:
-                double currentTarget = spindexerController.getTargetPosition();
-                double targetPosition = currentTarget + 120;
-                spindexerController.moveToPosition(targetPosition);
-                if (spindexerController.isOnTarget()) {
+                if (shooterController.isOnTarget()) {
+                    double currentTarget = spindexerController.getTargetPosition();
+                    double targetPosition = currentTarget + 120;
+                    spindexerController.moveToPosition(targetPosition);
                     state = ShootState.RETRACT;
                 }
                 break;
             case RETRACT:
-                rampController.store();
+                if (spindexerController.isOnTarget()) {
+                    shooterController.spinToTargetVelocity(0.0);
+                    rampController.store();
+                }
                 if (!rampController.isDeployed()) {
                     state = ShootState.IDLE;
                 }
@@ -77,12 +85,4 @@ public class ShootAction implements ActionFunction {
         return Status.SUCCESS;
 
     }
-}
-
-enum ShootState {
-    IDLE,
-    SPIN_UP,
-    DEPLOY_RAMP,
-    FEED,
-    RETRACT
 }

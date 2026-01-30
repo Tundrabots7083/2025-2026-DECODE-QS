@@ -16,7 +16,7 @@ public class SwitchToShootCoordinates implements ActionFunction {
     Status status;
     Status lastStatus = Status.FAILURE;
 
-    public static double intakeDegreeOffset = -10.0;
+    public static double intakeDegreeOffset = 50.0;
 
     public SwitchToShootCoordinates(Telemetry telemetry, SpindexerController spindexerController) {
         this.telemetry = telemetry;

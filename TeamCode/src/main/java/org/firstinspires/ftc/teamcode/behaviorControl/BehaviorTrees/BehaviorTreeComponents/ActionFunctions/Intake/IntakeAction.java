@@ -61,6 +61,11 @@ public class IntakeAction implements ActionFunction {
                 }
                 break;
             case STORE_RAMP:
+                if (wasDpadUpPressed) {
+                    intakeController.spinToTargetVelocity(RETAIN_VELOCITY);
+                    state = IntakeState.IDLE;
+                    return Status.SUCCESS;
+                }
                 if (rampController.isDeployed()) {
                     rampController.store();
                 } else {
@@ -68,10 +73,20 @@ public class IntakeAction implements ActionFunction {
                 }
                 break;
             case INTAKE_ARTIFACTS:
+                if (wasDpadUpPressed) {
+                    intakeController.spinToTargetVelocity(RETAIN_VELOCITY);
+                    state = IntakeState.IDLE;
+                    return Status.SUCCESS;
+                }
                 intakeController.spinToTargetVelocity(INTAKE_VELOCITY);
                 state = IntakeState.CHECK_SLOT;
                 break;
             case CHECK_SLOT:
+                if (wasDpadUpPressed) {
+                    intakeController.spinToTargetVelocity(RETAIN_VELOCITY);
+                    state = IntakeState.IDLE;
+                    return Status.SUCCESS;
+                }
                 ArtifactColor rightColor = rightColorSensorController.getColor();
                 ArtifactColor leftColor = leftColorSensorController.getColor();
 
@@ -91,6 +106,11 @@ public class IntakeAction implements ActionFunction {
                 }
                 break;
             case CHECK_FULL:
+                if (wasDpadUpPressed) {
+                    intakeController.spinToTargetVelocity(RETAIN_VELOCITY);
+                    state = IntakeState.IDLE;
+                    return Status.SUCCESS;
+                }
                 if (spindexerController.isOnTarget()) {
                     if (isSpindexerFull()) {
                         intakeController.spinToTargetVelocity(RETAIN_VELOCITY);
@@ -108,6 +128,7 @@ public class IntakeAction implements ActionFunction {
                 break;
         }
 
+        telemetry.addData("[INTAKE ACTION] State", state);
         return Status.SUCCESS;
 
     }

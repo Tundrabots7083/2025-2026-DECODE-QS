@@ -137,10 +137,13 @@ public class ShooterController {
                 frontShooterMotor.setMode(shooterConstants.resetMode);
                 frontShooterMotor.setMode(shooterConstants.mode);
                 frontShooterMotor.setDirection(shooterConstants.frontMotorDirection);
+                frontShooterMotor.setZeroPowerBehavior(shooterConstants.frontMotorZeroPowerBehavior);
 
                 rearShooterMotor.setMode(shooterConstants.resetMode);
                 rearShooterMotor.setMode(shooterConstants.mode);
                 rearShooterMotor.setDirection(shooterConstants.rearMotorDirection);
+                rearShooterMotor.setZeroPowerBehavior(shooterConstants.rearMotorZeroPowerBehavior);
+
 
                 targetVelocity = 0.0;
             }
@@ -175,9 +178,17 @@ public class ShooterController {
 
     public void spinToTargetVelocity(double newTargetVelocity){
 
+
+        if (newTargetVelocity == 0.0 && targetVelocity != 0.0) {
+            frontShooterMotor.setPower(0.0);
+            rearShooterMotor.setPower(0.0);
+        }
+
         targetVelocity = newTargetVelocity;
 
-        update();
+        if (targetVelocity != 0.0) {
+            update();
+        }
     }
 
     public boolean isOnTarget(){
@@ -189,6 +200,11 @@ public class ShooterController {
     }
 
     public void update(){
+        if (targetVelocity == 0.0) {
+            FRONTLastPower = 0.0;
+            REARLastPower = 0.0;
+            return;
+        }
 
         currentFrontVelocity = getFrontCurrentVelocity();
         currentRearVelocity = getRearCurrentVelocity();
@@ -196,8 +212,6 @@ public class ShooterController {
         // Calculate motor tbhPower using TBH
         double FRONTtbhPower = frontTbhController.calculate(targetVelocity, currentFrontVelocity);
         double REARtbhPower = rearTbhController.calculate(targetVelocity, currentRearVelocity);
-        telemetry.addData("[ShooterController] SentFrontpower:", FRONTtbhPower);
-        telemetry.addData("[ShooterController] SentRearpower:", REARtbhPower);
 
         telemetry.addData("[ShooterController] CurrentFrontVelocity", getFrontCurrentVelocity());
         telemetry.addData("[ShooterController] CurrentRearVelocity", getRearCurrentVelocity());
@@ -210,12 +224,14 @@ public class ShooterController {
         if ((Math.abs(FRONTtbhPower - FRONTLastPower) >= 0.005)) {
             // Apply FRONTtbhPower to motor
             frontShooterMotor.setPower(FRONTtbhPower);
+            telemetry.addData("[ShooterController] SentFrontpower:", FRONTtbhPower);
             FRONTLastPower = FRONTtbhPower;
         }
 
         if ((Math.abs(REARtbhPower - REARLastPower) >= 0.005)) {
             // Apply FRONTtbhPower to motor
             rearShooterMotor.setPower(REARtbhPower);
+            telemetry.addData("[ShooterController] SentRearpower:", REARtbhPower);
             REARLastPower = REARtbhPower;
         }
     }
