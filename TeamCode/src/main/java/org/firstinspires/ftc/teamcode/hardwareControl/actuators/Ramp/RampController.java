@@ -23,6 +23,10 @@ public class RampController {
 
     private boolean initialized = false;
 
+    private boolean deployed = false;
+    double startTime = -1;
+
+
     // Singleton instance
     private static final RampController INSTANCE = new RampController();
     private Telemetry telemetry;
@@ -78,9 +82,38 @@ public class RampController {
         return TARGET_POSITION;
     }
 
+    public void deploy() {
+        if (!deployed && startTime < 0) {
+            startTime = System.currentTimeMillis();
+            setTargetPosition(180);
+        }
+
+        if (System.currentTimeMillis() - startTime > 400) {
+            deployed = true;
+            startTime = -1;
+        }
+    }
+
+    public void store() {
+        if (deployed && startTime < 0) {
+            startTime = System.currentTimeMillis();
+            setTargetPosition(0);
+        }
+
+        if (System.currentTimeMillis() - startTime > 400) {
+            deployed = false;
+            startTime = -1;
+        }
+    }
+
+    public boolean isDeployed() {
+        return deployed;
+    }
+
     public void reset() {
         if (!initialized) return;
         initialized = false;
+        deployed = false;
         //rampServo.setPosition(STORED_RAMP);
     }
 }

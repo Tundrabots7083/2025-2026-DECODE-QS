@@ -6,26 +6,19 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTree.ShootSubTree;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.AA_Common.SetTeleOp;
-import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.ArtifactTracker.IsCurrentSlotEmpty;
-import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.ArtifactTracker.SpindexerIsFull;
-import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.ArtifactTracker.TrackDetectedArtifact;
-import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.ColorSensor.DetectArtifactColor;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Gamepad.ComputeGamepad_1_Delta;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Gamepad.ComputeGamepad_2_Delta;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Gamepad.ReadGamepadsSnapshot;
-import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Intake.IntakeArtifacts;
+import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Intake.IntakeAction;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Intake.RunIntake;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Shooter.RunShooter;
+import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Shooter.ShootAction;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Spindexer.RunSpindexer;
-import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Spindexer.SpinOnePosition;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.Action;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.BehaviorTree;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.BlackBoard;
-import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.Conditional;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.Node;
-import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.Selector;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.Sequence;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.Status;
 import org.firstinspires.ftc.teamcode.hardwareControl.actuators.Ramp.RampController;
@@ -159,21 +152,21 @@ public class TeleOpBehaviorTree {
                         new Action(new ComputeGamepad_1_Delta(), telemetry),
                         new Action(new ComputeGamepad_2_Delta(), telemetry),
                         // Shoot if either trigger on GP1 is pressed
-                        new ShootSubTree(opMode, telemetry).getRoot(),
+                        new Action(new ShootAction(telemetry), telemetry),
                         // Detect and track artifact in intake slot
-                        new Action(new DetectArtifactColor(telemetry, rightColorSensorController, leftColorSensorController), telemetry),
-                        new Action(new TrackDetectedArtifact(telemetry, spindexerController, artifactTracker), telemetry),
+//                        new Action(new DetectArtifactColor(telemetry, rightColorSensorController, leftColorSensorController), telemetry),
+//                        new Action(new TrackDetectedArtifact(telemetry, spindexerController, artifactTracker), telemetry),
                         // Advance Spindexer if not full and the intake slot is not empty
-                        new Selector(
-                                Arrays.asList(
-                                        new Conditional(new SpindexerIsFull(telemetry, artifactTracker)),
-                                        new Conditional(new IsCurrentSlotEmpty(telemetry)),
-                                        new Action(new SpinOnePosition(telemetry, spindexerController), telemetry)
-                                ), telemetry
-                        ),
+//                        new Selector(
+//                                Arrays.asList(
+//                                        new Conditional(new SpindexerIsFull(telemetry, artifactTracker)),
+//                                        new Conditional(new IsCurrentSlotEmpty(telemetry)),
+//                                        new Action(new SpinOnePosition(telemetry, spindexerController), telemetry)
+//                                ), telemetry
+//                        ),
 //                        new Action(new TeleOpDrive(telemetry, driveTrainController), telemetry),
                         // Press dPadUp on GP1 to start or stop intake
-                        new Action(new IntakeArtifacts(telemetry, intakeController), telemetry)
+                        new Action(new IntakeAction(telemetry), telemetry)
                 ), telemetry);
 
         this.tree = new BehaviorTree(root, blackBoard);
