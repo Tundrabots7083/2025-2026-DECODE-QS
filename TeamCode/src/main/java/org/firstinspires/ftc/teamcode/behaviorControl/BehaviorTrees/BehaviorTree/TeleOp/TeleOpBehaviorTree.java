@@ -7,6 +7,8 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.AA_Common.SetTeleOp;
+import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.DriveTrain.RunDrivetrain;
+import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.DriveTrain.TeleOpDrive;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Gamepad.ComputeGamepad_1_Delta;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Gamepad.ComputeGamepad_2_Delta;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Gamepad.ReadGamepadsSnapshot;
@@ -120,10 +122,10 @@ public class TeleOpBehaviorTree {
         /// End Shooter
 
         /// Drivetrain
-//        this.driveTrainController = DriveTrainController.getInstance();
-//
-//        this.driveTrainController.reset();
-//        this.driveTrainController.initialize(hardwareMap, startPose);
+        this.driveTrainController = DriveTrainController.getInstance();
+
+        this.driveTrainController.reset();
+        this.driveTrainController.initialize(hardwareMap, startPose);
         /// End Drivetrain
 
         /// Right Color Sensor
@@ -147,24 +149,13 @@ public class TeleOpBehaviorTree {
                         new Action(new RunIntake(telemetry, intakeController), telemetry),
                         new Action(new RunShooter(telemetry, shooterController), telemetry),
                         new Action(new RunSpindexer(telemetry, spindexerController), telemetry),
-//                        new Action(new RunDrivetrain(telemetry, driveTrainController), telemetry),
+                        new Action(new RunDrivetrain(telemetry, driveTrainController), telemetry),
                         new Action(new ReadGamepadsSnapshot(telemetry, opMode), telemetry),
                         new Action(new ComputeGamepad_1_Delta(), telemetry),
                         new Action(new ComputeGamepad_2_Delta(), telemetry),
                         // Shoot if either trigger on GP1 is pressed
                         new Action(new ShootAction(telemetry), telemetry),
-                        // Detect and track artifact in intake slot
-//                        new Action(new DetectArtifactColor(telemetry, rightColorSensorController, leftColorSensorController), telemetry),
-//                        new Action(new TrackDetectedArtifact(telemetry, spindexerController, artifactTracker), telemetry),
-                        // Advance Spindexer if not full and the intake slot is not empty
-//                        new Selector(
-//                                Arrays.asList(
-//                                        new Conditional(new SpindexerIsFull(telemetry, artifactTracker)),
-//                                        new Conditional(new IsCurrentSlotEmpty(telemetry)),
-//                                        new Action(new SpinOnePosition(telemetry, spindexerController), telemetry)
-//                                ), telemetry
-//                        ),
-//                        new Action(new TeleOpDrive(telemetry, driveTrainController), telemetry),
+                        new Action(new TeleOpDrive(telemetry, driveTrainController), telemetry),
                         // Press dPadUp on GP1 to start or stop intake
                         new Action(new IntakeAction(telemetry), telemetry)
                 ), telemetry);

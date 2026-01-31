@@ -197,10 +197,10 @@ public class IntakeController {
             lastPower = power;
         }
 
-        telemetry.addData("Intake Target RPM", targetVelocity);
-        telemetry.addData("Intake Current RPM", currentVelocity);
-        telemetry.addData("Intake Power", power);
-        telemetry.addData("Intake Current", intakeCurrent);
+//        telemetry.addData("Intake Target RPM", targetVelocity);
+//        telemetry.addData("Intake Current RPM", currentVelocity);
+//        telemetry.addData("Intake Power", power);
+//        telemetry.addData("Intake Current", intakeCurrent);
 
 
         detectStuck(intakeCurrent);

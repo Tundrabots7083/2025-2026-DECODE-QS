@@ -24,7 +24,10 @@ public class ShootAction implements ActionFunction {
     RampController rampController;
     SpindexerController spindexerController;
     ShootState state = ShootState.IDLE;
-    boolean wasTriggerTripped = false;
+    boolean wasLeftTriggerTripped = false;
+    boolean wasRightTriggerTripped = false;
+    boolean isShootingThree = false;
+    int timesSpun = 0;
 
     public ShootAction(Telemetry telemetry) {
         this.telemetry = telemetry;
@@ -35,22 +38,26 @@ public class ShootAction implements ActionFunction {
 
 
     public Status perform(BlackBoard blackBoard) {
-        Status status;
 
         if (blackBoard.getValue("gamepad1Delta") != null) {
             GamepadDelta gamepad1Delta = (GamepadDelta) blackBoard.getValue("gamepad1Delta");
-            wasTriggerTripped = gamepad1Delta.leftTriggerPulling;
+            wasLeftTriggerTripped = gamepad1Delta.leftTriggerPulling;
+            wasRightTriggerTripped = gamepad1Delta.rightTriggerPulling;
         } else {
-//            return Status.FAILURE;
+            return Status.SUCCESS;
         }
 
         switch (state) {
             case IDLE:
-                if (wasTriggerTripped) {
+                timesSpun = 0;
+                if (wasLeftTriggerTripped) {
                     state = ShootState.DEPLOY_RAMP;
-                    return Status.SUCCESS;
-                } else {
-//                    return Status.FAILURE;
+                    isShootingThree = false;
+                    break;
+                } else if (wasRightTriggerTripped) {
+                    state = ShootState.DEPLOY_RAMP;
+                    isShootingThree = true;
+                    break;
                 }
                 break;
             case DEPLOY_RAMP:
@@ -60,7 +67,7 @@ public class ShootAction implements ActionFunction {
                 }
                 break;
             case SPIN_UP:
-                shooterController.spinToTargetVelocity(3500);
+                shooterController.spinToTargetVelocity(0);
                 state = ShootState.FEED;
                 break;
             case FEED:
@@ -68,13 +75,19 @@ public class ShootAction implements ActionFunction {
                     double currentTarget = spindexerController.getTargetPosition();
                     double targetPosition = currentTarget + 120;
                     spindexerController.moveToPosition(targetPosition);
+                    timesSpun++;
                     state = ShootState.RETRACT;
                 }
                 break;
             case RETRACT:
                 if (spindexerController.isOnTarget()) {
-                    shooterController.spinToTargetVelocity(0.0);
-                    rampController.store();
+                    if (!isShootingThree || timesSpun == 3) {
+                        shooterController.spinToTargetVelocity(0.0);
+                        rampController.store();
+                    } else {
+                        state = ShootState.SPIN_UP;
+                        break;
+                    }
                 }
                 if (!rampController.isDeployed()) {
                     state = ShootState.IDLE;

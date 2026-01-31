@@ -14,11 +14,14 @@ import org.firstinspires.ftc.teamcode.hardwareControl.actuators.common.PIDFContr
 
 public class SpindexerController {
 
+    private static final SpindexerController INSTANCE = new SpindexerController();
+    private static final long RECOVERY_TIMEOUT_MS = 1000; // ms per stage
+    private static final double RECOVERY_OFFSET_DEG = 60; // backoff amount
+    // Latched stuck flag; controller owns this entirely
+    public boolean isStuck = false;
     private DcMotorEx spindexerMotor;
-
     private SpindexerConstants spindexerConstants;
     private SpindexerPIDFControllerConstants pidfControllerConstants;
-
     private double lastTargetPosition;
     private double TOLERABLE_ERROR;
     private double TOLERABLE_VELOCITY_ERROR;
@@ -30,35 +33,17 @@ public class SpindexerController {
     private double MAX_ACCELERATION;
     private double startTime;
     private double currentTime;
-
-    // Latched stuck flag; controller owns this entirely
-    public boolean isStuck = false;
-
     private double kP;
     private double kI;
     private double kD;
     private double kF;
     private PIDFController pidfController;
     private MotionProfiler motionProfiler;
-
     private boolean initialized = false;
-    private static final SpindexerController INSTANCE = new SpindexerController();
     private Telemetry telemetry;
-
-    // ----- Recovery FSM -----
-    private enum SpindexerState {
-        IDLE,
-        MOVING_TO_TARGET,
-        RECOVERY_BACKOFF,
-        RECOVERY_RETURN
-    }
-
     private SpindexerState spindexerState = SpindexerState.IDLE;
     private double recoveryTarget;
     private double savedGoalPosition;
-    private static final long RECOVERY_TIMEOUT_MS = 1000; // ms per stage
-    private static final double RECOVERY_OFFSET_DEG = 60; // backoff amount
-
     private SpindexerController() {
     }
 
@@ -175,12 +160,13 @@ public class SpindexerController {
     }
 
     public int getSlotPosition() {
-        double currentAngle = getPosition() % 360;
-        if (currentAngle < 0) currentAngle += 360;
+        double reducedAngle = getPosition() % 360;
+        if (reducedAngle < 0) {
+            reducedAngle += 360;
+        }
 
-        if (currentAngle < 120) return 0;
-        else if (currentAngle < 240) return 1;
-        else return 2;
+        int slot = (int) Math.round(reducedAngle / 120.0) % 3;
+        return slot;
     }
 
     public boolean isBusy() {
@@ -284,5 +270,13 @@ public class SpindexerController {
         isStuck = false;
         initialized = false;
         spindexerState = SpindexerState.IDLE;
+    }
+
+    // ----- Recovery FSM -----
+    private enum SpindexerState {
+        IDLE,
+        MOVING_TO_TARGET,
+        RECOVERY_BACKOFF,
+        RECOVERY_RETURN
     }
 }

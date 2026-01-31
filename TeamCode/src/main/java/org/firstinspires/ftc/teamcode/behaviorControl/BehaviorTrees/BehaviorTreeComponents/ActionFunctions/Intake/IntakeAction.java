@@ -27,7 +27,7 @@ public class IntakeAction implements ActionFunction {
     ArtifactTracker artifactTracker;
     IntakeState state = IntakeState.IDLE;
     boolean wasDpadUpPressed = false;
-    double RETAIN_VELOCITY = 70;
+    double RETAIN_VELOCITY = 80;
     double INTAKE_VELOCITY = 380;
 
     public IntakeAction(Telemetry telemetry) {
@@ -78,8 +78,10 @@ public class IntakeAction implements ActionFunction {
                     state = IntakeState.IDLE;
                     return Status.SUCCESS;
                 }
-                intakeController.spinToTargetVelocity(INTAKE_VELOCITY);
-                state = IntakeState.CHECK_SLOT;
+//                intakeController.spinToTargetVelocity(INTAKE_VELOCITY);
+                if (spindexerController.isOnTarget()) {
+                    state = IntakeState.CHECK_SLOT;
+                }
                 break;
             case CHECK_SLOT:
                 if (wasDpadUpPressed) {
@@ -128,7 +130,11 @@ public class IntakeAction implements ActionFunction {
                 break;
         }
 
-        telemetry.addData("[INTAKE ACTION] State", state);
+        telemetry.addData("[INTAKE ACTION] Atrifact Tracker 1", artifactTracker.getArtifact(0));
+        telemetry.addData("[INTAKE ACTION] Atrifact Tracker 2", artifactTracker.getArtifact(1));
+        telemetry.addData("[INTAKE ACTION] Atrifact Tracker 3", artifactTracker.getArtifact(2));
+        telemetry.addData("[INTAKE ACTION] Current Slot", spindexerController.getSlotPosition());
+        telemetry.addData("[INTAKE ACTION] Current Spindex Position", spindexerController.getPosition());
         return Status.SUCCESS;
 
     }
