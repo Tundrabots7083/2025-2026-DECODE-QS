@@ -12,7 +12,6 @@ import org.firstinspires.ftc.teamcode.hardwareControl.actuators.Spindexer.Spinde
 import org.firstinspires.ftc.teamcode.hardwareControl.actuators.intake.IntakeController;
 import org.firstinspires.ftc.teamcode.hardwareControl.sensors.gamepad.GamepadDelta;
 import org.firstinspires.ftc.teamcode.hardwareControl.sensors.storageInventoryController.ArtifactColor;
-import org.firstinspires.ftc.teamcode.hardwareControl.sensors.storageInventoryController.LeftIntakeColorSensorController;
 import org.firstinspires.ftc.teamcode.hardwareControl.sensors.storageInventoryController.RightIntakeColorSensorController;
 
 
@@ -22,20 +21,19 @@ public class IntakeAction implements ActionFunction {
     IntakeController intakeController;
     RampController rampController;
     SpindexerController spindexerController;
-    LeftIntakeColorSensorController leftColorSensorController;
     RightIntakeColorSensorController rightColorSensorController;
     ArtifactTracker artifactTracker;
     IntakeState state = IntakeState.IDLE;
     boolean wasDpadUpPressed = false;
-    double RETAIN_VELOCITY = 80;
-    double INTAKE_VELOCITY = 380;
+    double RETAIN_VELOCITY = -80;
+    double INTAKE_VELOCITY = 120;
+    int lastSlot = 0;
 
     public IntakeAction(Telemetry telemetry) {
         this.telemetry = telemetry;
         this.intakeController = IntakeController.getInstance();
         this.rampController = RampController.getInstance();
         this.spindexerController = SpindexerController.getInstance();
-        this.leftColorSensorController = LeftIntakeColorSensorController.getInstance();
         this.rightColorSensorController = RightIntakeColorSensorController.getInstance();
         this.artifactTracker = ArtifactTracker.getInstance();
     }
@@ -57,13 +55,14 @@ public class IntakeAction implements ActionFunction {
                     state = IntakeState.STORE_RAMP;
                     return Status.SUCCESS;
                 } else {
+                    intakeController.stop();
 //                    return Status.FAILURE;
                 }
                 break;
             case STORE_RAMP:
                 if (wasDpadUpPressed) {
-                    intakeController.spinToTargetVelocity(RETAIN_VELOCITY);
                     state = IntakeState.IDLE;
+                    intakeController.stop();
                     return Status.SUCCESS;
                 }
                 if (rampController.isDeployed()) {
@@ -74,66 +73,55 @@ public class IntakeAction implements ActionFunction {
                 break;
             case INTAKE_ARTIFACTS:
                 if (wasDpadUpPressed) {
-                    intakeController.spinToTargetVelocity(RETAIN_VELOCITY);
+                    intakeController.stop();
                     state = IntakeState.IDLE;
                     return Status.SUCCESS;
                 }
-//                intakeController.spinToTargetVelocity(INTAKE_VELOCITY);
+                intakeController.spinToTargetVelocity(INTAKE_VELOCITY);
                 if (spindexerController.isOnTarget()) {
                     state = IntakeState.CHECK_SLOT;
                 }
                 break;
             case CHECK_SLOT:
                 if (wasDpadUpPressed) {
-                    intakeController.spinToTargetVelocity(RETAIN_VELOCITY);
+                    intakeController.stop();
                     state = IntakeState.IDLE;
                     return Status.SUCCESS;
                 }
                 ArtifactColor rightColor = rightColorSensorController.getColor();
-                ArtifactColor leftColor = leftColorSensorController.getColor();
 
-                if (leftColor != ArtifactColor.NONE
-                        && rightColor == leftColor
-                ) {
-                    int slotPosition = spindexerController.getSlotPosition();
-                    artifactTracker.setArtifact(slotPosition, rightColor);
-                    state = IntakeState.CHECK_FULL;
-                } else if (leftColor == ArtifactColor.PURPLE || rightColor == ArtifactColor.PURPLE) {
-                    int slotPosition = spindexerController.getSlotPosition();
-                    artifactTracker.setArtifact(slotPosition, ArtifactColor.PURPLE);
-                    state = IntakeState.CHECK_FULL;
-                } else if (leftColor == ArtifactColor.NONE || rightColor == ArtifactColor.NONE) {
-                    int slotPosition = spindexerController.getSlotPosition();
-                    artifactTracker.setArtifact(slotPosition, ArtifactColor.NONE);
-                }
-                break;
-            case CHECK_FULL:
-                if (wasDpadUpPressed) {
+                int slotPosition = spindexerController.getSlotPosition();
+                if (rightColor != ArtifactColor.NONE) {
                     intakeController.spinToTargetVelocity(RETAIN_VELOCITY);
-                    state = IntakeState.IDLE;
-                    return Status.SUCCESS;
-                }
-                if (spindexerController.isOnTarget()) {
+                    artifactTracker.setArtifact(slotPosition, rightColor);
+
                     if (isSpindexerFull()) {
-                        intakeController.spinToTargetVelocity(RETAIN_VELOCITY);
                         state = IntakeState.IDLE;
                     } else {
                         state = IntakeState.SPIN_SPINDEXER;
                     }
+                } else {
+                    artifactTracker.setArtifact(slotPosition, ArtifactColor.NONE);
                 }
                 break;
             case SPIN_SPINDEXER:
+                if (spindexerController.isOnTarget()) {
                 double currentTarget = spindexerController.getTargetPosition();
                 double targetPosition = currentTarget + 120;
                 spindexerController.moveToPosition(targetPosition);
-                state = IntakeState.INTAKE_ARTIFACTS;
+                    intakeController.spinToTargetVelocity(RETAIN_VELOCITY);
+                    state = IntakeState.REJECT_EXTRA_ARTIFACTS;
+                }
                 break;
+            case REJECT_EXTRA_ARTIFACTS:
+                if (spindexerController.isOnTarget()) {
+                    state = IntakeState.INTAKE_ARTIFACTS;
+                }
         }
 
         telemetry.addData("[INTAKE ACTION] Atrifact Tracker 1", artifactTracker.getArtifact(0));
         telemetry.addData("[INTAKE ACTION] Atrifact Tracker 2", artifactTracker.getArtifact(1));
         telemetry.addData("[INTAKE ACTION] Atrifact Tracker 3", artifactTracker.getArtifact(2));
-        telemetry.addData("[INTAKE ACTION] Current Slot", spindexerController.getSlotPosition());
         telemetry.addData("[INTAKE ACTION] Current Spindex Position", spindexerController.getPosition());
         return Status.SUCCESS;
 
@@ -163,6 +151,6 @@ enum IntakeState {
     STORE_RAMP,
     CHECK_SLOT,
     SPIN_SPINDEXER,
-    CHECK_FULL
+    REJECT_EXTRA_ARTIFACTS
 }
 

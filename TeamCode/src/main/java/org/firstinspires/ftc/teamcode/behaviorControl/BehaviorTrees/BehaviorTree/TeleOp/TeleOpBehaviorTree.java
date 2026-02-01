@@ -30,7 +30,6 @@ import org.firstinspires.ftc.teamcode.hardwareControl.actuators.driveTrain.Drive
 import org.firstinspires.ftc.teamcode.hardwareControl.actuators.intake.IntakeController;
 import org.firstinspires.ftc.teamcode.hardwareControl.actuators.shooter.ShooterController;
 import org.firstinspires.ftc.teamcode.hardwareControl.sensors.spindexerLimitSwitch.SpindexerLimitSwitchController;
-import org.firstinspires.ftc.teamcode.hardwareControl.sensors.storageInventoryController.LeftIntakeColorSensorController;
 import org.firstinspires.ftc.teamcode.hardwareControl.sensors.storageInventoryController.RightIntakeColorSensorController;
 
 import java.util.Arrays;
@@ -77,7 +76,6 @@ public class TeleOpBehaviorTree {
 
     ///
     protected RightIntakeColorSensorController rightColorSensorController;
-    protected LeftIntakeColorSensorController leftColorSensorController;
 
     ///
 
@@ -131,11 +129,6 @@ public class TeleOpBehaviorTree {
         /// Right Color Sensor
         this.rightColorSensorController = RightIntakeColorSensorController.getInstance();
         /// End Right Color Sensor
-
-        /// Left Color Sensor
-        this.leftColorSensorController = LeftIntakeColorSensorController.getInstance();
-
-        /// End Left Color Sensor
 
         /// Artifact Tracker
         this.artifactTracker = ArtifactTracker.getInstance();

@@ -17,7 +17,7 @@ public class IntakeArtifacts implements ActionFunction {
     Status status;
     GamepadDelta gamepad_1_Delta;
     public static double INTAKE_VELOCITY = 400;
-    private final double RETAIN_VELOCITY = 50;
+    private final double RETAIN_VELOCITY = 0;
     private boolean isIntaking = false;
 
     public IntakeArtifacts(Telemetry telemetry, IntakeController intakeController) {

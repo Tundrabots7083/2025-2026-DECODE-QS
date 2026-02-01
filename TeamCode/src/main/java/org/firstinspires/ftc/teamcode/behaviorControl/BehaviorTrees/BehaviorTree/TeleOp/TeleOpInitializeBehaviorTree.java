@@ -24,7 +24,6 @@ import org.firstinspires.ftc.teamcode.hardwareControl.actuators.Spindexer.Spinde
 import org.firstinspires.ftc.teamcode.hardwareControl.actuators.Turret.TurretController;
 import org.firstinspires.ftc.teamcode.hardwareControl.actuators.intake.IntakeController;
 import org.firstinspires.ftc.teamcode.hardwareControl.sensors.spindexerLimitSwitch.SpindexerLimitSwitchController;
-import org.firstinspires.ftc.teamcode.hardwareControl.sensors.storageInventoryController.LeftIntakeColorSensorController;
 import org.firstinspires.ftc.teamcode.hardwareControl.sensors.storageInventoryController.RightIntakeColorSensorController;
 
 import java.util.Arrays;
@@ -62,8 +61,6 @@ public class TeleOpInitializeBehaviorTree {
 
     ///
     protected RightIntakeColorSensorController rightColorSensorController;
-    protected LeftIntakeColorSensorController leftColorSensorController;
-
     ///
 
     ///
@@ -123,12 +120,6 @@ public class TeleOpInitializeBehaviorTree {
         this.rightColorSensorController.reset();
         this.rightColorSensorController.initialize(hardwareMap, telemetry);
 
-
-        this.leftColorSensorController = LeftIntakeColorSensorController.getInstance();
-
-        this.leftColorSensorController.reset();
-        this.leftColorSensorController.initialize(hardwareMap, telemetry);
-
         /// End ColorSensors
 
         /// Artifact Tracker
@@ -150,6 +141,7 @@ public class TeleOpInitializeBehaviorTree {
 
         this.root = new Sequence(
                 Arrays.asList(
+                        new Action(new StopIntake(telemetry, intakeController), telemetry),
                         new Action(new RunIntake(telemetry, intakeController), telemetry),
                         new CalibrateSpindexerSubTree(opMode, telemetry).getRoot(),
                         new Action(new RunSpindexer(telemetry, spindexerController), telemetry),

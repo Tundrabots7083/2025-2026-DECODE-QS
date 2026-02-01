@@ -12,6 +12,7 @@ public class IntakeConstants {
     public DcMotor.RunMode mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER;
     public DcMotor.RunMode resetMode = DcMotor.RunMode.STOP_AND_RESET_ENCODER;
     public DcMotorSimple.Direction motorDirection = DcMotorSimple.Direction.FORWARD;
+    public DcMotor.ZeroPowerBehavior zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE;
     public double startPosition = 0;
     public double targetPosition = 0;
     public double tolerableError = 20; //in degrees

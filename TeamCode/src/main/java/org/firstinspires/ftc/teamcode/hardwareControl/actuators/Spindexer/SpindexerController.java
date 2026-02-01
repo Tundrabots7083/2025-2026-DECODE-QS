@@ -15,7 +15,7 @@ import org.firstinspires.ftc.teamcode.hardwareControl.actuators.common.PIDFContr
 public class SpindexerController {
 
     private static final SpindexerController INSTANCE = new SpindexerController();
-    private static final long RECOVERY_TIMEOUT_MS = 1000; // ms per stage
+    private static final long RECOVERY_TIMEOUT_MS = 800; // ms per stage
     private static final double RECOVERY_OFFSET_DEG = 60; // backoff amount
     // Latched stuck flag; controller owns this entirely
     public boolean isStuck = false;
@@ -185,6 +185,7 @@ public class SpindexerController {
 
         if (Math.abs(LAST_POWER - feedForwardPower) > 0.01) {
             spindexerMotor.setPower(feedForwardPower);
+            telemetry.addData("[SPINDEXER] Power", feedForwardPower);
             LAST_POWER = feedForwardPower;
         }
 
@@ -224,10 +225,10 @@ public class SpindexerController {
         double predictedVelocityError = predictedVelocity - currentVelocity;
 
         if (!isStuck &&
-                predictedVelocityError >= 100 &&
-                Math.abs(currentVelocity) < 0.5 &&
+                predictedVelocityError >= 50 &&
+                Math.abs(currentVelocity) < 20 &&
                 Math.abs(LAST_POWER) > 0.1 &&
-                elapsedTime > 0.5) {
+                elapsedTime > 0.2) {
 
             // Latch stuck flag
             isStuck = true;

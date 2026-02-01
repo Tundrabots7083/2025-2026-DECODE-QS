@@ -14,6 +14,6 @@ public class SpindexerConstants {
     public DcMotorSimple.Direction direction = DcMotorSimple.Direction.REVERSE;
     public double startPosition = 0.0;
     public double tolerableError = 5.5;
-    public double tolerableVelocityError = 5;
+    public double tolerableVelocityError = 8;
     public double degreeOffset = 30.0;
 }

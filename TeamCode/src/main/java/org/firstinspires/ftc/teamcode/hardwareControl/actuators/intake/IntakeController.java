@@ -25,24 +25,24 @@ public class IntakeController {
     // --- Effort-based stuck detection ---
     private boolean isStuck = false;
 
-    private static final double STUCK_CURRENT = 2.2;   // amps of large effort
-    private static final long STUCK_TIME_MS = 150;
+    private static final double STUCK_CURRENT = 2.5;   // amps of large effort
+    private static final long STUCK_TIME_MS = 200;
 
     private long effortStartTime = -1;
 
     // --- Unstick ---
-    private static final long UNSTICK_DURATION_MS = 340;
+    private static final long UNSTICK_DURATION_MS = 380;
     private static final double UNSTICK_REVERSE_POWER = -0.5;
 
     private boolean unsticking = false;
-    private long unstickStartTime = 0;
+    private long unstickStartTime = -1;
 
 
 
     /**
      * velocity gain
      */
-    private double Kp = 0.00025;
+    private double Kp = 0.0005;
 
     private SimpleVelocityController velocityController;
     private boolean initialized = false;
@@ -125,6 +125,7 @@ public class IntakeController {
         intakeMotor.setMode(intakeConstants.resetMode);
         intakeMotor.setMode(intakeConstants.mode);
         intakeMotor.setDirection(intakeConstants.motorDirection);
+        intakeMotor.setZeroPowerBehavior(intakeConstants.zeroPowerBehavior);
 
         initialized = false;
     }
