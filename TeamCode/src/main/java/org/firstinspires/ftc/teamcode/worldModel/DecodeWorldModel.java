@@ -5,10 +5,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
 
 public class DecodeWorldModel extends WorldModel{
-    public DecodeWorldModel(){
-        init();
-    }
-    private void init(){
+
+    public void init(){
         /// RED ALLIANCE ////////////////////////////////
         /// Red Alliance Goal
         WorldObject redAllianceGoal = new WorldObject("RedAllianceGoal","RedAllianceGoal", new Position(DistanceUnit.INCH,132.0, 132.0,48.0,10),null);
