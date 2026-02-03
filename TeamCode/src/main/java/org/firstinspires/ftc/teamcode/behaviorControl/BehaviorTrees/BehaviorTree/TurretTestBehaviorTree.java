@@ -18,6 +18,7 @@ import org.firstinspires.ftc.teamcode.hardwareControl.actuators.Turret.TurretCon
 import org.firstinspires.ftc.teamcode.hardwareControl.actuators.intake.IntakeController;
 import org.firstinspires.ftc.teamcode.hardwareControl.sensors.limeLight.LimeLightController;
 import org.firstinspires.ftc.teamcode.hardwareControl.sensors.spindexerLimitSwitch.SpindexerLimitSwitchController;
+import org.firstinspires.ftc.teamcode.worldModel.DecodeWorldModel;
 
 import java.util.Arrays;
 import java.util.List;
@@ -27,6 +28,7 @@ public class TurretTestBehaviorTree {
     private BehaviorTree tree;
     private Node root;
     private BlackBoard blackBoard;
+    private DecodeWorldModel worldModel;
     protected Telemetry telemetry;
     protected HardwareMap hardwareMap;
     protected LinearOpMode opMode;
@@ -70,6 +72,10 @@ public class TurretTestBehaviorTree {
     private void Init() {
         this.blackBoard = BlackBoard.getInstance(telemetry);
         this.blackBoard.reset();
+
+        this.worldModel = (DecodeWorldModel) DecodeWorldModel.getInstance(telemetry);
+        this.worldModel.reset();
+        this.worldModel.init();
 
        /* /// Limelight
         this.limeLightController = LimeLightController.getInstance();

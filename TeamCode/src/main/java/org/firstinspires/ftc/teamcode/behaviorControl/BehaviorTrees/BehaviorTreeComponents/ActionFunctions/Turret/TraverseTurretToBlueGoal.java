@@ -8,29 +8,34 @@ import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTree
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.BlackBoard;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.Status;
 import org.firstinspires.ftc.teamcode.hardwareControl.actuators.Turret.TurretController;
+import org.firstinspires.ftc.teamcode.worldModel.DecodeWorldModel;
+import org.firstinspires.ftc.teamcode.worldModel.WorldObject;
 
-public class TraverseTurret implements ActionFunction {
+public class TraverseTurretToBlueGoal implements ActionFunction {
 
     Telemetry telemetry;
 
     TurretController turretController;
+    private final DecodeWorldModel worldModel;
 
-    public TraverseTurret(Telemetry telemetry, TurretController turretController) {
+
+    public TraverseTurretToBlueGoal(Telemetry telemetry, TurretController turretController) {
         this.telemetry = telemetry;
         this.turretController = turretController;
+        this.worldModel = (DecodeWorldModel) DecodeWorldModel.getInstance(telemetry);
+
     }
 
     public Status perform(BlackBoard blackBoard) {
         Pose3D robotPose = (Pose3D) blackBoard.getValue("CurrentPose");
 
-        //TODO: This is a placeholder Position;  Value should be acquired from blackboard or WorldModel
-        Position targetPosition = new Position();
-        targetPosition.x = 42.5;
-        targetPosition.y=36.5;
-        targetPosition.unit=DistanceUnit.INCH;
-        ///////////////////////////////////////
+        WorldObject goalObject = (WorldObject) worldModel.getValue("BlueAllianceGoal");
+        Pose3D goalPose = goalObject.pose3D;
 
-        if(robotPose == null || targetPosition == null) {
+        Position targetPosition = goalPose.getPosition();
+        targetPosition.unit=DistanceUnit.INCH;
+
+        if(robotPose == null) {
             return Status.FAILURE;
         }
 
