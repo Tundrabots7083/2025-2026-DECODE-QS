@@ -31,9 +31,8 @@ public class TrackDetectedArtifact implements ActionFunction {
             int currentSlot = spindexerController.getSlotPosition();
 
             artifactTracker.setArtifact(currentSlot, artifactColor);
-            return Status.SUCCESS;
-        } else {
-            return Status.FAILURE;
         }
+
+        return Status.SUCCESS;
     }
 }

@@ -60,6 +60,12 @@ public class DriveTrainController {
         }
     }
 
+    public void followPath(PathChain pathChain, double maxPower, boolean holdEnd) {
+        if (!follower.isBusy()) {
+            follower.followPath(pathChain, maxPower, holdEnd);
+        }
+    }
+
     public Pose getPosition() {
         return follower.getPose();
     }
