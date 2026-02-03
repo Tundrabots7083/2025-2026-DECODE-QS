@@ -72,7 +72,7 @@ public class TurretController {
 
     public void setTurretTargetAngle(double turretTargetAngle) {
 
-        turretTargetAngle += 112.5;
+        turretTargetAngle += 100;
 
         turretTargetAngle = turretTargetAngle % 360;
 
