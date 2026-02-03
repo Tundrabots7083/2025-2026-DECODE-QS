@@ -8,19 +8,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-public class DecodeWorldModel extends WorldModel{
-    private static DecodeWorldModel instance;
-
-    public static DecodeWorldModel getInstance(Telemetry telemetry) {
-        if (instance == null) {
-            instance = new DecodeWorldModel();
-        }
-        return instance;
-    }
-
-    private DecodeWorldModel() {
-        init();
-    }
 
 public class DecodeWorldModel {
     private static DecodeWorldModel instance;
