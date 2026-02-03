@@ -1,12 +1,50 @@
 package org.firstinspires.ftc.teamcode.worldModel;
 
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
 
-public class DecodeWorldModel extends WorldModel{
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-    public void init(){
+public class DecodeWorldModel {
+    private static DecodeWorldModel instance;
+    private final Map<String, WorldObject> worldModelObjects = new HashMap<>();
+
+    private Telemetry telemetry=null;
+    // Private constructor to prevent instantiation from other classes
+    private DecodeWorldModel(Telemetry telemetry) {
+        this.telemetry = telemetry;
+        this.init();
+
+    }
+
+    public DecodeWorldModel() {
+    }
+
+    // Public static method to get the single instance of the class
+    public static DecodeWorldModel getInstance(Telemetry telemetry) {
+        if (instance == null) {
+            instance = new DecodeWorldModel(telemetry);
+        }
+        return instance;
+    }
+
+    public void reset(){
+        instance = null;
+    }
+
+    public void setValue(WorldObject value) {
+        worldModelObjects.put(value.key, value);
+    }
+
+    public WorldObject getValue(String key) {
+        return worldModelObjects.get(key);
+    }
+
+    private void init(){
         /// RED ALLIANCE ////////////////////////////////
         /// Red Alliance Goal
         WorldObject redAllianceGoal = new WorldObject("RedAllianceGoal","RedAllianceGoal", new Position(DistanceUnit.INCH,132.0, 132.0,48.0,10),null);
@@ -54,4 +92,18 @@ public class DecodeWorldModel extends WorldModel{
 
         ///  END BLUE ALLIANCE ////////////////////////////
     }
+    public /* WorldObject[] */ void getValues(List<String> keys) {
+/*
+        var x = worldModelObjects.entrySet()
+                .stream()
+                .filter((entry) -> keys.contains(entry.getKey()))
+                .map(Map.Entry::getValue)
+                .collect(Collectors.toList());
+
+        System.out.println("World model values" + x);
+        */
+        // return
+        // worldModelObjects.entrySet().stream().filter((entry)->keys.equals(entry.getKey()));
+    }
 }
+

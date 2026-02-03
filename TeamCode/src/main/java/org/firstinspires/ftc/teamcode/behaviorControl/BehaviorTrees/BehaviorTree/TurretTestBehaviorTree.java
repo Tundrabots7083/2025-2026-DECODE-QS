@@ -74,8 +74,6 @@ public class TurretTestBehaviorTree {
         this.blackBoard.reset();
 
         this.worldModel = (DecodeWorldModel) DecodeWorldModel.getInstance(telemetry);
-        this.worldModel.reset();
-        this.worldModel.init();
 
        /* /// Limelight
         this.limeLightController = LimeLightController.getInstance();
