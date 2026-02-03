@@ -1,9 +1,7 @@
 package org.firstinspires.ftc.teamcode.worldModel;
 
-import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
 
 public class DecodeWorldModel extends WorldModel{
