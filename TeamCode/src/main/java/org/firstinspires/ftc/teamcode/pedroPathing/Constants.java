@@ -18,17 +18,15 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 @Configurable
 public class Constants {
     public static FollowerConstants followerConstants = new FollowerConstants()
-            .mass(12.7)// in Kg
-            .forwardZeroPowerAcceleration(-46.66171759)
-            .lateralZeroPowerAcceleration(-60.26349909)
-            .useSecondaryTranslationalPIDF(true)
-            .useSecondaryHeadingPIDF(true)
-            .translationalPIDFCoefficients(new PIDFCoefficients(0.11, 0, 0.0125, 0))
-            .secondaryTranslationalPIDFCoefficients(new PIDFCoefficients(0.15, 0, 0.01, 0))
-            .headingPIDFCoefficients(new PIDFCoefficients(0.7, 0, 0.016, 0))
-            .secondaryHeadingPIDFCoefficients(new PIDFCoefficients(1.25, 0, 0.1, 0))
-            .drivePIDFCoefficients(new FilteredPIDFCoefficients(0.008, 0, 0.00001, 0.6,0))
-            .centripetalScaling(0.00085);
+            .mass(16.5)// in Kg
+            .forwardZeroPowerAcceleration(-37.67815817)
+            .lateralZeroPowerAcceleration(-104.5876889)
+            .useSecondaryTranslationalPIDF(false)
+            .useSecondaryHeadingPIDF(false)
+            .translationalPIDFCoefficients(new PIDFCoefficients(0.4, 0.0, 0.0, 0.1))
+            .headingPIDFCoefficients(new PIDFCoefficients(3, 0, 0.1, 0.0))
+            .drivePIDFCoefficients(new FilteredPIDFCoefficients(0.033, 0, 0.0, 0.6, 0.0))
+            .centripetalScaling(0.001);
 
     public static MecanumConstants driveConstants = new MecanumConstants()
             .maxPower(1)
@@ -40,8 +38,8 @@ public class Constants {
             .leftRearMotorDirection(DcMotorSimple.Direction.REVERSE)
             .rightFrontMotorDirection(DcMotorSimple.Direction.REVERSE)
             .rightRearMotorDirection(DcMotorSimple.Direction.REVERSE)
-            .xVelocity(86.9340296)
-            .yVelocity(61.83983845)
+            .xVelocity(65.3560916)
+            .yVelocity(36.19854864)
             .useBrakeModeInTeleOp(true);
 
     public static PinpointConstants localizerConstants = new PinpointConstants()
