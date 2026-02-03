@@ -7,6 +7,7 @@ import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTree
 import org.firstinspires.ftc.teamcode.hardwareControl.actuators.Ramp.RampController;
 import org.firstinspires.ftc.teamcode.hardwareControl.actuators.Spindexer.ArtifactTracker;
 import org.firstinspires.ftc.teamcode.hardwareControl.actuators.Spindexer.SpindexerController;
+import org.firstinspires.ftc.teamcode.hardwareControl.actuators.intake.IntakeController;
 import org.firstinspires.ftc.teamcode.hardwareControl.actuators.shooter.ShooterController;
 import org.firstinspires.ftc.teamcode.hardwareControl.sensors.gamepad.GamepadDelta;
 import org.firstinspires.ftc.teamcode.hardwareControl.sensors.storageInventoryController.ArtifactColor;
@@ -26,6 +27,7 @@ public class ShootAction implements ActionFunction {
     RampController rampController;
     SpindexerController spindexerController;
     ArtifactTracker artifactTracker;
+    IntakeController intakeController;
     ShootState state = ShootState.IDLE;
     boolean wasLeftTriggerTripped = false;
     boolean wasRightTriggerTripped = false;
@@ -38,6 +40,7 @@ public class ShootAction implements ActionFunction {
         this.rampController = RampController.getInstance();
         this.spindexerController = SpindexerController.getInstance();
         this.artifactTracker = ArtifactTracker.getInstance();
+        this.intakeController = IntakeController.getInstance();
     }
 
 
@@ -76,6 +79,7 @@ public class ShootAction implements ActionFunction {
                 break;
             case FEED:
                 if (shooterController.isOnTarget()) {
+                    intakeController.spinToTargetVelocity(200);
                     int shootSlot = (spindexerController.getSlotPosition() + 1) % 3; // gets the slot currently under the shooter
                     artifactTracker.setArtifact(shootSlot, ArtifactColor.NONE);
                     double currentTarget = spindexerController.getTargetPosition();
@@ -89,6 +93,7 @@ public class ShootAction implements ActionFunction {
                 if (spindexerController.isOnTarget()) {
                     if (!isShootingThree || timesSpun == 3) {
                         shooterController.spinToTargetVelocity(0.0);
+                        intakeController.spinToTargetVelocity(0.0);
                         rampController.store();
                     } else {
                         state = ShootState.SPIN_UP;

@@ -37,6 +37,8 @@ public class TurretTestBehaviorTree {
     protected HardwareMap hardwareMap;
     protected LinearOpMode opMode;
 
+    private final Pose startPose = new Pose(48, 12, Math.toRadians(90)); // Start Pose of our robot.
+
     /// Limelight
     protected LimeLightController limeLightController;
 
@@ -66,8 +68,6 @@ public class TurretTestBehaviorTree {
     protected DriveTrainController driveTrainController;
     ///
 
-    private final Pose startPose = new Pose(0, 0, Math.toRadians(0)); // Start Pose of our robot.
-
 
     public TurretTestBehaviorTree(LinearOpMode opMode, Telemetry telemetry) {
         this.hardwareMap = opMode.hardwareMap;
@@ -80,8 +80,6 @@ public class TurretTestBehaviorTree {
     private void Init() {
         this.blackBoard = BlackBoard.getInstance(telemetry);
         this.blackBoard.reset();
-
-        this.worldModel = (DecodeWorldModel) DecodeWorldModel.getInstance(telemetry);
 
        /* /// Limelight
         this.limeLightController = LimeLightController.getInstance();

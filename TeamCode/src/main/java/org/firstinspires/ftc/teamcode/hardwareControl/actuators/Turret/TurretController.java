@@ -71,17 +71,20 @@ public class TurretController {
 
     public void setTurretTargetAngle(double turretTargetAngle) {
 
-        turretTargetAngle += 100;
 
-        turretTargetAngle = turretTargetAngle % 360;
+        double normalizedTarget = turretTargetAngle + 122;
 
-        if(turretTargetAngle < 0) {
-            turretTargetAngle += 360;
+        normalizedTarget = normalizedTarget % 360;
+
+        if (normalizedTarget < 0) {
+            normalizedTarget += 360;
         }
 
-        turretTargetAngle = Range.clip(turretTargetAngle, MIN_DEGREES, MAX_DEGREES);
+        normalizedTarget = Range.clip(normalizedTarget, MIN_DEGREES, MAX_DEGREES);
 
-        servoPosition = turretTargetAngle / 339.267;
+        TURRET_TARGET_POSITION = normalizedTarget;
+
+        servoPosition = normalizedTarget / 339.267;
 
         turretServo.setPosition(servoPosition);
         telemetry.addData("Servo Target", servoPosition);
@@ -91,8 +94,8 @@ public class TurretController {
     public void moveToTargetPosition(Pose robotPose, Position targetPosition) {
         double turretTargetAngle = this.getTurretAngleDegrees(robotPose, targetPosition, TURRET_X_OFFSET, TURRET_Y_OFFSET);
 
-        TURRET_TARGET_POSITION = turretTargetAngle;
-        setTurretTargetAngle(turretTargetAngle);
+        TURRET_TARGET_POSITION = -turretTargetAngle;
+        setTurretTargetAngle(TURRET_TARGET_POSITION);
     }
 
     public double getPosition() {
@@ -160,6 +163,7 @@ public class TurretController {
         double turretAngleRad = angleToTargetRad - robotYawRad;
         double turretAngleDeg = Math.toDegrees(turretAngleRad);
 
-        return normalizeDegrees(turretAngleDeg);
+        // return normalizeDegrees(turretAngleDeg);
+        return turretAngleDeg;
     }
 }

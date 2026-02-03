@@ -9,6 +9,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.AA_Common.SetTeleOp;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.DriveTrain.RunDrivetrain;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.DriveTrain.TeleOpDrive;
+import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.DriveTrain.UpdateBlackboardPose;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Gamepad.ComputeGamepad_1_Delta;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Gamepad.ComputeGamepad_2_Delta;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Gamepad.ReadGamepadsSnapshot;
@@ -17,6 +18,7 @@ import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTree
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Shooter.RunShooter;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Shooter.ShootAction;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Spindexer.RunSpindexer;
+import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Turret.TraverseTurretToRedGoal;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.Action;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.BehaviorTree;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.BlackBoard;
@@ -26,6 +28,7 @@ import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTree
 import org.firstinspires.ftc.teamcode.hardwareControl.actuators.Ramp.RampController;
 import org.firstinspires.ftc.teamcode.hardwareControl.actuators.Spindexer.ArtifactTracker;
 import org.firstinspires.ftc.teamcode.hardwareControl.actuators.Spindexer.SpindexerController;
+import org.firstinspires.ftc.teamcode.hardwareControl.actuators.Turret.TurretController;
 import org.firstinspires.ftc.teamcode.hardwareControl.actuators.driveTrain.DriveTrainController;
 import org.firstinspires.ftc.teamcode.hardwareControl.actuators.intake.IntakeController;
 import org.firstinspires.ftc.teamcode.hardwareControl.actuators.shooter.ShooterController;
@@ -44,7 +47,7 @@ public class TeleOpBehaviorTree {
     protected HardwareMap hardwareMap;
     protected LinearOpMode opMode;
 
-    private final Pose startPose = new Pose(0, 0, 0);
+    private final Pose startPose = new Pose(132, 12, 90);
 
     ///
     protected SpindexerController spindexerController;
@@ -66,21 +69,22 @@ public class TeleOpBehaviorTree {
 
     ///
     protected ShooterController shooterController;
-
     ///
 
     ///
     protected DriveTrainController driveTrainController;
-
     ///
 
     ///
     protected RightIntakeColorSensorController rightColorSensorController;
-
     ///
 
     ///
     protected ArtifactTracker artifactTracker;
+    ///
+
+    ///
+    protected TurretController turretController;
 
     ///
 
@@ -134,6 +138,10 @@ public class TeleOpBehaviorTree {
         this.artifactTracker = ArtifactTracker.getInstance();
         /// End Artifact Tracker
 
+        /// Turret
+        this.turretController = TurretController.getInstance();
+        /// End Turret
+
         telemetry.clearAll();
 
         this.root = new Sequence(
@@ -146,6 +154,8 @@ public class TeleOpBehaviorTree {
                         new Action(new ReadGamepadsSnapshot(telemetry, opMode), telemetry),
                         new Action(new ComputeGamepad_1_Delta(), telemetry),
                         new Action(new ComputeGamepad_2_Delta(), telemetry),
+                        new Action(new UpdateBlackboardPose(telemetry, driveTrainController), telemetry),
+                        new Action(new TraverseTurretToRedGoal(telemetry, turretController), telemetry),
                         // Shoot if either trigger on GP1 is pressed
                         new Action(new ShootAction(telemetry), telemetry),
                         new Action(new TeleOpDrive(telemetry, driveTrainController), telemetry),
