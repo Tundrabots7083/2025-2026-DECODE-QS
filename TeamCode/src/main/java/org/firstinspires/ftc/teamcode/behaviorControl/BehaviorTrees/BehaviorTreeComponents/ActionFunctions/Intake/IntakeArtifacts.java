@@ -11,7 +11,8 @@ public class IntakeArtifacts implements ActionFunction {
     Telemetry telemetry;
     IntakeController intakeController;
     Status status;
-    private double INTAKE_VELOCITY = 120;
+    Status lastStatus = Status.FAILURE;
+    private double INTAKE_VELOCITY = 150;
 
     public IntakeArtifacts(Telemetry telemetry, IntakeController intakeController) {
         this.telemetry = telemetry;
@@ -19,10 +20,14 @@ public class IntakeArtifacts implements ActionFunction {
     }
 
     public Status perform(BlackBoard blackBoard) {
+        if (lastStatus == Status.SUCCESS) {
+            return lastStatus;
+        }
 
         intakeController.spinToTargetVelocity(INTAKE_VELOCITY);
 
         status = Status.SUCCESS;
+        lastStatus = status;
         return status;
     }
 }

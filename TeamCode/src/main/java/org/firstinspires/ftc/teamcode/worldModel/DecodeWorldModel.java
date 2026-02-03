@@ -1,10 +1,23 @@
 package org.firstinspires.ftc.teamcode.worldModel;
 
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
 
 public class DecodeWorldModel extends WorldModel{
+    private static DecodeWorldModel instance;
+
+    public static DecodeWorldModel getInstance(Telemetry telemetry) {
+        if (instance == null) {
+            instance = new DecodeWorldModel();
+        }
+        return instance;
+    }
+
+    private DecodeWorldModel() {
+        init();
+    }
 
     public void init(){
         /// RED ALLIANCE ////////////////////////////////

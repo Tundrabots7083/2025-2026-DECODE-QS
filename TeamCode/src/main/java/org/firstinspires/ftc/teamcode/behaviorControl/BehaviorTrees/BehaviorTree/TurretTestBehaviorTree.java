@@ -1,11 +1,14 @@
 package org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTree;
 
+import com.pedropathing.geometry.Pose;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.LimitSwitch.TestSwitch;
+import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.DriveTrain.RunDrivetrain;
+import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.DriveTrain.UpdateBlackboardPose;
+import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Turret.TraverseTurretToRedGoal;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.Action;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.BehaviorTree;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.BlackBoard;
@@ -15,6 +18,7 @@ import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTree
 import org.firstinspires.ftc.teamcode.hardwareControl.actuators.Ramp.RampController;
 import org.firstinspires.ftc.teamcode.hardwareControl.actuators.Spindexer.SpindexerController;
 import org.firstinspires.ftc.teamcode.hardwareControl.actuators.Turret.TurretController;
+import org.firstinspires.ftc.teamcode.hardwareControl.actuators.driveTrain.DriveTrainController;
 import org.firstinspires.ftc.teamcode.hardwareControl.actuators.intake.IntakeController;
 import org.firstinspires.ftc.teamcode.hardwareControl.sensors.limeLight.LimeLightController;
 import org.firstinspires.ftc.teamcode.hardwareControl.sensors.spindexerLimitSwitch.SpindexerLimitSwitchController;
@@ -52,13 +56,17 @@ public class TurretTestBehaviorTree {
 
     ///
     protected TurretController turretController;
-
     ///
 
     ///
     protected SpindexerLimitSwitchController switchController;
+    ///
 
     ///
+    protected DriveTrainController driveTrainController;
+    ///
+
+    private final Pose startPose = new Pose(0, 0, Math.toRadians(0)); // Start Pose of our robot.
 
 
     public TurretTestBehaviorTree(LinearOpMode opMode, Telemetry telemetry) {
@@ -83,7 +91,7 @@ public class TurretTestBehaviorTree {
         this.limeLightController.reset();
         this.limeLightController.initialize(hardwareMap, telemetry);
         /// End Limelight
-
+*/
         /// Spindexer
         this.spindexerController = SpindexerController.getInstance();
 
@@ -111,7 +119,6 @@ public class TurretTestBehaviorTree {
         this.turretController.reset();
         this.turretController.initialize(hardwareMap, telemetry);
         /// End Turret
-        */
 
         /// Switch
         this.switchController = SpindexerLimitSwitchController.getInstance();
@@ -121,11 +128,21 @@ public class TurretTestBehaviorTree {
         /// End Switch
 
 
+        /// Drivetrain
+        this.driveTrainController = DriveTrainController.getInstance();
+
+        this.driveTrainController.reset();
+        this.driveTrainController.initialize(hardwareMap, startPose);
+        /// End Drivetrain
+
+
         telemetry.clearAll();
 
         this.root = new Sequence(
                 Arrays.asList(
-                        new Action(new TestSwitch(telemetry, switchController), telemetry)
+                        new Action(new RunDrivetrain(telemetry, driveTrainController), telemetry),
+                        new Action(new UpdateBlackboardPose(telemetry, driveTrainController), telemetry),
+                        new Action(new TraverseTurretToRedGoal(telemetry, turretController), telemetry)
                 ), telemetry);
 
         this.tree = new BehaviorTree(root, blackBoard);

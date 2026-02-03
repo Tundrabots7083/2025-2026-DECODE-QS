@@ -10,9 +10,11 @@ import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTree
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.AA_Common.SetAutonomous;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.ArtifactTracker.TrackDetectedArtifact;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.ColorSensor.DetectArtifactColor;
+import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.DriveTrain.DriveForwardToIntake;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.DriveTrain.RunDrivetrain;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Intake.IntakeArtifacts;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Intake.RunIntake;
+import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Intake.StopIntake;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Spindexer.RunSpindexer;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Spindexer.SpinOnePosition;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Spindexer.SpinToZeroPosition;
@@ -81,10 +83,9 @@ public class AutoIntakeTestBehaviorTree {
 
     ///
     protected ArtifactTracker artifactTracker;
-
     ///
 
-    private final Pose startPose = new Pose(0, 0, 0);
+    private final Pose startPose = new Pose(100, 35, Math.toRadians(0)); // Start Pose of our robot.
 
     public AutoIntakeTestBehaviorTree(LinearOpMode opMode, Telemetry telemetry) {
         this.hardwareMap = opMode.hardwareMap;
@@ -175,11 +176,16 @@ public class AutoIntakeTestBehaviorTree {
                         new Action(new SwitchToShootCoordinates(telemetry, spindexerController), telemetry),
                         new Action(new SpinToZeroPosition(telemetry, spindexerController), telemetry),
                         new Action(new TrackDetectedArtifact(telemetry, spindexerController, artifactTracker), telemetry),
+                        new Action(new DriveForwardToIntake(telemetry, driveTrainController), telemetry),
                         new Action(new IntakeArtifacts(telemetry, intakeController), telemetry),
                         new Action(new DetectArtifactColor(telemetry, rightColorSensorController), telemetry),
+                        new Action(new StopIntake(telemetry, intakeController), telemetry),
                         new Action(new SpinOnePosition(telemetry, spindexerController), telemetry),
+                        new Action(new IntakeArtifacts(telemetry, intakeController), telemetry),
                         new Action(new DetectArtifactColor(telemetry, rightColorSensorController), telemetry),
+                        new Action(new StopIntake(telemetry, intakeController), telemetry),
                         new Action(new SpinOnePosition(telemetry, spindexerController), telemetry),
+                        new Action(new IntakeArtifacts(telemetry, intakeController), telemetry),
                         new Action(new DetectArtifactColor(telemetry, rightColorSensorController), telemetry)
                 ), telemetry);
 

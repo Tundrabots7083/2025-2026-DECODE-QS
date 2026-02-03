@@ -2,14 +2,13 @@ package org.firstinspires.ftc.teamcode.hardwareControl.actuators.Turret;
 
 
 import com.bylazar.configurables.annotations.Configurable;
+import com.pedropathing.geometry.Pose;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PwmControl;
 import com.qualcomm.robotcore.hardware.ServoImplEx;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.teamcode.hardwareConfig.actuators.Turret.TurretConstants;
 
@@ -89,7 +88,7 @@ public class TurretController {
         telemetry.addData("Turret Target", this.TURRET_TARGET_POSITION);
     }
 
-    public void moveToTargetPosition(Pose3D robotPose, Position targetPosition){
+    public void moveToTargetPosition(Pose robotPose, Position targetPosition) {
         double turretTargetAngle = this.getTurretAngleDegrees(robotPose, targetPosition, TURRET_X_OFFSET, TURRET_Y_OFFSET);
 
         TURRET_TARGET_POSITION = turretTargetAngle;
@@ -127,7 +126,7 @@ public class TurretController {
      * @return turret angle in degrees (0 = aligned with robot heading)
      */
     private double getTurretAngleDegrees(
-            Pose3D robotPose,
+            Pose robotPose,
             Position targetPosition,
             double turretXOffset,
             double turretYOffset
@@ -137,13 +136,11 @@ public class TurretController {
         double targetY = targetPosition.y;
 
         // --- Robot pose ---
-        Position robotPosition = robotPose.getPosition();
-        double robotX = robotPosition.x;
-        double robotY = robotPosition.y;
+        double robotX = robotPose.getX();
+        double robotY = robotPose.getY();
 
         // Yaw in radians
-        double robotYawRad = robotPose.getOrientation()
-                .getYaw(AngleUnit.RADIANS);
+        double robotYawRad = robotPose.getHeading();
 
         // --- Rotate turret offset into field frame ---
         double cos = Math.cos(robotYawRad);

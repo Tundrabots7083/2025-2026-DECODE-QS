@@ -15,7 +15,7 @@ public class DriveForwardToIntake implements ActionFunction {
     private DriveTrainController driveTrainController;
     private Telemetry telemetry;
     private Status lastStatus = Status.FAILURE;
-    private double maxPower = 0.5;
+    private double maxPower = 0.35;
     private final Pose startPose = new Pose(100, 35, Math.toRadians(0)); // Start Pose of our robot.
     private final Pose intakePose = new Pose(130, 35, Math.toRadians(0));
     private PathChain intakePath;

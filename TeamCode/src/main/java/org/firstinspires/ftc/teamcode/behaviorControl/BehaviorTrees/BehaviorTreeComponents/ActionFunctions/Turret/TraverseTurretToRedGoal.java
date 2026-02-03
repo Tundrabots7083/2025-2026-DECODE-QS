@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Turret;
 
+import com.pedropathing.geometry.Pose;
+
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
@@ -22,14 +24,14 @@ public class TraverseTurretToRedGoal implements ActionFunction {
     public TraverseTurretToRedGoal(Telemetry telemetry, TurretController turretController) {
         this.telemetry = telemetry;
         this.turretController = turretController;
-        this.worldModel = (DecodeWorldModel) DecodeWorldModel.getInstance(telemetry);
+        this.worldModel = DecodeWorldModel.getInstance(telemetry);
 
     }
 
     public Status perform(BlackBoard blackBoard) {
-        Pose3D robotPose = (Pose3D) blackBoard.getValue("CurrentPose");
+        Pose robotPose = (Pose) blackBoard.getValue("CurrentPose");
 
-        WorldObject goalObject = (WorldObject) worldModel.getValue("RedAllianceGoal");
+        WorldObject goalObject = worldModel.getValue("RedAllianceGoal");
         Pose3D goalPose = goalObject.pose3D;
 
         Position targetPosition = goalPose.getPosition();
