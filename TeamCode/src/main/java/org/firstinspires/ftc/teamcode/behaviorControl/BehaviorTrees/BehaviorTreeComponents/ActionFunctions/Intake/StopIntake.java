@@ -26,8 +26,8 @@ public class StopIntake implements ActionFunction {
         }
 
         // Stop the intake mechanism
-        intakeController.spinToTargetVelocity(0);
-        intakeController.stop();
+//        intakeController.stop();
+        intakeController.spinToTargetVelocity(0.0);
 
 
         status = Status.SUCCESS;

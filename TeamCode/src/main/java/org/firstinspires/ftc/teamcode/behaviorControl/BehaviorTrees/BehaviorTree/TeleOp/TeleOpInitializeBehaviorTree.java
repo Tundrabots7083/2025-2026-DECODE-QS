@@ -114,13 +114,13 @@ public class TeleOpInitializeBehaviorTree {
         this.intakeController.initialize(hardwareMap, telemetry);
         /// End Intake
 
-        /// ColorSensors
+        /// ColorSensor
         this.rightColorSensorController = RightIntakeColorSensorController.getInstance();
 
         this.rightColorSensorController.reset();
         this.rightColorSensorController.initialize(hardwareMap, telemetry);
 
-        /// End ColorSensors
+        /// End ColorSensor
 
         /// Artifact Tracker
         this.artifactTracker = ArtifactTracker.getInstance();
