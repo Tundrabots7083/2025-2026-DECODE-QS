@@ -71,15 +71,6 @@ public class ShootAction implements ActionFunction {
             case SWITCH_COORDINATES:
                 spindexerController.setDegreeOffset(0.0);
 
-                double currentPosition = spindexerController.getPosition() % 360;
-
-                if (currentPosition > 240) {
-                    spindexerController.moveToPosition(spindexerController.getTargetPosition());
-                } else if (currentPosition > 120) {
-                    spindexerController.moveToPosition(spindexerController.getTargetPosition() + 240);
-                } else {
-                    spindexerController.moveToPosition(spindexerController.getTargetPosition() + 120);
-                }
                 state = ShootState.DEPLOY_RAMP;
                 break;
             case DEPLOY_RAMP:
@@ -114,16 +105,6 @@ public class ShootAction implements ActionFunction {
                         rampController.store();
 
                         spindexerController.setDegreeOffset(40);
-
-                        double currentSpindexerPosition = spindexerController.getPosition() % 360;
-
-                        if (currentSpindexerPosition > 240) {
-                            spindexerController.moveToPosition(spindexerController.getTargetPosition());
-                        } else if (currentSpindexerPosition > 120) {
-                            spindexerController.moveToPosition(spindexerController.getTargetPosition() + 240);
-                        } else {
-                            spindexerController.moveToPosition(spindexerController.getTargetPosition() + 120);
-                        }
                     } else {
                         state = ShootState.SPIN_UP;
                         break;
