@@ -10,18 +10,16 @@ import org.firstinspires.ftc.teamcode.hardwareControl.actuators.Spindexer.Spinde
 import org.firstinspires.ftc.teamcode.hardwareControl.actuators.intake.IntakeController;
 import org.firstinspires.ftc.teamcode.hardwareControl.actuators.shooter.ShooterController;
 import org.firstinspires.ftc.teamcode.hardwareControl.sensors.gamepad.GamepadDelta;
-import org.firstinspires.ftc.teamcode.hardwareControl.sensors.storageInventoryController.ArtifactColor;
 
-enum ShootState {
+enum PrepState {
     IDLE,
     SWITCH_COORDINATES,
     SPIN_UP,
     DEPLOY_RAMP,
-    FEED,
-    RETRACT
+    READY
 }
 
-public class ShootAction implements ActionFunction {
+public class ShootPrep implements ActionFunction {
     protected Status lastStatus = Status.FAILURE;
     Telemetry telemetry;
     ShooterController shooterController;
@@ -29,13 +27,13 @@ public class ShootAction implements ActionFunction {
     SpindexerController spindexerController;
     ArtifactTracker artifactTracker;
     IntakeController intakeController;
-    ShootState state = ShootState.IDLE;
+    PrepState state = PrepState.IDLE;
     boolean wasLeftTriggerTripped = false;
     boolean wasRightTriggerTripped = false;
     boolean isShootingThree = false;
     int timesSpun = 0;
 
-    public ShootAction(Telemetry telemetry) {
+    public ShootPrep(Telemetry telemetry) {
         this.telemetry = telemetry;
         this.shooterController = ShooterController.getInstance();
         this.rampController = RampController.getInstance();
@@ -59,11 +57,11 @@ public class ShootAction implements ActionFunction {
             case IDLE:
                 timesSpun = 0;
                 if (wasLeftTriggerTripped) {
-                    state = ShootState.SWITCH_COORDINATES;
+                    state = PrepState.SWITCH_COORDINATES;
                     isShootingThree = false;
                     break;
                 } else if (wasRightTriggerTripped) {
-                    state = ShootState.SWITCH_COORDINATES;
+                    state = PrepState.SWITCH_COORDINATES;
                     isShootingThree = true;
                     break;
                 }
@@ -80,58 +78,19 @@ public class ShootAction implements ActionFunction {
                 } else {
                     spindexerController.moveToPosition(spindexerController.getTargetPosition() + 120);
                 }
-                state = ShootState.DEPLOY_RAMP;
+                state = PrepState.IDLE;
                 break;
             case DEPLOY_RAMP:
                 if (spindexerController.isOnTarget()) {
                     rampController.deploy();
                     if (rampController.isDeployed()) {
-                        state = ShootState.SPIN_UP;
+                        state = PrepState.SPIN_UP;
                     }
                 }
                 break;
             case SPIN_UP:
-                shooterController.spinToTargetVelocity(4500);
-                state = ShootState.FEED;
-                break;
-            case FEED:
-                if (shooterController.isOnTarget()) {
-                    intakeController.spinToTargetVelocity(200);
-                    int shootSlot = (spindexerController.getSlotPosition() + 1) % 3; // gets the slot currently under the shooter
-                    artifactTracker.setArtifact(shootSlot, ArtifactColor.NONE);
-                    double currentTarget = spindexerController.getTargetPosition();
-                    double targetPosition = currentTarget + 120;
-                    spindexerController.moveToPosition(targetPosition);
-                    timesSpun++;
-                    state = ShootState.RETRACT;
-                }
-                break;
-            case RETRACT:
-                if (spindexerController.isOnTarget()) {
-                    if (!isShootingThree || timesSpun == 3) {
-                        shooterController.spinToTargetVelocity(0.0);
-                        intakeController.spinToTargetVelocity(0.0);
-                        rampController.store();
-
-                        spindexerController.setDegreeOffset(40);
-
-                        double currentSpindexerPosition = spindexerController.getPosition() % 360;
-
-                        if (currentSpindexerPosition > 240) {
-                            spindexerController.moveToPosition(spindexerController.getTargetPosition());
-                        } else if (currentSpindexerPosition > 120) {
-                            spindexerController.moveToPosition(spindexerController.getTargetPosition() + 240);
-                        } else {
-                            spindexerController.moveToPosition(spindexerController.getTargetPosition() + 120);
-                        }
-                    } else {
-                        state = ShootState.SPIN_UP;
-                        break;
-                    }
-                }
-                if (!rampController.isDeployed()) {
-                    state = ShootState.IDLE;
-                }
+                shooterController.spinToTargetVelocity(3500);
+                state = PrepState.READY;
                 break;
         }
 

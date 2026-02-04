@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTree.TeleOp;
 
-import com.pedropathing.geometry.Pose;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -38,7 +37,6 @@ public class TeleOpInitializeBehaviorTree {
     protected HardwareMap hardwareMap;
     protected LinearOpMode opMode;
 
-    private final Pose startPose = new Pose(0, 0, 0);
 
     ///
     protected SpindexerController spindexerController;

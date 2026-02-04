@@ -45,7 +45,7 @@ public class TBHController {
         double error = setpoint - current;
         telemetry.addData("error", error);
 
-        if (Math.abs(error) > 450) {
+        if (Math.abs(error) > 300) {
             isFirstCross = true;
             return Math.signum(error);
         } else if (isFirstCross && driveAtZero == 0.0) {

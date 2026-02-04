@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.opModes.test.actuators;
+package org.firstinspires.ftc.teamcode.opModes;
 
 
 import com.bylazar.telemetry.JoinedTelemetry;
@@ -46,11 +46,6 @@ public class MainTeleOp extends LinearOpMode {
         while (opModeIsActive()) {
             Status result = this.mainBehaviorTree.tick();
             joinedTelemetry.update();
-
-
-            if (result == Status.FAILURE) {
-                requestOpModeStop();
-            }
 
         }
     }

@@ -1,21 +1,28 @@
 package org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTree;
 
-import com.bylazar.telemetry.JoinedTelemetry;
 import com.pedropathing.geometry.Pose;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.AA_Common.PauseAction;
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.AA_Common.SetAutonomous;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.ArtifactTracker.MatchPatternToMotif;
+import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.ArtifactTracker.TrackDetectedArtifact;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.ColorSensor.DetectArtifactColor;
+import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.DriveTrain.DriveForwardToIntake;
+import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.DriveTrain.RED.REDdriveForwardToIntake2;
+import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.DriveTrain.RED.REDdriveToIntakePose1;
+import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.DriveTrain.RED.REDdriveToIntakePose2;
+import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.DriveTrain.RED.REDdriveToShootPose1;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.DriveTrain.Relocalize;
+import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.DriveTrain.WaitForDrivetrainToArrive;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Intake.IntakeArtifacts;
-import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Intake.RetainArtifacts;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Intake.RunIntake;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.LimeLight.DetectMotifPattern;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.LimeLight.DetectRobotPose;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Shooter.RunShooter;
+import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Spindexer.SortArtifacts;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Spindexer.SpinOnePosition;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.Action;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.BehaviorTree;
@@ -31,7 +38,7 @@ import org.firstinspires.ftc.teamcode.hardwareControl.actuators.driveTrain.Drive
 import org.firstinspires.ftc.teamcode.hardwareControl.actuators.intake.IntakeController;
 import org.firstinspires.ftc.teamcode.hardwareControl.actuators.shooter.ShooterController;
 import org.firstinspires.ftc.teamcode.hardwareControl.sensors.limeLight.LimeLightController;
-import org.firstinspires.ftc.teamcode.hardwareControl.sensors.storageInventoryController.LeftIntakeColorSensorController;
+import org.firstinspires.ftc.teamcode.hardwareControl.sensors.spindexerLimitSwitch.SpindexerLimitSwitchController;
 import org.firstinspires.ftc.teamcode.hardwareControl.sensors.storageInventoryController.RightIntakeColorSensorController;
 
 import java.util.Arrays;
@@ -42,20 +49,14 @@ public class SampleAutoBehaviorTree {
     private BehaviorTree tree;
     private Node root;
     private BlackBoard blackBoard;
-    protected JoinedTelemetry telemetry;
+    protected Telemetry telemetry;
     protected HardwareMap hardwareMap;
     protected LinearOpMode opMode;
 
-    /// Limelight
-    protected LimeLightController limeLightController;
-    ///
+    private final Pose startPose = new Pose(132, 12, 90);
 
     ///
     protected SpindexerController spindexerController;
-    ///
-
-    ///
-    protected IntakeController intakeController;
     ///
 
     ///
@@ -63,7 +64,13 @@ public class SampleAutoBehaviorTree {
     ///
 
     ///
-    protected TurretController turretController;
+    protected SpindexerLimitSwitchController switchController;
+
+    ///
+
+    ///
+    protected IntakeController intakeController;
+
     ///
 
     ///
@@ -75,17 +82,23 @@ public class SampleAutoBehaviorTree {
     ///
 
     ///
-    protected RightIntakeColorSensorController rightIntakeColorSensorController;
-    protected LeftIntakeColorSensorController leftIntakeColorSensorController;
+    protected RightIntakeColorSensorController rightColorSensorController;
     ///
 
     ///
     protected ArtifactTracker artifactTracker;
+    ///
+
+    ///
+    protected TurretController turretController;
+    ///
+
+    ///
+    protected LimeLightController limeLightController;
 
     ///
 
-
-    public SampleAutoBehaviorTree(LinearOpMode opMode, JoinedTelemetry telemetry) {
+    public SampleAutoBehaviorTree(LinearOpMode opMode, Telemetry telemetry) {
         this.hardwareMap = opMode.hardwareMap;
         this.telemetry = telemetry;
         this.opMode = opMode;
@@ -97,40 +110,21 @@ public class SampleAutoBehaviorTree {
         this.blackBoard = BlackBoard.getInstance(telemetry);
         this.blackBoard.reset();
 
-        /// Limelight
-        this.limeLightController = LimeLightController.getInstance();
-
-        this.limeLightController.reset();
-        this.limeLightController.initialize(hardwareMap, telemetry);
-        /// End Limelight
-
         /// Spindexer
         this.spindexerController = SpindexerController.getInstance();
-
-        this.spindexerController.reset();
-        this.spindexerController.initialize(hardwareMap, telemetry);
         ///  End Spindexer
-
-        /// Intake
-        this.intakeController = IntakeController.getInstance();
-
-        this.intakeController.reset();
-        this.intakeController.initialize(hardwareMap, telemetry);
-        /// End Intake
 
         /// Ramp
         this.rampController = RampController.getInstance();
-
-        this.rampController.reset();
-        this.rampController.initialize(hardwareMap, telemetry);
         /// End Ramp
 
-        /// Turret
-        this.turretController = TurretController.getInstance();
+        /// Switch
+        this.switchController = SpindexerLimitSwitchController.getInstance();
+        /// End Switch
 
-        this.turretController.reset();
-        this.turretController.initialize(hardwareMap, telemetry);
-        /// End Turret
+        /// Intake
+        this.intakeController = IntakeController.getInstance();
+        /// End Intake
 
         /// Shooter
         this.shooterController = ShooterController.getInstance();
@@ -143,54 +137,65 @@ public class SampleAutoBehaviorTree {
         this.driveTrainController = DriveTrainController.getInstance();
 
         this.driveTrainController.reset();
-        this.driveTrainController.initialize(hardwareMap, new Pose(72, 72, 0));
+        this.driveTrainController.initialize(hardwareMap, startPose);
         /// End Drivetrain
 
-        /// Intake Color Sensor
-        this.rightIntakeColorSensorController = rightIntakeColorSensorController.getInstance();
-
-        this.rightIntakeColorSensorController.reset();
-        this.rightIntakeColorSensorController.initialize(hardwareMap, telemetry);
-
-        /// End Intake Color Sensor
+        /// Right Color Sensor
+        this.rightColorSensorController = RightIntakeColorSensorController.getInstance();
+        /// End Right Color Sensor
 
         /// Artifact Tracker
-//        this.artifactTracker = ArtifactTracker.getInstance();
-//
-//        this.artifactTracker.reset();
-//        this.artifactTracker.initialize(hardwareMap, telemetry);
+        this.artifactTracker = ArtifactTracker.getInstance();
         /// End Artifact Tracker
 
+        /// Turret
+        this.turretController = TurretController.getInstance();
+        /// End Turret
+
+        ///  Limelight
+        this.limeLightController = LimeLightController.getInstance();
+        /// End Limelight
 
         telemetry.clearAll();
 
         this.root = new Sequence(
                 Arrays.asList(
+                        new Action(new SetAutonomous(), telemetry),
                         new Action(new RunShooter(telemetry, shooterController), telemetry),
                         new Action(new RunIntake(telemetry, intakeController), telemetry),
                         new Action(new DetectMotifPattern(telemetry, limeLightController), telemetry),
                         new Action(new MatchPatternToMotif(telemetry, spindexerController, artifactTracker), telemetry),
+                        new Action(new SortArtifacts(telemetry, spindexerController), telemetry),
                         new Action(new DetectRobotPose(telemetry, limeLightController), telemetry),
                         new Action(new Relocalize(telemetry, driveTrainController), telemetry),
-                        // drive to shooting position
-                        // simultaneously sort artifacts
                         new ShootSubTree(opMode, telemetry).getRoot(),
-                        // drive to intake position
+                        new Action(new REDdriveToIntakePose1(telemetry, driveTrainController), telemetry),
+                        new Action(new WaitForDrivetrainToArrive(telemetry, driveTrainController), telemetry),
                         new Action(new IntakeArtifacts(telemetry, intakeController), telemetry),
-                        // drive through pile
-                        new Action(new DetectArtifactColor(telemetry, rightIntakeColorSensorController), telemetry),
-                        //conditional to check if took in an artifact
+                        new Action(new DriveForwardToIntake(telemetry, driveTrainController), telemetry),
+                        new Action(new DetectArtifactColor(telemetry, rightColorSensorController), telemetry),
+                        new Action(new TrackDetectedArtifact(telemetry, spindexerController, artifactTracker), telemetry),
                         new Action(new SpinOnePosition(telemetry, spindexerController), telemetry),
-                        //conditional to check if took in an artifact
+                        new Action(new DetectArtifactColor(telemetry, rightColorSensorController), telemetry),
+                        new Action(new TrackDetectedArtifact(telemetry, spindexerController, artifactTracker), telemetry),
                         new Action(new SpinOnePosition(telemetry, spindexerController), telemetry),
-                        //conditional to check if took in an artifact
-                        new Action(new SpinOnePosition(telemetry, spindexerController), telemetry),
-                        //conditional to check if took in an artifact
-                        new Action(new RetainArtifacts(telemetry, intakeController), telemetry),
-                        // drive to shoot and sort
+                        new Action(new DetectArtifactColor(telemetry, rightColorSensorController), telemetry),
+                        new Action(new TrackDetectedArtifact(telemetry, spindexerController, artifactTracker), telemetry),
+                        new Action(new REDdriveToShootPose1(telemetry, driveTrainController), telemetry),
+                        new Action(new SortArtifacts(telemetry, spindexerController), telemetry),
+                        new Action(new WaitForDrivetrainToArrive(telemetry, driveTrainController), telemetry),
                         new ShootSubTree(opMode, telemetry).getRoot(),
-                        // drive to park position
-                        new Action(new PauseAction(telemetry, 2000), telemetry)
+                        new Action(new REDdriveToIntakePose2(telemetry, driveTrainController), telemetry),
+                        new Action(new IntakeArtifacts(telemetry, intakeController), telemetry),
+                        new Action(new REDdriveForwardToIntake2(telemetry, driveTrainController), telemetry),
+                        new Action(new DetectArtifactColor(telemetry, rightColorSensorController), telemetry),
+                        new Action(new TrackDetectedArtifact(telemetry, spindexerController, artifactTracker), telemetry),
+                        new Action(new SpinOnePosition(telemetry, spindexerController), telemetry),
+                        new Action(new DetectArtifactColor(telemetry, rightColorSensorController), telemetry),
+                        new Action(new TrackDetectedArtifact(telemetry, spindexerController, artifactTracker), telemetry),
+                        new Action(new SpinOnePosition(telemetry, spindexerController), telemetry),
+                        new Action(new DetectArtifactColor(telemetry, rightColorSensorController), telemetry),
+                        new Action(new TrackDetectedArtifact(telemetry, spindexerController, artifactTracker), telemetry)
                 ), telemetry);
 
         this.tree = new BehaviorTree(root, blackBoard);

@@ -44,7 +44,7 @@ public class IntakeAction implements ActionFunction {
 
         if (blackBoard.getValue("gamepad1Delta") != null) {
             GamepadDelta gamepad1Delta = (GamepadDelta) blackBoard.getValue("gamepad1Delta");
-            wasDpadUpPressed = gamepad1Delta.dpadUpPressed;
+            wasDpadUpPressed = gamepad1Delta.aPressed;
         } else {
 //            return Status.FAILURE;
         }
@@ -56,9 +56,8 @@ public class IntakeAction implements ActionFunction {
                     return Status.SUCCESS;
                 } else {
                     intakeController.stop();
-//                    return Status.FAILURE;
+                    return Status.FAILURE;
                 }
-                break;
             case STORE_RAMP:
                 if (wasDpadUpPressed) {
                     state = IntakeState.IDLE;
@@ -88,6 +87,10 @@ public class IntakeAction implements ActionFunction {
                     state = IntakeState.IDLE;
                     return Status.SUCCESS;
                 }
+
+                //Ensure intake is still spinning if interrupted
+                intakeController.spinToTargetVelocity(INTAKE_VELOCITY);
+
                 ArtifactColor rightColor = rightColorSensorController.getColor();
 
                 int slotPosition = spindexerController.getSlotPosition();
@@ -122,7 +125,7 @@ public class IntakeAction implements ActionFunction {
         telemetry.addData("[INTAKE ACTION] Atrifact Tracker 1", artifactTracker.getArtifact(0));
         telemetry.addData("[INTAKE ACTION] Atrifact Tracker 2", artifactTracker.getArtifact(1));
         telemetry.addData("[INTAKE ACTION] Atrifact Tracker 3", artifactTracker.getArtifact(2));
-        telemetry.addData("[INTAKE ACTION] Current Spindex Position", spindexerController.getPosition());
+        telemetry.addData("[INTAKE ACTION] State", state);
         return Status.SUCCESS;
 
     }

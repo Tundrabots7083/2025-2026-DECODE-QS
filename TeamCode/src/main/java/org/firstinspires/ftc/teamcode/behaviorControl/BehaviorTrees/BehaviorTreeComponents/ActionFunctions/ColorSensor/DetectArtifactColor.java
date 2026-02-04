@@ -14,6 +14,7 @@ public class DetectArtifactColor implements ActionFunction {
     RightIntakeColorSensorController rightColorSensorController;
 
     protected Status lastStatus = Status.FAILURE;
+    private boolean isAutonomous = false;
 
 
     public DetectArtifactColor(Telemetry telemetry, RightIntakeColorSensorController rightColorSensorController) {
@@ -22,13 +23,19 @@ public class DetectArtifactColor implements ActionFunction {
     }
 
     public Status perform(BlackBoard blackBoard) {
+        if (lastStatus == Status.SUCCESS && isAutonomous) {
+            return lastStatus;
+        }
+
+        isAutonomous = (boolean) blackBoard.getValue("isAutonomous");
 
         ArtifactColor rightColor = rightColorSensorController.getColor();
-        blackBoard.setValue("ArtifactColor", rightColorSensorController.getColor());
+        blackBoard.setValue("ArtifactColor", rightColor);
 
         if (rightColor == ArtifactColor.NONE) {
             return Status.RUNNING;
         } else {
+            lastStatus = Status.SUCCESS;
             return Status.SUCCESS;
         }
     }

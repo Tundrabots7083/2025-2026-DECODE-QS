@@ -1,15 +1,16 @@
-package org.firstinspires.ftc.teamcode.opModes.test.actuators;
+package org.firstinspires.ftc.teamcode.opModes.disabled;
 
 
 import com.bylazar.telemetry.JoinedTelemetry;
 import com.bylazar.telemetry.PanelsTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTree.TurretTestBehaviorTree;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.Status;
 
-
+@Disabled
 @Autonomous(name = "Test Turret BehaviorTree", group = "test")
 public class TestTurretBTOpMode extends LinearOpMode {
     TurretTestBehaviorTree behaviorTree = null;
