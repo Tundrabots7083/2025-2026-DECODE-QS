@@ -6,5 +6,5 @@ public class LEFTIntakeColorSensorConstants {
     public double redScalar = 1.3;
     public double blueScalar = 1.3;
     public double greenScalar = 233;
-    public double minGreen = 250;
+    public double minGreen = 400;
 }

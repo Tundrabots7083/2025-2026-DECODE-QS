@@ -11,7 +11,7 @@ public class SwitchToShootCoordinates implements ActionFunction {
     Telemetry telemetry;
     SpindexerController spindexerController;
 
-    double intakeDegreeOffset = 40.0;
+    double intakeDegreeOffset = 0.0;
 
     public SwitchToShootCoordinates(Telemetry telemetry, SpindexerController spindexerController) {
         this.telemetry = telemetry;

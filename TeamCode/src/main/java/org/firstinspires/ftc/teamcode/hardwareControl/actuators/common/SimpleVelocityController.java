@@ -8,7 +8,7 @@ public class SimpleVelocityController {
     private double Kp; // error multiplier coefficients
     private double lastError = 0.0;
     private double maxPower = 1.0;
-    private double minPower = 0.0;
+    private double minPower = -0.4;
     private double driveAtZero = 0.0; // This is the previous motor power at zero error
     private double power = 0.0;
     private Telemetry telemetry;

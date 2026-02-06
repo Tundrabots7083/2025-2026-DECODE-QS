@@ -111,15 +111,6 @@ public class TurretController {
     }
 
     /**
-     * Normalize angle to (-180, 180]
-     */
-    private double normalizeDegrees(double angleDeg) {
-        while (angleDeg <= -180.0) angleDeg += 360.0;
-        while (angleDeg > 180.0) angleDeg -= 360.0;
-        return angleDeg;
-    }
-
-    /**
      * Computes turret angle (degrees) relative to robot heading.
      *
      * @param robotPose Pose3D of robot (field coordinates)
@@ -163,7 +154,6 @@ public class TurretController {
         double turretAngleRad = angleToTargetRad - robotYawRad;
         double turretAngleDeg = Math.toDegrees(turretAngleRad);
 
-        // return normalizeDegrees(turretAngleDeg);
         return turretAngleDeg;
     }
 }

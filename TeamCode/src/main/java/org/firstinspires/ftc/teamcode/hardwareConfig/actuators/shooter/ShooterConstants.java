@@ -19,5 +19,5 @@ public class ShooterConstants {
     public DcMotor.ZeroPowerBehavior rearMotorZeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE;
     public double startPosition = 0;
     public double targetPosition = 0;
-    public double tolerableError = 30; //rpm
+    public double tolerableError = 60; //rpm
 }

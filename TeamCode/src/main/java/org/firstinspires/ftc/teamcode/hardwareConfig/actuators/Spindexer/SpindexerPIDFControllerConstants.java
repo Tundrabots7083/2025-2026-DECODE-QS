@@ -8,6 +8,8 @@ public class SpindexerPIDFControllerConstants {
     public double maxIntegralSum = 100;
     public double maxVelocity = 800;
     public double maxAcceleration = 4000;
+    public double maxFASTVelocity = 1500;
+    public double maxFASTAcceleration = 4000;
     public double motorMinPowerLimit = -1;
     public double motorMaxPowerLimit = 1;
 }

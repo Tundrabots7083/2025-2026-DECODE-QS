@@ -38,6 +38,9 @@ public class TraverseTurretToRedGoal implements ActionFunction {
         }
 
         turretController.moveToTargetPosition(robotPose, targetPosition);
+        telemetry.addData("[TraverseTurret] TurretPose", turretController.getPosition() - 122);
+        telemetry.addData("[TraverseTurret] RobotPose", robotPose);
+
 
         return Status.SUCCESS;
     }

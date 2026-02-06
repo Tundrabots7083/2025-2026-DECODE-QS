@@ -47,7 +47,7 @@ public class DecodeWorldModel {
     private void init(){
         /// RED ALLIANCE ////////////////////////////////
         /// Red Alliance Goal
-        WorldObject redAllianceGoal = new WorldObject("RedAllianceGoal", "RedAllianceGoal", new Position(DistanceUnit.INCH, 130, 135, 48.0, 10), null);
+        WorldObject redAllianceGoal = new WorldObject("RedAllianceGoal", "RedAllianceGoal", new Position(DistanceUnit.INCH, 144, 144, 48.0, 10), null);
 
         /// Red Alliance Spikes
         WorldObject redAllianceAudienceSpike = new WorldObject("RedAllianceAudienceSpike","RedAllianceAudienceSpike",  new Position(DistanceUnit.INCH,120.0, 36,0.0,10), null);

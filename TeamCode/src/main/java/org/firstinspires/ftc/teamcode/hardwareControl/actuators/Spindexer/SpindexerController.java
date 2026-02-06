@@ -15,8 +15,8 @@ import org.firstinspires.ftc.teamcode.hardwareControl.actuators.common.PIDFContr
 public class SpindexerController {
 
     private static final SpindexerController INSTANCE = new SpindexerController();
-    private static final long RECOVERY_TIMEOUT_MS = 800; // ms per stage
-    private static final double RECOVERY_OFFSET_DEG = 60; // backoff amount
+    private static final long RECOVERY_TIMEOUT_MS = 200; // ms per stage
+    private static final double RECOVERY_OFFSET_DEG = 15; // backoff amount
     // Latched stuck flag; controller owns this entirely
     public boolean isStuck = false;
     private DcMotorEx spindexerMotor;
@@ -31,6 +31,8 @@ public class SpindexerController {
     private double GEARING;
     private double MAX_VELOCITY;
     private double MAX_ACCELERATION;
+    private double MAX_FAST_VELOCITY;
+    private double MAX_FAST_ACCELERATION;
     private double startTime;
     private double currentTime;
     private double kP;
@@ -39,11 +41,17 @@ public class SpindexerController {
     private double kF;
     private PIDFController pidfController;
     private MotionProfiler motionProfiler;
+    private MotionProfiler fastMotionProfiler;
     private boolean initialized = false;
+    private boolean isSpinningSlowly = false;
     private Telemetry telemetry;
     private SpindexerState spindexerState = SpindexerState.IDLE;
     private double recoveryTarget;
     private double savedGoalPosition;
+    private boolean fastMode = false;
+    private boolean profileWasGeneratedOnFastMode = false;
+
+
     private SpindexerController() {
     }
 
@@ -92,6 +100,8 @@ public class SpindexerController {
         MAX_INTEGRAL_SUM = pidfControllerConstants.maxIntegralSum;
         MAX_VELOCITY = pidfControllerConstants.maxVelocity;
         MAX_ACCELERATION = pidfControllerConstants.maxAcceleration;
+        MAX_FAST_VELOCITY = pidfControllerConstants.maxFASTVelocity;
+        MAX_FAST_ACCELERATION = pidfControllerConstants.maxFASTAcceleration;
 
         kP = pidfControllerConstants.kp;
         kI = pidfControllerConstants.ki;
@@ -103,11 +113,16 @@ public class SpindexerController {
         pidfController = new PIDFController(kP, kI, kD, kF);
         pidfController.setMaxIntegralSum(MAX_INTEGRAL_SUM);
         motionProfiler = new MotionProfiler(MAX_VELOCITY, MAX_ACCELERATION);
+        fastMotionProfiler = new MotionProfiler(MAX_FAST_VELOCITY, MAX_FAST_ACCELERATION);
     }
 
     public void hardwareReset() {
         spindexerMotor.setMode(spindexerConstants.resetMode);
         spindexerMotor.setMode(spindexerConstants.runMode);
+    }
+
+    public void enableFastMode(boolean enableFastMode) {
+        fastMode = enableFastMode;
     }
 
     public void moveToPosition(double targetPosition) {
@@ -116,7 +131,13 @@ public class SpindexerController {
         if (spindexerState == SpindexerState.IDLE || spindexerState == SpindexerState.MOVING_TO_TARGET && lastTargetPosition != targetPosition) {
             pidfController.reset();
             double startPosition = getPosition();
-            motionProfiler.generateProfile(startPosition, targetPosition);
+            if (!fastMode) {
+                motionProfiler.generateProfile(startPosition, targetPosition);
+                profileWasGeneratedOnFastMode = false;
+            } else {
+                fastMotionProfiler.generateProfile(startPosition, targetPosition);
+                profileWasGeneratedOnFastMode = true;
+            }
             startTime = System.currentTimeMillis();
             spindexerState = SpindexerState.MOVING_TO_TARGET;
 
@@ -137,12 +158,13 @@ public class SpindexerController {
 
     public void spinSlowly() {
         spindexerMotor.setPower(0.3);
-        telemetry.addData("Spindex State", spindexerState);
+        isSpinningSlowly = true;
     }
 
     public void stop() {
         spindexerMotor.setPower(0);
         pidfController.reset();
+        isSpinningSlowly = false;
     }
 
     public double getPosition() {
@@ -174,12 +196,25 @@ public class SpindexerController {
     }
 
     public void update() {
+        if (isSpinningSlowly) {
+            return;
+        }
+
         currentTime = System.currentTimeMillis();
         double currentPosition = getPosition();
         double elapsedTime = (currentTime - startTime) / 1000.0;
+        telemetry.addData("[SPINDEXER] CurrentPos", currentPosition);
+        telemetry.addData("[SPINDEXER] TargetPose", getTargetPosition());
 
         // ----- Normal motion -----
-        double power = pidfController.calculate(motionProfiler.getMotionState(elapsedTime).position, currentPosition);
+        double targetPosition;
+        if (!profileWasGeneratedOnFastMode) {
+            targetPosition = motionProfiler.getMotionState(elapsedTime).position;
+        } else {
+            targetPosition = fastMotionProfiler.getMotionState(elapsedTime).position;
+        }
+
+        double power = pidfController.calculate(targetPosition, currentPosition);
         double feedForwardPower = power + kF * motionProfiler.getMotionState(elapsedTime).velocity;
         feedForwardPower = Range.clip(feedForwardPower, -1, 1);
 
@@ -225,10 +260,10 @@ public class SpindexerController {
         double predictedVelocityError = predictedVelocity - currentVelocity;
 
         if (!isStuck &&
-                predictedVelocityError >= 50 &&
+                predictedVelocityError >= 200 &&
                 Math.abs(currentVelocity) < 20 &&
                 Math.abs(LAST_POWER) > 0.1 &&
-                elapsedTime > 0.2) {
+                elapsedTime > 0.8) {
 
             // Latch stuck flag
             isStuck = true;

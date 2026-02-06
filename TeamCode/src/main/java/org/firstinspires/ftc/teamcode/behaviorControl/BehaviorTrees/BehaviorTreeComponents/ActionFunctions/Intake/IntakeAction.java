@@ -12,8 +12,18 @@ import org.firstinspires.ftc.teamcode.hardwareControl.actuators.Spindexer.Spinde
 import org.firstinspires.ftc.teamcode.hardwareControl.actuators.intake.IntakeController;
 import org.firstinspires.ftc.teamcode.hardwareControl.sensors.gamepad.GamepadDelta;
 import org.firstinspires.ftc.teamcode.hardwareControl.sensors.storageInventoryController.ArtifactColor;
+import org.firstinspires.ftc.teamcode.hardwareControl.sensors.storageInventoryController.LeftIntakeColorSensorController;
 import org.firstinspires.ftc.teamcode.hardwareControl.sensors.storageInventoryController.RightIntakeColorSensorController;
 
+
+enum IntakeState {
+    IDLE,
+    INTAKE_ARTIFACTS,
+    STORE_RAMP,
+    CHECK_SLOT,
+    SPIN_SPINDEXER,
+    REJECT_EXTRA_ARTIFACTS
+}
 
 public class IntakeAction implements ActionFunction {
     protected Status lastStatus = Status.FAILURE;
@@ -22,11 +32,12 @@ public class IntakeAction implements ActionFunction {
     RampController rampController;
     SpindexerController spindexerController;
     RightIntakeColorSensorController rightColorSensorController;
+    LeftIntakeColorSensorController leftColorSensorController;
     ArtifactTracker artifactTracker;
     IntakeState state = IntakeState.IDLE;
-    boolean wasDpadUpPressed = false;
-    double RETAIN_VELOCITY = -80;
-    double INTAKE_VELOCITY = 120;
+    boolean wasAPressed = false;
+    double REJECT_VELOCITY = 200;
+    double INTAKE_VELOCITY = 300;
     int lastSlot = 0;
 
     public IntakeAction(Telemetry telemetry) {
@@ -35,6 +46,7 @@ public class IntakeAction implements ActionFunction {
         this.rampController = RampController.getInstance();
         this.spindexerController = SpindexerController.getInstance();
         this.rightColorSensorController = RightIntakeColorSensorController.getInstance();
+        this.leftColorSensorController = LeftIntakeColorSensorController.getInstance();
         this.artifactTracker = ArtifactTracker.getInstance();
     }
 
@@ -44,22 +56,27 @@ public class IntakeAction implements ActionFunction {
 
         if (blackBoard.getValue("gamepad1Delta") != null) {
             GamepadDelta gamepad1Delta = (GamepadDelta) blackBoard.getValue("gamepad1Delta");
-            wasDpadUpPressed = gamepad1Delta.aPressed;
+            wasAPressed = gamepad1Delta.aPressed;
         } else {
 //            return Status.FAILURE;
         }
 
+
+        telemetry.addData("[INTAKE ACTION] Atrifact Tracker 1", artifactTracker.getArtifact(0));
+        telemetry.addData("[INTAKE ACTION] Atrifact Tracker 2", artifactTracker.getArtifact(1));
+        telemetry.addData("[INTAKE ACTION] Atrifact Tracker 3", artifactTracker.getArtifact(2));
+        telemetry.addData("[INTAKE ACTION] State", state);
+
         switch (state) {
             case IDLE:
-                if (wasDpadUpPressed) {
+                if (wasAPressed) {
                     state = IntakeState.STORE_RAMP;
                     return Status.SUCCESS;
                 } else {
-                    intakeController.stop();
                     return Status.FAILURE;
                 }
             case STORE_RAMP:
-                if (wasDpadUpPressed) {
+                if (wasAPressed) {
                     state = IntakeState.IDLE;
                     intakeController.stop();
                     return Status.SUCCESS;
@@ -71,7 +88,7 @@ public class IntakeAction implements ActionFunction {
                 }
                 break;
             case INTAKE_ARTIFACTS:
-                if (wasDpadUpPressed) {
+                if (wasAPressed) {
                     intakeController.stop();
                     state = IntakeState.IDLE;
                     return Status.SUCCESS;
@@ -82,7 +99,7 @@ public class IntakeAction implements ActionFunction {
                 }
                 break;
             case CHECK_SLOT:
-                if (wasDpadUpPressed) {
+                if (wasAPressed) {
                     intakeController.stop();
                     state = IntakeState.IDLE;
                     return Status.SUCCESS;
@@ -92,13 +109,24 @@ public class IntakeAction implements ActionFunction {
                 intakeController.spinToTargetVelocity(INTAKE_VELOCITY);
 
                 ArtifactColor rightColor = rightColorSensorController.getColor();
+                ArtifactColor leftColor = leftColorSensorController.getColor();
 
                 int slotPosition = spindexerController.getSlotPosition();
                 if (rightColor != ArtifactColor.NONE) {
-                    intakeController.spinToTargetVelocity(RETAIN_VELOCITY);
+                    intakeController.spinToTargetVelocity(REJECT_VELOCITY);
                     artifactTracker.setArtifact(slotPosition, rightColor);
 
                     if (isSpindexerFull()) {
+                        state = IntakeState.IDLE;
+                    } else {
+                        state = IntakeState.SPIN_SPINDEXER;
+                    }
+                } else if (leftColor != ArtifactColor.NONE) {
+                    intakeController.spinToTargetVelocity(REJECT_VELOCITY);
+                    artifactTracker.setArtifact(slotPosition, leftColor);
+
+                    if (isSpindexerFull()) {
+                        intakeController.stop();
                         state = IntakeState.IDLE;
                     } else {
                         state = IntakeState.SPIN_SPINDEXER;
@@ -109,10 +137,10 @@ public class IntakeAction implements ActionFunction {
                 break;
             case SPIN_SPINDEXER:
                 if (spindexerController.isOnTarget()) {
-                double currentTarget = spindexerController.getTargetPosition();
-                double targetPosition = currentTarget + 120;
-                spindexerController.moveToPosition(targetPosition);
-                    intakeController.spinToTargetVelocity(RETAIN_VELOCITY);
+                    double currentTarget = spindexerController.getTargetPosition();
+                    double targetPosition = currentTarget + 120;
+                    spindexerController.moveToPosition(targetPosition);
+                    intakeController.spinToTargetVelocity(REJECT_VELOCITY);
                     state = IntakeState.REJECT_EXTRA_ARTIFACTS;
                 }
                 break;
@@ -122,10 +150,6 @@ public class IntakeAction implements ActionFunction {
                 }
         }
 
-        telemetry.addData("[INTAKE ACTION] Atrifact Tracker 1", artifactTracker.getArtifact(0));
-        telemetry.addData("[INTAKE ACTION] Atrifact Tracker 2", artifactTracker.getArtifact(1));
-        telemetry.addData("[INTAKE ACTION] Atrifact Tracker 3", artifactTracker.getArtifact(2));
-        telemetry.addData("[INTAKE ACTION] State", state);
         return Status.SUCCESS;
 
     }
@@ -145,15 +169,5 @@ public class IntakeAction implements ActionFunction {
         return (numGreen + numPurple) == 3;
     }
 
-}
-
-
-enum IntakeState {
-    IDLE,
-    INTAKE_ARTIFACTS,
-    STORE_RAMP,
-    CHECK_SLOT,
-    SPIN_SPINDEXER,
-    REJECT_EXTRA_ARTIFACTS
 }
 

@@ -10,7 +10,6 @@ import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTree
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.DriveTrain.RunDrivetrain;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.DriveTrain.TeleOpDrive;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.DriveTrain.UpdateBlackboardPose;
-import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Gamepad.CheckTriggers;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Gamepad.ComputeGamepad_1_Delta;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Gamepad.ComputeGamepad_2_Delta;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Gamepad.ReadGamepadsSnapshot;
@@ -19,11 +18,11 @@ import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTree
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Shooter.RunShooter;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Shooter.ShootAction;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Spindexer.RunSpindexer;
+import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Turret.TraverseTurretToRedGoal;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.Action;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.BehaviorTree;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.BlackBoard;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.Node;
-import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.Selector;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.Sequence;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.Status;
 import org.firstinspires.ftc.teamcode.hardwareControl.actuators.Ramp.RampController;
@@ -34,6 +33,7 @@ import org.firstinspires.ftc.teamcode.hardwareControl.actuators.driveTrain.Drive
 import org.firstinspires.ftc.teamcode.hardwareControl.actuators.intake.IntakeController;
 import org.firstinspires.ftc.teamcode.hardwareControl.actuators.shooter.ShooterController;
 import org.firstinspires.ftc.teamcode.hardwareControl.sensors.spindexerLimitSwitch.SpindexerLimitSwitchController;
+import org.firstinspires.ftc.teamcode.hardwareControl.sensors.storageInventoryController.LeftIntakeColorSensorController;
 import org.firstinspires.ftc.teamcode.hardwareControl.sensors.storageInventoryController.RightIntakeColorSensorController;
 
 import java.util.Arrays;
@@ -48,7 +48,7 @@ public class TeleOpBehaviorTree {
     protected HardwareMap hardwareMap;
     protected LinearOpMode opMode;
 
-    private final Pose startPose = new Pose(135, 8, 90);
+    private final Pose startPose = new Pose(96, 24, Math.toRadians(90));
 
     ///
     protected SpindexerController spindexerController;
@@ -78,6 +78,10 @@ public class TeleOpBehaviorTree {
 
     ///
     protected RightIntakeColorSensorController rightColorSensorController;
+    ///
+
+    ///
+    protected LeftIntakeColorSensorController leftColorSensorController;
     ///
 
     ///
@@ -135,6 +139,10 @@ public class TeleOpBehaviorTree {
         this.rightColorSensorController = RightIntakeColorSensorController.getInstance();
         /// End Right Color Sensor
 
+        /// Left Color Sensor
+        this.leftColorSensorController = LeftIntakeColorSensorController.getInstance();
+        /// End Right Color Sensor
+
         /// Artifact Tracker
         this.artifactTracker = ArtifactTracker.getInstance();
         /// End Artifact Tracker
@@ -156,16 +164,11 @@ public class TeleOpBehaviorTree {
                         new Action(new ComputeGamepad_1_Delta(), telemetry),
                         new Action(new ComputeGamepad_2_Delta(), telemetry),
                         new Action(new UpdateBlackboardPose(telemetry, driveTrainController), telemetry),
-//                        new Action(new TraverseTurretToRedGoal(telemetry, turretController), telemetry),
+                        new Action(new TraverseTurretToRedGoal(telemetry, turretController), telemetry),
                         new Action(new TeleOpDrive(telemetry, driveTrainController), telemetry),
-                        new Action(new CheckTriggers(telemetry), telemetry),
-                        new Selector(
-                                Arrays.asList(
-                                        new Action(new ShootAction(telemetry), telemetry),
-                                        // Press dPadUp on GP1 to start or stop intake
-                                        new Action(new IntakeAction(telemetry), telemetry)
-                                ), telemetry
-                        )
+                        new Action(new ShootAction(telemetry), telemetry),
+                        // Press dPadUp on GP1 to start or stop intake
+                        new Action(new IntakeAction(telemetry), telemetry)
                 ), telemetry);
 
         this.tree = new BehaviorTree(root, blackBoard);

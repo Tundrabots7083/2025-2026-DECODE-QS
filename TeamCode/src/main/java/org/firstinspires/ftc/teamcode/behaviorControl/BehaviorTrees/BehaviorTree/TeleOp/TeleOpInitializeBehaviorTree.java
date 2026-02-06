@@ -10,7 +10,7 @@ import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTree
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Intake.StopIntake;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Spindexer.RunSpindexer;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Spindexer.SpinToZeroPosition;
-import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Spindexer.SwitchToShootCoordinates;
+import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Spindexer.SwitchToIntakeCoordinates;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.Action;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.BehaviorTree;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.BlackBoard;
@@ -23,6 +23,7 @@ import org.firstinspires.ftc.teamcode.hardwareControl.actuators.Spindexer.Spinde
 import org.firstinspires.ftc.teamcode.hardwareControl.actuators.Turret.TurretController;
 import org.firstinspires.ftc.teamcode.hardwareControl.actuators.intake.IntakeController;
 import org.firstinspires.ftc.teamcode.hardwareControl.sensors.spindexerLimitSwitch.SpindexerLimitSwitchController;
+import org.firstinspires.ftc.teamcode.hardwareControl.sensors.storageInventoryController.LeftIntakeColorSensorController;
 import org.firstinspires.ftc.teamcode.hardwareControl.sensors.storageInventoryController.RightIntakeColorSensorController;
 
 import java.util.Arrays;
@@ -59,6 +60,10 @@ public class TeleOpInitializeBehaviorTree {
 
     ///
     protected RightIntakeColorSensorController rightColorSensorController;
+    ///
+
+    ///
+    protected LeftIntakeColorSensorController leftColorSensorController;
     ///
 
     ///
@@ -120,6 +125,14 @@ public class TeleOpInitializeBehaviorTree {
 
         /// End ColorSensor
 
+        /// ColorSensor
+        this.leftColorSensorController = LeftIntakeColorSensorController.getInstance();
+
+        this.leftColorSensorController.reset();
+        this.leftColorSensorController.initialize(hardwareMap, telemetry);
+
+        /// End ColorSensor
+
         /// Artifact Tracker
         this.artifactTracker = ArtifactTracker.getInstance();
 
@@ -143,7 +156,7 @@ public class TeleOpInitializeBehaviorTree {
                         new Action(new RunIntake(telemetry, intakeController), telemetry),
                         new CalibrateSpindexerSubTree(opMode, telemetry).getRoot(),
                         new Action(new RunSpindexer(telemetry, spindexerController), telemetry),
-                        new Action(new SwitchToShootCoordinates(telemetry, spindexerController), telemetry),
+                        new Action(new SwitchToIntakeCoordinates(telemetry, spindexerController), telemetry),
                         new Action(new SpinToZeroPosition(telemetry, spindexerController), telemetry),
                         new Action(new StopIntake(telemetry, intakeController), telemetry)
                 ), telemetry);
