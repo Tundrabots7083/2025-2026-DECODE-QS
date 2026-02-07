@@ -10,6 +10,7 @@ public class SwitchToShootCoordinates implements ActionFunction {
 
     Telemetry telemetry;
     SpindexerController spindexerController;
+    Status lastStatus = Status.FAILURE;
 
     double intakeDegreeOffset = 0.0;
 
@@ -19,9 +20,18 @@ public class SwitchToShootCoordinates implements ActionFunction {
     }
 
     public Status perform(BlackBoard blackBoard) {
+        if (lastStatus == Status.SUCCESS) {
+            return lastStatus;
+        }
 
         spindexerController.setDegreeOffset(intakeDegreeOffset);
 
+        if (spindexerController.isOnTarget()) {
+            lastStatus = Status.SUCCESS;
             return Status.SUCCESS;
+        } else {
+            return Status.RUNNING;
+        }
+
     }
 }

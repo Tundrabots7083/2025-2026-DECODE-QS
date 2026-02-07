@@ -30,6 +30,8 @@ public class REDdriveToIntakePose1 implements ActionFunction {
             return lastStatus;
         }
 
+        driveTrainController.breakFollowing();
+
         if (!driveTrainController.isBusy()) {
 
             intakePath = driveTrainController.pathBuilder()
