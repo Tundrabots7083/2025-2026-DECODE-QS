@@ -35,6 +35,5 @@ public class RunSpindexerToReference implements ActionFunction {
             lastStatus = Status.SUCCESS;
             return lastStatus;
         }
-
     }
 }

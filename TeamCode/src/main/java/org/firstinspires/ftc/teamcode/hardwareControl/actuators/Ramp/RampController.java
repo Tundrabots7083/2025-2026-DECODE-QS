@@ -73,8 +73,8 @@ public class RampController {
         double servoPosition = TARGET_POSITION / MAX_DEGREES;
 
         rampServo.setPosition(servoPosition);
-        telemetry.addData("Ramp Target", TARGET_POSITION);
-        telemetry.addData("Servo Target", servoPosition);
+//        telemetry.addData("Ramp Target", TARGET_POSITION);
+//        telemetry.addData("Servo Target", servoPosition);
 
     }
 
@@ -85,7 +85,7 @@ public class RampController {
     public void deploy() {
         if (!deployed && startTime < 0) {
             startTime = System.currentTimeMillis();
-            setTargetPosition(150);
+            setTargetPosition(140);
         }
 
         if (System.currentTimeMillis() - startTime > 400) {

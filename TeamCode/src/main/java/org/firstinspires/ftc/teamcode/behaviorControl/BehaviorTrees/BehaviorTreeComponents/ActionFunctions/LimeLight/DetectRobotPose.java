@@ -24,13 +24,12 @@ public class DetectRobotPose implements ActionFunction {
     public Status perform(BlackBoard blackBoard) {
         Status status;
 
+//        double pinpointHeading = (double) blackBoard.getValue("CurrentPose");
+//        double limelightHeading = (Math.toDegrees(pinpointHeading) + 90) % 360;
         Pose3D currentPose = limeLightController.getCurrentRobotPose();
 
-        if (currentPose != null) {
-            blackBoard.setValue("AprilTag_Pose", currentPose);
-        } else {
-            return Status.FAILURE;
-        }
+        blackBoard.setValue("AprilTag_Pose", currentPose);
+
 
         status = Status.SUCCESS;
 

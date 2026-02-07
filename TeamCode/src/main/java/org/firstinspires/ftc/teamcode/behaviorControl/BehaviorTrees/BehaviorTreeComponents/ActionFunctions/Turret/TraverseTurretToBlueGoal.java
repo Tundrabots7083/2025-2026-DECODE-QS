@@ -22,7 +22,7 @@ public class TraverseTurretToBlueGoal implements ActionFunction {
     public TraverseTurretToBlueGoal(Telemetry telemetry, TurretController turretController) {
         this.telemetry = telemetry;
         this.turretController = turretController;
-        this.worldModel = (DecodeWorldModel) DecodeWorldModel.getInstance(telemetry);
+        this.worldModel = DecodeWorldModel.getInstance(telemetry);
 
     }
 

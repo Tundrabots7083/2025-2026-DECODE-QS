@@ -1,8 +1,10 @@
 package org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.DriveTrain;
 
 import com.pedropathing.geometry.Pose;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.ActionFunction;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.BlackBoard;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.Status;
@@ -16,46 +18,47 @@ public class Relocalize implements ActionFunction {
 
     private Pose currentPose;
 
+    ElapsedTime timer;
+
     public Relocalize(Telemetry telemetry, DriveTrainController driveTrainController) {
         this.telemetry = telemetry;
         this.driveTrainController = driveTrainController;
+
+        timer = new ElapsedTime();
     }
 
 
     public Status perform(BlackBoard blackBoard) {
         Status status;
 
-        if (lastStatus == Status.SUCCESS) {
-            return lastStatus;
-        }
 
+        if (blackBoard.getValue("AprilTag_Pose") != null && timer.seconds() > 3) {
+            Pose3D robotPose = (Pose3D) blackBoard.getValue("AprilTag_Pose");
 
-        if (driveTrainController.isBusy()) {
-            status = Status.RUNNING;
-        } else if (driveTrainController.isRobotStuck()) {
-            status = Status.FAILURE;
-        } else if (blackBoard.getValue("AprilTagPose_X") != null) {
-
-            double x = (double) blackBoard.getValue("AprilTagPose_X");
-            double y = (double) blackBoard.getValue("AprilTagPose_Y");
-            double heading = Math.toRadians(((double) blackBoard.getValue("AprilTagPose_HEADING") + 270) % 360);
+            double x = robotPose.getPosition().x;
+            double y = robotPose.getPosition().y;
+            double heading = robotPose.getOrientation().getYaw();
 
 
             double pedroX = y + 72;
             double pedroY = -x + 72;
             double pedroHeading = (heading + 270) % 360;
 
-            currentPose = new Pose(pedroX, pedroY, pedroHeading);
+            //Heading in radians
 
-            driveTrainController.breakFollowing();
-            driveTrainController.setPosition(currentPose);
-            status = Status.SUCCESS;
-        } else {
-            status = Status.FAILURE;
+            telemetry.addData("[RELOCALIZE] X", pedroX);
+            telemetry.addData("[RELOCALIZE] Y", pedroY);
+            telemetry.addData("[RELOCALIZE] Heading", pedroHeading);
+
+            if (pedroX != 0 && pedroY != 0) {
+                currentPose = new Pose(pedroX, pedroY, Math.toRadians(pedroHeading));
+
+                driveTrainController.setPosition(currentPose);
+            }
+
+            timer.reset();
         }
 
-        lastStatus = status;
-        return status;
+        return Status.SUCCESS;
     }
-
 }

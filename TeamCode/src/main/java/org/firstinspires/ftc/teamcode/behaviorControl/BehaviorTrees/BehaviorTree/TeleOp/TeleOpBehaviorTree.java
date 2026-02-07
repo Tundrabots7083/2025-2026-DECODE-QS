@@ -6,7 +6,9 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.AA_Common.SetAllianceColorRed;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.AA_Common.SetTeleOp;
+import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.DriveTrain.Relocalize;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.DriveTrain.RunDrivetrain;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.DriveTrain.TeleOpDrive;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.DriveTrain.UpdateBlackboardPose;
@@ -15,6 +17,7 @@ import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTree
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Gamepad.ReadGamepadsSnapshot;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Intake.IntakeAction;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Intake.RunIntake;
+import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.LimeLight.DetectRobotPose;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Shooter.RunShooter;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Shooter.ShootAction;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Spindexer.RunSpindexer;
@@ -32,6 +35,7 @@ import org.firstinspires.ftc.teamcode.hardwareControl.actuators.Turret.TurretCon
 import org.firstinspires.ftc.teamcode.hardwareControl.actuators.driveTrain.DriveTrainController;
 import org.firstinspires.ftc.teamcode.hardwareControl.actuators.intake.IntakeController;
 import org.firstinspires.ftc.teamcode.hardwareControl.actuators.shooter.ShooterController;
+import org.firstinspires.ftc.teamcode.hardwareControl.sensors.limeLight.LimeLightController;
 import org.firstinspires.ftc.teamcode.hardwareControl.sensors.spindexerLimitSwitch.SpindexerLimitSwitchController;
 import org.firstinspires.ftc.teamcode.hardwareControl.sensors.storageInventoryController.LeftIntakeColorSensorController;
 import org.firstinspires.ftc.teamcode.hardwareControl.sensors.storageInventoryController.RightIntakeColorSensorController;
@@ -90,8 +94,12 @@ public class TeleOpBehaviorTree {
 
     ///
     protected TurretController turretController;
+    ///
 
     ///
+    protected LimeLightController limeLightController;
+    ///
+    private long lastTime = System.nanoTime();
 
     public TeleOpBehaviorTree(LinearOpMode opMode, Telemetry telemetry) {
         this.hardwareMap = opMode.hardwareMap;
@@ -151,11 +159,19 @@ public class TeleOpBehaviorTree {
         this.turretController = TurretController.getInstance();
         /// End Turret
 
+        /// Limelight
+        this.limeLightController = LimeLightController.getInstance();
+
+        this.limeLightController.reset();
+        this.limeLightController.initialize(hardwareMap, telemetry);
+        /// End Limelight
+
         telemetry.clearAll();
 
         this.root = new Sequence(
                 Arrays.asList(
                         new Action(new SetTeleOp(telemetry), telemetry),
+                        new Action(new SetAllianceColorRed(), telemetry),
                         new Action(new RunIntake(telemetry, intakeController), telemetry),
                         new Action(new RunShooter(telemetry, shooterController), telemetry),
                         new Action(new RunSpindexer(telemetry, spindexerController), telemetry),
@@ -164,6 +180,8 @@ public class TeleOpBehaviorTree {
                         new Action(new ComputeGamepad_1_Delta(), telemetry),
                         new Action(new ComputeGamepad_2_Delta(), telemetry),
                         new Action(new UpdateBlackboardPose(telemetry, driveTrainController), telemetry),
+                        new Action(new DetectRobotPose(telemetry, limeLightController), telemetry),
+                        new Action(new Relocalize(telemetry, driveTrainController), telemetry),
                         new Action(new TraverseTurretToRedGoal(telemetry, turretController), telemetry),
                         new Action(new TeleOpDrive(telemetry, driveTrainController), telemetry),
                         new Action(new ShootAction(telemetry), telemetry),
@@ -186,8 +204,12 @@ public class TeleOpBehaviorTree {
 
         // Run the behavior tree
         Status result = tree.tick();
-        telemetry.addData("Display Test Result", result);
-        telemetry.update();
+        long currentTime = System.nanoTime();
+        double loopTimeMs = (currentTime - lastTime) / 1e6;
+        lastTime = currentTime;
+
+        telemetry.addData("Loop Time (ms)", loopTimeMs);
+//        telemetry.addData("Display Test Result", result);
 
         return result;
     }

@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.DriveTrain;
 
 import com.pedropathing.geometry.Pose;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.ActionFunction;
@@ -15,16 +16,21 @@ public class UpdateBlackboardPose implements ActionFunction {
     protected Status lastStatus = Status.FAILURE;
 
     private Pose currentPose;
+    ElapsedTime timer;
 
     public UpdateBlackboardPose(Telemetry telemetry, DriveTrainController driveTrainController) {
         this.telemetry = telemetry;
         this.driveTrainController = driveTrainController;
+        timer = new ElapsedTime();
     }
 
 
     public Status perform(BlackBoard blackBoard) {
 
-        blackBoard.setValue("CurrentPose", driveTrainController.getPosition());
+        if (timer.seconds() > 0.3) {
+            blackBoard.setValue("CurrentPose", driveTrainController.getPosition());
+            timer.reset();
+        }
 
 
         return Status.SUCCESS;

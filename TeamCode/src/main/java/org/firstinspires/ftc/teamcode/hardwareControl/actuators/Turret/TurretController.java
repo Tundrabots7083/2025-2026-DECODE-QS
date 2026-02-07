@@ -87,8 +87,8 @@ public class TurretController {
         servoPosition = normalizedTarget / 339.267;
 
         turretServo.setPosition(servoPosition);
-        telemetry.addData("Servo Target", servoPosition);
-        telemetry.addData("Turret Target", this.TURRET_TARGET_POSITION);
+//        telemetry.addData("Servo Target", servoPosition);
+//        telemetry.addData("Turret Target", this.TURRET_TARGET_POSITION);
     }
 
     public void moveToTargetPosition(Pose robotPose, Position targetPosition) {

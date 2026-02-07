@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Display;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.LimeLight.DetectMotifPattern;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.ActionFunction;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.BlackBoard;
@@ -27,7 +26,6 @@ public class DisplayMotif implements ActionFunction {
 
     public Status perform(BlackBoard blackBoard) {
 
-        Pose3D currentPose = limeLightController.getCurrentRobotPose();
 
         if (blackBoard.getValue("Motif_Pattern") != null) {
             DetectMotifPattern.Pattern pattern = (DetectMotifPattern.Pattern) blackBoard.getValue("Motif_Pattern");

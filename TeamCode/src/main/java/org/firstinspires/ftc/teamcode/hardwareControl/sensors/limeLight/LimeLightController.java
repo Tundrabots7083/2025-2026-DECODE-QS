@@ -60,7 +60,7 @@ public class LimeLightController  {
     }
 
     private void initLimeLight01(HardwareMap hardwareMap) {
-        limelight = hardwareMap.get(Limelight3A.class, "limelight");
+        limelight = hardwareMap.get(Limelight3A.class, "Limelight");
         limelight.pipelineSwitch(APRILTAG_PIPELINE);
         limelight.start();
     }
@@ -69,18 +69,18 @@ public class LimeLightController  {
     public Pose3D getCurrentRobotPose(){
         limelight.pipelineSwitch(APRILTAG_PIPELINE);
 
+//        limelight.updateRobotOrientation(pinpointYaw);
         LLResult result = limelight.getLatestResult();
-        if (result.isValid()) {
+        if (result != null && result.isValid()) {
             Pose3D robotPose = result.getBotpose();
 
             double xPose = (robotPose.getPosition().x * 39.37008);  //convert meters to inches
             double yPose = (robotPose.getPosition().y * 39.37008);  //convert meters to inches
             double heading = robotPose.getOrientation().getYaw();
 
-            telemetry.addData("RobotPoseX", xPose);
-            telemetry.addData("RobotPoseY", yPose);
-            telemetry.addData("RobotHeading", heading);
-            telemetry.update();
+//            telemetry.addData("RobotPoseX", xPose);
+//            telemetry.addData("RobotPoseY", yPose);
+//            telemetry.addData("RobotHeading", heading);
             return robotPose;
         }
         return null;

@@ -39,6 +39,7 @@ public class IntakeAction implements ActionFunction {
     double REJECT_VELOCITY = 200;
     double INTAKE_VELOCITY = 300;
     int lastSlot = 0;
+    boolean wasRightReadLast = false;
 
     public IntakeAction(Telemetry telemetry) {
         this.telemetry = telemetry;
@@ -62,10 +63,10 @@ public class IntakeAction implements ActionFunction {
         }
 
 
-        telemetry.addData("[INTAKE ACTION] Atrifact Tracker 1", artifactTracker.getArtifact(0));
-        telemetry.addData("[INTAKE ACTION] Atrifact Tracker 2", artifactTracker.getArtifact(1));
-        telemetry.addData("[INTAKE ACTION] Atrifact Tracker 3", artifactTracker.getArtifact(2));
-        telemetry.addData("[INTAKE ACTION] State", state);
+//        telemetry.addData("[INTAKE ACTION] Atrifact Tracker 1", artifactTracker.getArtifact(0));
+//        telemetry.addData("[INTAKE ACTION] Atrifact Tracker 2", artifactTracker.getArtifact(1));
+//        telemetry.addData("[INTAKE ACTION] Atrifact Tracker 3", artifactTracker.getArtifact(2));
+//        telemetry.addData("[INTAKE ACTION] State", state);
 
         switch (state) {
             case IDLE:
@@ -107,9 +108,14 @@ public class IntakeAction implements ActionFunction {
 
                 //Ensure intake is still spinning if interrupted
                 intakeController.spinToTargetVelocity(INTAKE_VELOCITY);
-
-                ArtifactColor rightColor = rightColorSensorController.getColor();
-                ArtifactColor leftColor = leftColorSensorController.getColor();
+                ArtifactColor rightColor = ArtifactColor.NONE;
+                ArtifactColor leftColor = ArtifactColor.NONE;
+                if (!wasRightReadLast) {
+                    rightColor = rightColorSensorController.getColor();
+                } else {
+                    leftColor = leftColorSensorController.getColor();
+                }
+                wasRightReadLast = !wasRightReadLast;
 
                 int slotPosition = spindexerController.getSlotPosition();
                 if (rightColor != ArtifactColor.NONE) {

@@ -195,8 +195,8 @@ public class ShooterController {
         currentFrontVelocity = getFrontCurrentVelocity();
         currentRearVelocity = getRearCurrentVelocity();
 
-        return ((Math.abs(targetVelocity - currentFrontVelocity) <= TOLERABLE_ERROR)
-                && (Math.abs(targetVelocity - currentRearVelocity) <= TOLERABLE_ERROR));
+        return ((Math.abs(targetVelocity + 50 - currentFrontVelocity) <= TOLERABLE_ERROR)
+                && (Math.abs(targetVelocity - 50 - currentRearVelocity) <= TOLERABLE_ERROR));
     }
 
     public void update(){
@@ -211,7 +211,7 @@ public class ShooterController {
 
         // Calculate motor tbhPower using TBH Spinning the front motor faster so that it can keep the right momentum
         double FRONTtbhPower = frontTbhController.calculate(targetVelocity + 50, currentFrontVelocity);
-        double REARtbhPower = rearTbhController.calculate(targetVelocity, currentRearVelocity);
+        double REARtbhPower = rearTbhController.calculate(targetVelocity - 50, currentRearVelocity);
 
         telemetry.addData("[ShooterController] CurrentFrontVelocity", getFrontCurrentVelocity());
         telemetry.addData("[ShooterController] CurrentRearVelocity", getRearCurrentVelocity());
@@ -221,14 +221,14 @@ public class ShooterController {
         //Apply power to the motor if this is the first loop
         //Or if it's substantially different than what the motor is currently running at.
         //Otherwise save time by ignoring small changes in power.
-        if ((Math.abs(FRONTtbhPower - FRONTLastPower) >= 0.005)) {
+        if ((Math.abs(FRONTtbhPower - FRONTLastPower) >= 0.008)) {
             // Apply FRONTtbhPower to motor
             frontShooterMotor.setPower(FRONTtbhPower);
             telemetry.addData("[ShooterController] SentFrontpower:", FRONTtbhPower);
             FRONTLastPower = FRONTtbhPower;
         }
 
-        if ((Math.abs(REARtbhPower - REARLastPower) >= 0.005)) {
+        if ((Math.abs(REARtbhPower - REARLastPower) >= 0.008)) {
             // Apply FRONTtbhPower to motor
             rearShooterMotor.setPower(REARtbhPower);
             telemetry.addData("[ShooterController] SentRearpower:", REARtbhPower);

@@ -16,6 +16,7 @@ import org.firstinspires.ftc.teamcode.hardwareControl.sensors.storageInventoryCo
 enum ShootState {
     IDLE,
     SWITCH_COORDINATES,
+    RUN_TO_ZERO,
     DEPLOY_RAMP,
     SPIN_UP,
     WAIT_FOR_TRIGGER,
@@ -65,8 +66,8 @@ public class ShootAction implements ActionFunction {
 //            return Status.FAILURE;
         }
 
-        telemetry.addData("[SHOOTACTION] Front Speed", shooterController.getFrontCurrentVelocity());
-        telemetry.addData("[SHOOTACTION] Reare Speed", shooterController.getRearCurrentVelocity());
+//        telemetry.addData("[SHOOTACTION] Front Speed", shooterController.getFrontCurrentVelocity());
+//        telemetry.addData("[SHOOTACTION] Reare Speed", shooterController.getRearCurrentVelocity());
 
         switch (state) {
             case IDLE:
@@ -83,7 +84,14 @@ public class ShootAction implements ActionFunction {
                 return Status.SUCCESS;
             case SWITCH_COORDINATES:
                 spindexerController.setDegreeOffset(0.0);
-                state = ShootState.DEPLOY_RAMP;
+                spindexerController.moveToPosition(spindexerController.getTargetPosition() - 40);
+                state = ShootState.RUN_TO_ZERO;
+                break;
+            case RUN_TO_ZERO:
+                if (spindexerController.isOnTarget()) {
+                    spindexerController.moveToPosition(spindexerController.getTargetPosition() + 40);
+                    state = ShootState.DEPLOY_RAMP;
+                }
                 break;
             case DEPLOY_RAMP:
                 if (spindexerController.isOnTarget()) {
@@ -96,7 +104,7 @@ public class ShootAction implements ActionFunction {
 
                 break;
             case SPIN_UP:
-                shooterController.spinToTargetVelocity(4000);
+                shooterController.spinToTargetVelocity(3850);
                 if (isShootingThree) {
                     state = ShootState.FEED;
                     break;
@@ -130,7 +138,6 @@ public class ShootAction implements ActionFunction {
                     intakeController.spinToTargetVelocity(200);
                     int shootSlot = (spindexerController.getSlotPosition() + 1) % 3; // gets the slot currently under the shooter
                     artifactTracker.setArtifact(shootSlot, ArtifactColor.NONE);
-                    spindexerController.enableFastMode(true);
                     double currentTarget = spindexerController.getTargetPosition();
                     double targetPosition = currentTarget + 120;
                     spindexerController.moveToPosition(targetPosition);
@@ -142,7 +149,6 @@ public class ShootAction implements ActionFunction {
                 if (spindexerController.isOnTarget()) {
                     if (!isShootingThree || timesSpun == 3) {
                         shooterController.spinToTargetVelocity(0.0);
-                        spindexerController.enableFastMode(false);
                         rampController.store();
                     } else {
                         state = ShootState.SPIN_UP;

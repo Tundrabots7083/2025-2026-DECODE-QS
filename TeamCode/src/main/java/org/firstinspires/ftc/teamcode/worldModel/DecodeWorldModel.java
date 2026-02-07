@@ -47,7 +47,7 @@ public class DecodeWorldModel {
     private void init(){
         /// RED ALLIANCE ////////////////////////////////
         /// Red Alliance Goal
-        WorldObject redAllianceGoal = new WorldObject("RedAllianceGoal", "RedAllianceGoal", new Position(DistanceUnit.INCH, 144, 144, 48.0, 10), null);
+        WorldObject redAllianceGoal = new WorldObject("RedAllianceGoal", "RedAllianceGoal", new Position(DistanceUnit.INCH, 135, 138, 48.0, 10), null);
 
         /// Red Alliance Spikes
         WorldObject redAllianceAudienceSpike = new WorldObject("RedAllianceAudienceSpike","RedAllianceAudienceSpike",  new Position(DistanceUnit.INCH,120.0, 36,0.0,10), null);
@@ -71,7 +71,7 @@ public class DecodeWorldModel {
 
         /// BLUE ALLIANCE ////////////////////////////////
         /// Blue Alliance Goal
-        WorldObject blueAllianceGoal = new WorldObject("BlueAllianceGoal","BlueAllianceGoal", new Position(DistanceUnit.INCH,12.0, 132,48,10), null);
+        WorldObject blueAllianceGoal = new WorldObject("BlueAllianceGoal", "BlueAllianceGoal", new Position(DistanceUnit.INCH, 10.0, 135, 48, 10), null);
 
         /// Blue Alliance Spikes
         WorldObject blueAllianceAudienceSpike = new WorldObject("BlueAllianceAudienceSpike","BlueAllianceAudienceSpike", new Position(DistanceUnit.INCH,24.0, 46.0,0.0,10), null);
