@@ -10,11 +10,9 @@ import org.firstinspires.ftc.teamcode.hardwareControl.sensors.limeLight.LimeLigh
 
 public class DetectRobotPose implements ActionFunction {
 
-    Telemetry telemetry;
-
-    LimeLightController limeLightController;
-
     protected Status lastStatus = Status.FAILURE;
+    Telemetry telemetry;
+    LimeLightController limeLightController;
 
 
     public DetectRobotPose(Telemetry telemetry, LimeLightController limeLightController) {
@@ -24,10 +22,19 @@ public class DetectRobotPose implements ActionFunction {
 
     public Status perform(BlackBoard blackBoard) {
         Status status;
+        boolean isAutonomous = (boolean) blackBoard.getValue("isAutonomous");
+
+        if (lastStatus == Status.SUCCESS && isAutonomous) {
+            return lastStatus;
+        }
 
 //        double pinpointHeading = (double) blackBoard.getValue("CurrentPose");
 //        double limelightHeading = (Math.toDegrees(pinpointHeading) + 90) % 360;
         Pose currentPose = limeLightController.getCurrentRobotPose();
+
+        if (currentPose != null) {
+            lastStatus = Status.SUCCESS;
+        }
 
         blackBoard.setValue("AprilTag_Pose", currentPose);
 

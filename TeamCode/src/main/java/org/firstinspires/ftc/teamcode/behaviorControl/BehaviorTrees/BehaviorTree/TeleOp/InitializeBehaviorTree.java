@@ -30,7 +30,7 @@ import java.util.Arrays;
 import java.util.List;
 
 
-public class TeleOpInitializeBehaviorTree {
+public class InitializeBehaviorTree {
     private BehaviorTree tree;
     private Node root;
     private BlackBoard blackBoard;
@@ -77,7 +77,7 @@ public class TeleOpInitializeBehaviorTree {
     ///
 
 
-    public TeleOpInitializeBehaviorTree(LinearOpMode opMode, Telemetry telemetry) {
+    public InitializeBehaviorTree(LinearOpMode opMode, Telemetry telemetry) {
         this.hardwareMap = opMode.hardwareMap;
         this.telemetry = telemetry;
         this.opMode = opMode;

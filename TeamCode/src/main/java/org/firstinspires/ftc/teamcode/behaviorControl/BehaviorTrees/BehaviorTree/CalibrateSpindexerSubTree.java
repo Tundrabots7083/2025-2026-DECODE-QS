@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.AA_Common.PauseAction;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Intake.RetainArtifacts;
+import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Intake.StopIntake;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.LimitSwitch.ReadSwitch;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Ramp.StoreRamp;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Spindexer.RunSpindexerToReference;
@@ -87,7 +88,8 @@ public class CalibrateSpindexerSubTree {
                         new Action(new PauseAction(telemetry, 500), telemetry),
                         new Action(new RetainArtifacts(telemetry, intakeController), telemetry),
                         new Action(new ReadSwitch(telemetry, switchController), telemetry),
-                        new Action(new RunSpindexerToReference(telemetry, spindexerController), telemetry)
+                        new Action(new RunSpindexerToReference(telemetry, spindexerController), telemetry),
+                        new Action(new StopIntake(telemetry, intakeController), telemetry)
                 ), telemetry);
 
         this.tree = new BehaviorTree(root, blackBoard);

@@ -139,8 +139,8 @@ public class IntakeController {
     }
 
     public void stop() {
-        intakeMotor.setPower(0.0);
         spinToTargetVelocity(0.0);
+        intakeMotor.setPower(0.0);
     }
 
     public void clearStuck() {

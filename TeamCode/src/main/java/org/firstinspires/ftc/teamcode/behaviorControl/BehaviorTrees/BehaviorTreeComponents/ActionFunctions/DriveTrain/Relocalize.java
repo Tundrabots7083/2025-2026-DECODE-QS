@@ -30,6 +30,12 @@ public class Relocalize implements ActionFunction {
     public Status perform(BlackBoard blackBoard) {
         Status status;
 
+        boolean isAutonomous = (boolean) blackBoard.getValue("isAutonomous");
+
+        if (lastStatus == Status.SUCCESS && isAutonomous) {
+            return lastStatus;
+        }
+
 
         if (blackBoard.getValue("AprilTag_Pose") != null && timer.seconds() > 4) {
             Pose robotPose = (Pose) blackBoard.getValue("AprilTag_Pose");
@@ -53,6 +59,7 @@ public class Relocalize implements ActionFunction {
                 currentPose = new Pose(pedroX, pedroY, Math.toRadians(pedroHeading));
 
                 driveTrainController.setPosition(currentPose);
+                lastStatus = Status.SUCCESS;
             }
 
             timer.reset();

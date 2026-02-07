@@ -35,6 +35,11 @@ public class CalculateRPM implements ActionFunction {
 
     public Status perform(BlackBoard blackBoard) {
         Status status;
+        boolean isAutonomous = (boolean) blackBoard.getValue("isAutonomous");
+
+        if (lastStatus == Status.SUCCESS && isAutonomous) {
+            return lastStatus;
+        }
 
         if (blackBoard.getValue("AllianceColor") != null) {
             String allianceColor = (String) blackBoard.getValue("AllianceColor");
@@ -58,18 +63,27 @@ public class CalculateRPM implements ActionFunction {
 
             blackBoard.setValue("TargetShooterRPM", calculateRPM(distanceToGoal));
 
+
+            lastStatus = Status.SUCCESS;
+            return lastStatus;
+
+
         }
 
-        status = Status.SUCCESS;
+        if (!isAutonomous) {
+            status = Status.SUCCESS;
+        } else {
+            status = Status.RUNNING;
+        }
 
         return status;
 
     }
 
-    private double calculateRPM(double distance) {
-        double baseRpm = a
+    private int calculateRPM(double distance) {
+        int baseRpm = Math.toIntExact(Math.round(a
                 + b * Math.pow(distance, 1)
-                + c * Math.pow(distance, 2);
+                + c * Math.pow(distance, 2)));
         double headingScalar;
         if (turretController.getPosition() > 180) {
             headingScalar = (turretController.getPosition() - 360) / 180;

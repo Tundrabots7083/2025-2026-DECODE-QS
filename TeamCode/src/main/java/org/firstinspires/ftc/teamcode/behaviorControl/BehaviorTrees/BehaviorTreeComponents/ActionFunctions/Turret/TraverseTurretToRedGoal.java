@@ -17,6 +17,7 @@ public class TraverseTurretToRedGoal implements ActionFunction {
 
     TurretController turretController;
     private final DecodeWorldModel worldModel;
+    Status lastStatus = Status.FAILURE;
 
 
     public TraverseTurretToRedGoal(Telemetry telemetry, TurretController turretController) {
@@ -27,6 +28,12 @@ public class TraverseTurretToRedGoal implements ActionFunction {
     }
 
     public Status perform(BlackBoard blackBoard) {
+        boolean isAutonomous = (boolean) blackBoard.getValue("isAutonomous");
+
+        if (lastStatus == Status.SUCCESS && isAutonomous) {
+            return lastStatus;
+        }
+
         Pose robotPose = (Pose) blackBoard.getValue("CurrentPose");
 
         WorldObject goalObject = worldModel.getValue("RedAllianceGoal");

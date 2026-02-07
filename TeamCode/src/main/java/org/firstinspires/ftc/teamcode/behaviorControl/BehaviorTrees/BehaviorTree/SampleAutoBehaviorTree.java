@@ -6,8 +6,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.AA_Common.SetAllianceColorRed;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.AA_Common.SetAutonomous;
-import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.ArtifactTracker.MatchPatternToMotif;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.ArtifactTracker.TrackDetectedArtifact;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.ColorSensor.DetectArtifactColor;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.DriveTrain.DriveForwardToIntake;
@@ -16,10 +16,10 @@ import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTree
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.DriveTrain.RED.REDdriveToIntakePose2;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.DriveTrain.RED.REDdriveToShootPose1;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.DriveTrain.Relocalize;
+import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.DriveTrain.UpdateBlackboardPose;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.DriveTrain.WaitForDrivetrainToArrive;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Intake.IntakeArtifacts;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Intake.RunIntake;
-import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.LimeLight.DetectMotifPattern;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.LimeLight.DetectRobotPose;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Shooter.RunShooter;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Spindexer.SortArtifacts;
@@ -53,7 +53,7 @@ public class SampleAutoBehaviorTree {
     protected HardwareMap hardwareMap;
     protected LinearOpMode opMode;
 
-    private final Pose startPose = new Pose(132, 12, 90);
+    private final Pose startPose = new Pose(81, 8, 90);
 
     ///
     protected SpindexerController spindexerController;
@@ -154,6 +154,9 @@ public class SampleAutoBehaviorTree {
 
         ///  Limelight
         this.limeLightController = LimeLightController.getInstance();
+
+        this.limeLightController.reset();
+        this.limeLightController.initialize(hardwareMap, telemetry);
         /// End Limelight
 
         telemetry.clearAll();
@@ -161,13 +164,15 @@ public class SampleAutoBehaviorTree {
         this.root = new Sequence(
                 Arrays.asList(
                         new Action(new SetAutonomous(), telemetry),
+                        new Action(new SetAllianceColorRed(), telemetry),
                         new Action(new RunShooter(telemetry, shooterController), telemetry),
                         new Action(new RunIntake(telemetry, intakeController), telemetry),
-                        new Action(new DetectMotifPattern(telemetry, limeLightController), telemetry),
-                        new Action(new MatchPatternToMotif(telemetry, spindexerController, artifactTracker), telemetry),
-                        new Action(new SortArtifacts(telemetry, spindexerController), telemetry),
+//                        new Action(new DetectMotifPattern(telemetry, limeLightController), telemetry),
+//                        new Action(new MatchPatternToMotif(telemetry, spindexerController, artifactTracker), telemetry),
+//                        new Action(new SortArtifacts(telemetry, spindexerController), telemetry),
                         new Action(new DetectRobotPose(telemetry, limeLightController), telemetry),
                         new Action(new Relocalize(telemetry, driveTrainController), telemetry),
+                        new Action(new UpdateBlackboardPose(telemetry, driveTrainController), telemetry),
                         new ShootSubTree(opMode, telemetry).getRoot(),
                         new Action(new REDdriveToIntakePose1(telemetry, driveTrainController), telemetry),
                         new Action(new WaitForDrivetrainToArrive(telemetry, driveTrainController), telemetry),
