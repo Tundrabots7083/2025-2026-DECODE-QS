@@ -6,7 +6,7 @@ import com.bylazar.telemetry.PanelsTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTree.TeleOp.TeleOpBehaviorTree;
+import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTree.TeleOp.REDTeleOpBehaviorTree;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTree.TeleOp.TeleOpInitializeBehaviorTree;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.Status;
 
@@ -14,7 +14,7 @@ import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTree
 @TeleOp(name = "Main TeleOp", group = "test")
 public class MainTeleOp extends LinearOpMode {
     TeleOpInitializeBehaviorTree initBehaviorTree = null;
-    TeleOpBehaviorTree mainBehaviorTree = null;
+    REDTeleOpBehaviorTree mainBehaviorTree = null;
 
     boolean isBotInitialized = false;
 
@@ -53,7 +53,7 @@ public class MainTeleOp extends LinearOpMode {
 
     private void initialize(LinearOpMode opMode) {
         this.initBehaviorTree = new TeleOpInitializeBehaviorTree(opMode, joinedTelemetry);
-        this.mainBehaviorTree = new TeleOpBehaviorTree(opMode, joinedTelemetry);
+        this.mainBehaviorTree = new REDTeleOpBehaviorTree(opMode, joinedTelemetry);
     }
 
 

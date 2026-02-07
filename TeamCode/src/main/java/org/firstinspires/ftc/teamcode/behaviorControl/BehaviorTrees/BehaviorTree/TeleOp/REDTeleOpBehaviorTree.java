@@ -45,7 +45,7 @@ import java.util.Arrays;
 import java.util.List;
 
 
-public class TeleOpBehaviorTree {
+public class REDTeleOpBehaviorTree {
     private BehaviorTree tree;
     private Node root;
     private BlackBoard blackBoard;
@@ -102,7 +102,7 @@ public class TeleOpBehaviorTree {
     ///
     private long lastTime = System.nanoTime();
 
-    public TeleOpBehaviorTree(LinearOpMode opMode, Telemetry telemetry) {
+    public REDTeleOpBehaviorTree(LinearOpMode opMode, Telemetry telemetry) {
         this.hardwareMap = opMode.hardwareMap;
         this.telemetry = telemetry;
         this.opMode = opMode;
