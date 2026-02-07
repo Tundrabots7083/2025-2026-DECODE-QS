@@ -4,7 +4,6 @@ import com.pedropathing.geometry.Pose;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.ActionFunction;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.BlackBoard;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.Status;
@@ -32,12 +31,12 @@ public class Relocalize implements ActionFunction {
         Status status;
 
 
-        if (blackBoard.getValue("AprilTag_Pose") != null && timer.seconds() > 3) {
-            Pose3D robotPose = (Pose3D) blackBoard.getValue("AprilTag_Pose");
+        if (blackBoard.getValue("AprilTag_Pose") != null && timer.seconds() > 4) {
+            Pose robotPose = (Pose) blackBoard.getValue("AprilTag_Pose");
 
-            double x = robotPose.getPosition().x;
-            double y = robotPose.getPosition().y;
-            double heading = robotPose.getOrientation().getYaw();
+            double x = robotPose.getX();
+            double y = robotPose.getY();
+            double heading = robotPose.getHeading();
 
 
             double pedroX = y + 72;
@@ -46,11 +45,11 @@ public class Relocalize implements ActionFunction {
 
             //Heading in radians
 
-            telemetry.addData("[RELOCALIZE] X", pedroX);
-            telemetry.addData("[RELOCALIZE] Y", pedroY);
-            telemetry.addData("[RELOCALIZE] Heading", pedroHeading);
+//            telemetry.addData("[RELOCALIZE] X", pedroX);
+//            telemetry.addData("[RELOCALIZE] Y", pedroY);
+//            telemetry.addData("[RELOCALIZE] Heading", pedroHeading);
 
-            if (pedroX != 0 && pedroY != 0) {
+            if (pedroX != 72.00 && pedroY != 72.00) {
                 currentPose = new Pose(pedroX, pedroY, Math.toRadians(pedroHeading));
 
                 driveTrainController.setPosition(currentPose);

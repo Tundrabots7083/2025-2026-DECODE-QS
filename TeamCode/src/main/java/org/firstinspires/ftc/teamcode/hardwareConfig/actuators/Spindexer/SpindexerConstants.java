@@ -13,7 +13,7 @@ public class SpindexerConstants {
     public DcMotor.RunMode resetMode = DcMotor.RunMode.STOP_AND_RESET_ENCODER;
     public DcMotorSimple.Direction direction = DcMotorSimple.Direction.REVERSE;
     public double startPosition = 0.0;
-    public double tolerableError = 5.5;
-    public double tolerableVelocityError = 20;
+    public double tolerableError = 10;
+    public double tolerableVelocityError = 25;
     public double degreeOffset = 30.0;
 }

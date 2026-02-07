@@ -91,15 +91,15 @@ public class TurretController {
 //        telemetry.addData("Turret Target", this.TURRET_TARGET_POSITION);
     }
 
-    public void moveToTargetPosition(Pose robotPose, Position targetPosition) {
+    public void moveToTargetPosition(Pose robotPose, Position targetPosition, double scalarAddition) {
         double turretTargetAngle = this.getTurretAngleDegrees(robotPose, targetPosition, TURRET_X_OFFSET, TURRET_Y_OFFSET);
 
         TURRET_TARGET_POSITION = -turretTargetAngle;
-        setTurretTargetAngle(TURRET_TARGET_POSITION);
+        setTurretTargetAngle(TURRET_TARGET_POSITION + scalarAddition);
     }
 
     public double getPosition() {
-        return TURRET_TARGET_POSITION;
+        return TURRET_TARGET_POSITION - 122;
     }
 
     public void update() {}

@@ -7,6 +7,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.ActionFunction;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.BlackBoard;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.Status;
+import org.firstinspires.ftc.teamcode.hardwareControl.actuators.Turret.TurretController;
 import org.firstinspires.ftc.teamcode.hardwareControl.actuators.shooter.ShooterController;
 import org.firstinspires.ftc.teamcode.worldModel.DecodeWorldModel;
 import org.firstinspires.ftc.teamcode.worldModel.WorldObject;
@@ -14,29 +15,26 @@ import org.firstinspires.ftc.teamcode.worldModel.WorldObject;
 public class CalculateRPM implements ActionFunction {
     Telemetry telemetry;
     ShooterController shooterController;
+    TurretController turretController;
     DecodeWorldModel worldModel;
     protected Status lastStatus = Status.FAILURE;
     Pose robotPose;
     Position targetPose;
 
-    double a = 0.1; //these represent the values
-    double b = 0.1; //a,b,c, and d in the equation
-    double c = 0.1; //velocity = a + bx + cx^2 + dx^3
-    double d = 0.1;
+    double a = 1684; //these represent the values
+    double b = 35.3; //a,b,c, and d in the equation
+    double c = -0.105; //velocity = a + bx + cx^2 + dx^3
 
-    public CalculateRPM(Telemetry telemetry, ShooterController shooterController) {
+    public CalculateRPM(Telemetry telemetry, ShooterController shooterController, TurretController turretController) {
         this.telemetry = telemetry;
         this.shooterController = shooterController;
+        this.turretController = turretController;
         this.worldModel = DecodeWorldModel.getInstance(telemetry);
     }
 
 
     public Status perform(BlackBoard blackBoard) {
         Status status;
-
-        if (lastStatus == Status.SUCCESS) {
-            return lastStatus;
-        }
 
         if (blackBoard.getValue("AllianceColor") != null) {
             String allianceColor = (String) blackBoard.getValue("AllianceColor");
@@ -54,11 +52,14 @@ public class CalculateRPM implements ActionFunction {
 
             double distanceToGoal = distanceToTarget(robotPose, targetPose);
 
+            telemetry.addData("[CalculateRPM] Distance", distanceToGoal);
+//            telemetry.addData("[CalculateRPM] x", robotPose.getX());
+//            telemetry.addData("[CalculateRPM] y", robotPose.getY());
+
             blackBoard.setValue("TargetShooterRPM", calculateRPM(distanceToGoal));
 
         }
 
-        blackBoard.setValue("TargetShooterRPM", 3500);
         status = Status.SUCCESS;
 
         return status;
@@ -66,9 +67,16 @@ public class CalculateRPM implements ActionFunction {
     }
 
     private double calculateRPM(double distance) {
-        return a
+        double baseRpm = a
                 + b * Math.pow(distance, 1)
                 + c * Math.pow(distance, 2);
+        double headingScalar;
+        if (turretController.getPosition() > 180) {
+            headingScalar = (turretController.getPosition() - 360) / 180;
+        } else {
+            headingScalar = turretController.getPosition() / 180;
+        }
+        return baseRpm;//+ 100 * headingScalar;
     }
 
     private double distanceToTarget(Pose current, Position target) {

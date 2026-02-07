@@ -194,7 +194,7 @@ public class IntakeController {
         double power = velocityController.calculate(targetVelocity, currentVelocity);
         double intakeCurrent = intakeMotor.getCurrent(CurrentUnit.AMPS);
 
-        if (Math.abs(lastPower - power) > 0.1) {
+        if (Math.abs(lastPower - power) > 0.02) {
             intakeMotor.setPower(power);
             lastPower = power;
         }

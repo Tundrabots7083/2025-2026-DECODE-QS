@@ -43,7 +43,6 @@ public class TBHController {
 
         // Calculate error
         double error = setpoint - current;
-        telemetry.addData("error", error);
 
         if (Math.abs(error) > 330) {
             isFirstCross = true;

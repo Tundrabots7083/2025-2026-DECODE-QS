@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Shooter;
 
+import com.bylazar.configurables.annotations.Configurable;
+
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.ActionFunction;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.BlackBoard;
@@ -25,6 +27,7 @@ enum ShootState {
     CALIBRATE_SPINDEXER
 }
 
+@Configurable
 public class ShootAction implements ActionFunction {
     protected Status lastStatus = Status.FAILURE;
     Telemetry telemetry;
@@ -42,6 +45,8 @@ public class ShootAction implements ActionFunction {
     boolean isShootingThree = false;
     boolean cancelConsumed = false;
     int timesSpun = 0;
+
+    public static double shooterRPM = 3500;
 
     public ShootAction(Telemetry telemetry) {
         this.telemetry = telemetry;
@@ -62,8 +67,11 @@ public class ShootAction implements ActionFunction {
             wasRightTriggerTripped = gamepad1Delta.rightTriggerPulling;
             wasLeftBumperPressed = gamepad1Delta.leftBumperPressed;
             wasRightBumperPressed = gamepad1Delta.rightBumperPressed;
-        } else {
-//            return Status.FAILURE;
+        }
+
+        if (blackBoard.getValue("TargetShooterRPM") != null) {
+            shooterRPM = (double) blackBoard.getValue("TargetShooterRPM");
+//            telemetry.addData("[SHOOT ACTION] shooterRPM",shooterRPM);
         }
 
 //        telemetry.addData("[SHOOTACTION] Front Speed", shooterController.getFrontCurrentVelocity());
@@ -104,7 +112,7 @@ public class ShootAction implements ActionFunction {
 
                 break;
             case SPIN_UP:
-                shooterController.spinToTargetVelocity(3850);
+                shooterController.spinToTargetVelocity(shooterRPM);
                 if (isShootingThree) {
                     state = ShootState.FEED;
                     break;

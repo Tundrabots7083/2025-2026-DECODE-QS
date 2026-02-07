@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.hardwareControl.sensors.limeLight;
 
+import com.pedropathing.geometry.Pose;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
@@ -66,7 +67,7 @@ public class LimeLightController  {
     }
 
     // Example method
-    public Pose3D getCurrentRobotPose(){
+    public Pose getCurrentRobotPose() {
         limelight.pipelineSwitch(APRILTAG_PIPELINE);
 
 //        limelight.updateRobotOrientation(pinpointYaw);
@@ -81,7 +82,7 @@ public class LimeLightController  {
 //            telemetry.addData("RobotPoseX", xPose);
 //            telemetry.addData("RobotPoseY", yPose);
 //            telemetry.addData("RobotHeading", heading);
-            return robotPose;
+            return new Pose(xPose, yPose, heading);
         }
         return null;
     }

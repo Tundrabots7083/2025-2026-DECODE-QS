@@ -18,6 +18,7 @@ import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTree
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Intake.IntakeAction;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Intake.RunIntake;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.LimeLight.DetectRobotPose;
+import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Shooter.CalculateRPM;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Shooter.RunShooter;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Shooter.ShootAction;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Spindexer.RunSpindexer;
@@ -184,6 +185,7 @@ public class TeleOpBehaviorTree {
                         new Action(new Relocalize(telemetry, driveTrainController), telemetry),
                         new Action(new TraverseTurretToRedGoal(telemetry, turretController), telemetry),
                         new Action(new TeleOpDrive(telemetry, driveTrainController), telemetry),
+                        new Action(new CalculateRPM(telemetry, shooterController, turretController), telemetry),
                         new Action(new ShootAction(telemetry), telemetry),
                         // Press dPadUp on GP1 to start or stop intake
                         new Action(new IntakeAction(telemetry), telemetry)

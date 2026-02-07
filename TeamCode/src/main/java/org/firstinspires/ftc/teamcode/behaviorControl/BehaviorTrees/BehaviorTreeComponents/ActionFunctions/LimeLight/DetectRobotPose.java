@@ -1,7 +1,8 @@
 package org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.LimeLight;
 
+import com.pedropathing.geometry.Pose;
+
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.ActionFunction;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.BlackBoard;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.Status;
@@ -26,7 +27,7 @@ public class DetectRobotPose implements ActionFunction {
 
 //        double pinpointHeading = (double) blackBoard.getValue("CurrentPose");
 //        double limelightHeading = (Math.toDegrees(pinpointHeading) + 90) % 360;
-        Pose3D currentPose = limeLightController.getCurrentRobotPose();
+        Pose currentPose = limeLightController.getCurrentRobotPose();
 
         blackBoard.setValue("AprilTag_Pose", currentPose);
 

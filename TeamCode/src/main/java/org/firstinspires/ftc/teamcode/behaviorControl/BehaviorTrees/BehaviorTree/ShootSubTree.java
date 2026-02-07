@@ -90,7 +90,7 @@ public class ShootSubTree {
 
         this.root = new Sequence(
                 Arrays.asList(
-                        new Action(new CalculateRPM(telemetry, shooterController), telemetry),
+                        new Action(new CalculateRPM(telemetry, shooterController, turretController), telemetry),
                         new Action(new DeployRamp(telemetry, rampController), telemetry),
                         new Action(new SpinUpShooter(telemetry, shooterController), telemetry),
                         new Action(new SpinOnePosition(telemetry, spindexerController), telemetry),
