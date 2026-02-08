@@ -73,9 +73,7 @@ public class InitializeBehaviorTree {
 
     ///
     protected TurretController turretController;
-
     ///
-
 
     public InitializeBehaviorTree(LinearOpMode opMode, Telemetry telemetry) {
         this.hardwareMap = opMode.hardwareMap;
@@ -133,6 +131,13 @@ public class InitializeBehaviorTree {
 
         /// End ColorSensor
 
+        /// Turret
+        this.turretController = TurretController.getInstance();
+
+        this.turretController.reset();
+        this.turretController.initialize(hardwareMap, telemetry);
+        /// End Turret
+
         /// Artifact Tracker
         this.artifactTracker = ArtifactTracker.getInstance();
 
@@ -140,12 +145,6 @@ public class InitializeBehaviorTree {
         this.artifactTracker.initialize(telemetry);
         /// End Artifact Tracker
 
-        /// Artifact Tracker
-        this.turretController = TurretController.getInstance();
-
-        this.turretController.reset();
-        this.turretController.initialize(hardwareMap, telemetry);
-        /// End Artifact Tracker
 
         telemetry.clearAll();
 

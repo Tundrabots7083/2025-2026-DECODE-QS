@@ -21,7 +21,7 @@ import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTree
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Intake.IntakeArtifacts;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Intake.RunIntake;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Shooter.RunShooter;
-import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Spindexer.SortArtifacts;
+import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Spindexer.RunSpindexer;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Spindexer.SpinOnePosition;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.Action;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.BehaviorTree;
@@ -166,6 +166,7 @@ public class SampleAutoBehaviorTree {
                         new Action(new SetAllianceColorRed(), telemetry),
                         new Action(new RunShooter(telemetry, shooterController), telemetry),
                         new Action(new RunIntake(telemetry, intakeController), telemetry),
+                        new Action(new RunSpindexer(telemetry, spindexerController), telemetry),
                         new Action(new RunDrivetrain(telemetry, driveTrainController), telemetry),
 //                        new Action(new DetectMotifPattern(telemetry, limeLightController), telemetry),
 //                        new Action(new MatchPatternToMotif(telemetry, spindexerController, artifactTracker), telemetry),
@@ -178,16 +179,16 @@ public class SampleAutoBehaviorTree {
                         new Action(new WaitForDrivetrainToArrive(telemetry, driveTrainController), telemetry),
                         new Action(new IntakeArtifacts(telemetry, intakeController), telemetry),
                         new Action(new DriveForwardToIntake(telemetry, driveTrainController), telemetry),
-                        new Action(new DetectArtifactColor(telemetry, rightColorSensorController), telemetry),
-                        new Action(new TrackDetectedArtifact(telemetry, spindexerController, artifactTracker), telemetry),
-                        new Action(new SpinOnePosition(telemetry, spindexerController), telemetry),
-                        new Action(new DetectArtifactColor(telemetry, rightColorSensorController), telemetry),
-                        new Action(new TrackDetectedArtifact(telemetry, spindexerController, artifactTracker), telemetry),
-                        new Action(new SpinOnePosition(telemetry, spindexerController), telemetry),
-                        new Action(new DetectArtifactColor(telemetry, rightColorSensorController), telemetry),
-                        new Action(new TrackDetectedArtifact(telemetry, spindexerController, artifactTracker), telemetry),
+//                        new Action(new DetectArtifactColor(telemetry, rightColorSensorController), telemetry),
+//                        new Action(new TrackDetectedArtifact(telemetry, spindexerController, artifactTracker), telemetry),
+//                        new Action(new SpinOnePosition(telemetry, spindexerController), telemetry),
+//                        new Action(new DetectArtifactColor(telemetry, rightColorSensorController), telemetry),
+//                        new Action(new TrackDetectedArtifact(telemetry, spindexerController, artifactTracker), telemetry),
+//                        new Action(new SpinOnePosition(telemetry, spindexerController), telemetry),
+//                        new Action(new DetectArtifactColor(telemetry, rightColorSensorController), telemetry),
+//                        new Action(new TrackDetectedArtifact(telemetry, spindexerController, artifactTracker), telemetry),
                         new Action(new REDdriveToShootPose1(telemetry, driveTrainController), telemetry),
-                        new Action(new SortArtifacts(telemetry, spindexerController), telemetry),
+//                        new Action(new SortArtifacts(telemetry, spindexerController), telemetry),
                         new Action(new WaitForDrivetrainToArrive(telemetry, driveTrainController), telemetry),
                         new ShootSubTree(opMode, telemetry).getRoot(),
                         new Action(new REDdriveToIntakePose2(telemetry, driveTrainController), telemetry),

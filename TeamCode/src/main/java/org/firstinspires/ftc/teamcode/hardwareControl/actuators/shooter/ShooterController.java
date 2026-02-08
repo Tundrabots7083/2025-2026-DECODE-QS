@@ -176,6 +176,10 @@ public class ShooterController {
         rearShooterMotor.setPower(power);
     }
 
+    public void stop() {
+        spinToTargetVelocity(0.0);
+    }
+
     public void spinToTargetVelocity(double newTargetVelocity){
 
 

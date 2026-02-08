@@ -58,8 +58,8 @@ public class CalculateRPM implements ActionFunction {
             double distanceToGoal = distanceToTarget(robotPose, targetPose);
 
             telemetry.addData("[CalculateRPM] Distance", distanceToGoal);
-//            telemetry.addData("[CalculateRPM] x", robotPose.getX());
-//            telemetry.addData("[CalculateRPM] y", robotPose.getY());
+            telemetry.addData("[CalculateRPM] x", robotPose.getX());
+            telemetry.addData("[CalculateRPM] y", robotPose.getY());
 
             blackBoard.setValue("TargetShooterRPM", calculateRPM(distanceToGoal));
 
@@ -80,10 +80,10 @@ public class CalculateRPM implements ActionFunction {
 
     }
 
-    private int calculateRPM(double distance) {
-        int baseRpm = Math.toIntExact(Math.round(a
+    private double calculateRPM(double distance) {
+        double baseRpm = a
                 + b * Math.pow(distance, 1)
-                + c * Math.pow(distance, 2)));
+                + c * Math.pow(distance, 2);
         double headingScalar;
         if (turretController.getPosition() > 180) {
             headingScalar = (turretController.getPosition() - 360) / 180;
