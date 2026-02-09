@@ -13,7 +13,6 @@ import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTree
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Spindexer.SpinOnePosition;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Spindexer.SwitchToIntakeCoordinates;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Spindexer.SwitchToShootCoordinates;
-import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Turret.TraverseTurretToRedGoal;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.Action;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.BehaviorTree;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.BlackBoard;
@@ -97,10 +96,9 @@ public class ShootSubTree {
         this.root = new Sequence(
                 Arrays.asList(
                         new Action(new CalculateRPM(telemetry, shooterController, turretController), telemetry),
-                        new Action(new TraverseTurretToRedGoal(telemetry, turretController), telemetry),
                         new Action(new SwitchToShootCoordinates(telemetry, spindexerController), telemetry),
                         new Action(new DeployRamp(telemetry, rampController), telemetry),
-                        new Action(new PauseAction(telemetry, 450), telemetry),
+                        new Action(new PauseAction(telemetry, 500), telemetry),
                         new Action(new SpinUpShooter(telemetry, shooterController), telemetry),
                         new Action(new SpinOnePosition(telemetry, spindexerController), telemetry),
                         new Action(new SpinUpShooter(telemetry, shooterController), telemetry),

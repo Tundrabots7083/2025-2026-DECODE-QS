@@ -3,18 +3,18 @@ package org.firstinspires.ftc.teamcode.opModes;
 
 import com.bylazar.telemetry.JoinedTelemetry;
 import com.bylazar.telemetry.PanelsTelemetry;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTree.BLUERearAutoBehaviorTree;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTree.TeleOp.InitializeBehaviorTree;
-import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTree.TeleOp.REDTeleOpBehaviorTree;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.Status;
 
 
-@TeleOp(name = "Main TeleOp", group = "test")
-public class MainTeleOp extends LinearOpMode {
+@Autonomous(name = "Blue Rear Auto", group = "Auto")
+public class BlueRearAutonomous extends LinearOpMode {
     InitializeBehaviorTree initBehaviorTree = null;
-    REDTeleOpBehaviorTree mainBehaviorTree = null;
+    BLUERearAutoBehaviorTree mainBehaviorTree = null;
 
     boolean isBotInitialized = false;
 
@@ -41,7 +41,6 @@ public class MainTeleOp extends LinearOpMode {
             idle();
         }
 
-
         joinedTelemetry.addLine("Initialization Complete");
         joinedTelemetry.update();
 
@@ -51,14 +50,13 @@ public class MainTeleOp extends LinearOpMode {
         while (opModeIsActive()) {
             Status result = this.mainBehaviorTree.tick();
             joinedTelemetry.update();
-
         }
     }
 
 
     private void initialize(LinearOpMode opMode) {
         this.initBehaviorTree = new InitializeBehaviorTree(opMode, joinedTelemetry);
-        this.mainBehaviorTree = new REDTeleOpBehaviorTree(opMode, joinedTelemetry);
+        this.mainBehaviorTree = new BLUERearAutoBehaviorTree(opMode, joinedTelemetry);
     }
 
 

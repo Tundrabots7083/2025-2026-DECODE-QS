@@ -1,8 +1,10 @@
 package org.firstinspires.ftc.teamcode.hardwareConfig.actuators.Spindexer;
 
+import com.bylazar.configurables.annotations.Configurable;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
+@Configurable
 public class SpindexerConstants {
     public String name = "Spindexer";
     public String motorConfigurationType = "clone";

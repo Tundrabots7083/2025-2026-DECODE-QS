@@ -9,6 +9,7 @@ import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTree
 import org.firstinspires.ftc.teamcode.hardwareControl.actuators.Ramp.RampController;
 import org.firstinspires.ftc.teamcode.hardwareControl.actuators.Spindexer.ArtifactTracker;
 import org.firstinspires.ftc.teamcode.hardwareControl.actuators.Spindexer.SpindexerController;
+import org.firstinspires.ftc.teamcode.hardwareControl.actuators.driveTrain.DriveTrainController;
 import org.firstinspires.ftc.teamcode.hardwareControl.actuators.intake.IntakeController;
 import org.firstinspires.ftc.teamcode.hardwareControl.actuators.shooter.ShooterController;
 import org.firstinspires.ftc.teamcode.hardwareControl.sensors.gamepad.GamepadDelta;
@@ -37,6 +38,7 @@ public class ShootAction implements ActionFunction {
     ArtifactTracker artifactTracker;
     IntakeController intakeController;
     SpindexerLimitSwitchController limitSwitchController;
+    DriveTrainController driveTrainController;
     ShootState state = ShootState.IDLE;
     boolean wasLeftTriggerTripped = false;
     boolean wasRightTriggerTripped = false;
@@ -45,6 +47,7 @@ public class ShootAction implements ActionFunction {
     boolean isShootingThree = false;
     boolean cancelConsumed = false;
     int timesSpun = 0;
+//    Pose robotPose;
 
     public static double shooterRPM = 3500;
 
@@ -56,6 +59,7 @@ public class ShootAction implements ActionFunction {
         this.artifactTracker = ArtifactTracker.getInstance();
         this.intakeController = IntakeController.getInstance();
         this.limitSwitchController = SpindexerLimitSwitchController.getInstance();
+//        this.driveTrainController = DriveTrainController.getInstance();
     }
 
 
@@ -74,6 +78,10 @@ public class ShootAction implements ActionFunction {
 //            telemetry.addData("[SHOOT ACTION] shooterRPM",shooterRPM);
         }
 
+//        if(blackBoard.getValue("CurrentPose") != null) {
+//            robotPose = (Pose) blackBoard.getValue("CurrentPose");
+//        }
+
 //        telemetry.addData("[SHOOTACTION] Front Speed", shooterController.getFrontCurrentVelocity());
 //        telemetry.addData("[SHOOTACTION] Reare Speed", shooterController.getRearCurrentVelocity());
 
@@ -81,8 +89,7 @@ public class ShootAction implements ActionFunction {
             case IDLE:
                 timesSpun = 0;
                 isShootingThree = false;
-                if (!cancelConsumed &&
-                        wasLeftTriggerTripped || wasRightTriggerTripped || wasLeftBumperPressed || wasRightBumperPressed) {
+                if (wasLeftBumperPressed || wasRightBumperPressed) {
                     state = ShootState.SWITCH_COORDINATES;
                     intakeController.spinToTargetVelocity(200);
                     break;
@@ -121,7 +128,6 @@ public class ShootAction implements ActionFunction {
                 break;
             case WAIT_FOR_TRIGGER:
                 if (wasRightBumperPressed || wasLeftBumperPressed) {
-                    cancelConsumed = true;
 
                     shooterController.spinToTargetVelocity(0.0);
                     intakeController.spinToTargetVelocity(0.0);
@@ -130,7 +136,9 @@ public class ShootAction implements ActionFunction {
                     if (!rampController.isDeployed()) {
                         state = ShootState.IDLE;
                     }
+
                 }
+                shooterController.spinToTargetVelocity(shooterRPM);
                 if (wasLeftTriggerTripped) {
                     isShootingThree = false;
                     state = ShootState.FEED;
@@ -142,6 +150,7 @@ public class ShootAction implements ActionFunction {
                 }
                 break;
             case FEED:
+//                driveTrainController.followPath(new Path( new BezierLine(robotPose, robotPose)),true);
                 if (shooterController.isOnTarget()) {
                     intakeController.spinToTargetVelocity(200);
                     int shootSlot = (spindexerController.getSlotPosition() + 1) % 3; // gets the slot currently under the shooter
@@ -154,8 +163,10 @@ public class ShootAction implements ActionFunction {
                 }
                 break;
             case RETRACT:
+//                driveTrainController.breakFollowing();
+//                driveTrainController.startTeleOpDrive();
                 if (spindexerController.isOnTarget()) {
-                    if (!isShootingThree || timesSpun == 3) {
+                    if (timesSpun == 3) {
                         shooterController.spinToTargetVelocity(0.0);
                         rampController.store();
                     } else {

@@ -1,10 +1,13 @@
 package org.firstinspires.ftc.teamcode.hardwareConfig.actuators.Spindexer;
 
+import com.bylazar.configurables.annotations.Configurable;
+
+@Configurable
 public class SpindexerPIDFControllerConstants {
-    public double kp = 0.02;
-    public double ki = 0.0016;
-    public double kd = 0.0;
-    public double kf = 0.0003;
+    public static double kp = 0.01;
+    public static double ki = 0.001;
+    public static double kd = 0.0;
+    public static double kf = 0.0008;
     public double maxIntegralSum = 100;
     public double maxVelocity = 1500;
     public double maxAcceleration = 5000;

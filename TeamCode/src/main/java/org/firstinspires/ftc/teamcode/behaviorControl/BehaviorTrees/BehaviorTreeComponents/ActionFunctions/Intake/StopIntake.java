@@ -27,7 +27,6 @@ public class StopIntake implements ActionFunction {
 
         // Stop the intake mechanism
         intakeController.stop();
-        intakeController.update();
 
 
         status = Status.SUCCESS;

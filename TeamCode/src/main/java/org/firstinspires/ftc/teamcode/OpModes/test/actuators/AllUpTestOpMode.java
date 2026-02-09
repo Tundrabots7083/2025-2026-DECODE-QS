@@ -4,12 +4,13 @@ package org.firstinspires.ftc.teamcode.opModes.test.actuators;
 import com.bylazar.telemetry.JoinedTelemetry;
 import com.bylazar.telemetry.PanelsTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTree.AllUpTestBehaviorTree;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.Status;
 
-
+@Disabled
 @Autonomous(name = "All Mechanisms Test", group = "test")
 public class AllUpTestOpMode extends LinearOpMode {
     AllUpTestBehaviorTree behaviorTree = null;

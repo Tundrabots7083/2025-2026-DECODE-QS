@@ -37,7 +37,7 @@ public class Relocalize implements ActionFunction {
         }
 
 
-        if (blackBoard.getValue("AprilTag_Pose") != null && timer.seconds() > 4) {
+        if (blackBoard.getValue("AprilTag_Pose") != null && timer.seconds() > 2) {
             Pose robotPose = (Pose) blackBoard.getValue("AprilTag_Pose");
 
             double x = robotPose.getX();

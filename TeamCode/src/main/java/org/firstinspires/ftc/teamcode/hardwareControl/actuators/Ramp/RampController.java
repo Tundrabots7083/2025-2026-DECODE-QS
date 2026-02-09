@@ -85,7 +85,7 @@ public class RampController {
     public void deploy() {
         if (!deployed && startTime < 0) {
             startTime = System.currentTimeMillis();
-            setTargetPosition(135);
+            setTargetPosition(145);
         }
 
         if (System.currentTimeMillis() - startTime > 400) {

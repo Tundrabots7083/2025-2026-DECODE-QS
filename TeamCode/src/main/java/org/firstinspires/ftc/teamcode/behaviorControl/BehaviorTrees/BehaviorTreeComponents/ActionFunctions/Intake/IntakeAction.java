@@ -2,6 +2,8 @@ package org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTre
 
 import static org.firstinspires.ftc.teamcode.hardwareControl.sensors.storageInventoryController.ArtifactColor.GREEN;
 
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.ActionFunction;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.BlackBoard;
@@ -40,9 +42,11 @@ public class IntakeAction implements ActionFunction {
     double INTAKE_VELOCITY = 300;
     int lastSlot = 0;
     boolean wasRightReadLast = false;
+    LinearOpMode opMode;
 
-    public IntakeAction(Telemetry telemetry) {
+    public IntakeAction(Telemetry telemetry, LinearOpMode opMode) {
         this.telemetry = telemetry;
+        this.opMode = opMode;
         this.intakeController = IntakeController.getInstance();
         this.rampController = RampController.getInstance();
         this.spindexerController = SpindexerController.getInstance();
@@ -123,6 +127,7 @@ public class IntakeAction implements ActionFunction {
                     artifactTracker.setArtifact(slotPosition, rightColor);
 
                     if (isSpindexerFull()) {
+                        opMode.gamepad1.rumble(200);
                         state = IntakeState.IDLE;
                     } else {
                         state = IntakeState.SPIN_SPINDEXER;

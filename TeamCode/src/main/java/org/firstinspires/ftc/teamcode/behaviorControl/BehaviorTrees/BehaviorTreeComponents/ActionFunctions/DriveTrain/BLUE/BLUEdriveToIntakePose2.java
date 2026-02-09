@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.DriveTrain;
+package org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.DriveTrain.BLUE;
 
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
@@ -11,23 +11,17 @@ import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTree
 import org.firstinspires.ftc.teamcode.hardwareControl.actuators.driveTrain.DriveTrainController;
 
 
-public class DriveForwardToIntake implements ActionFunction {
+public class BLUEdriveToIntakePose2 implements ActionFunction {
     private DriveTrainController driveTrainController;
     private Telemetry telemetry;
     private Status lastStatus = Status.FAILURE;
-    private double maxPower = 0.35;
-    private final Pose startPose = new Pose(100, 35, Math.toRadians(0)); // Start Pose of our robot.
-    private final Pose intakePose = new Pose(130, 35, Math.toRadians(0));
+    private final Pose intakePose = new Pose(42, 60, Math.toRadians(0));
     private PathChain intakePath;
 
 
-    public DriveForwardToIntake(Telemetry telemetry, DriveTrainController driveTrainController) {
+    public BLUEdriveToIntakePose2(Telemetry telemetry, DriveTrainController driveTrainController) {
         this.telemetry = telemetry;
         this.driveTrainController = driveTrainController;
-
-        intakePath = driveTrainController.pathBuilder()
-                .addPath(new BezierLine(startPose, intakePose))
-                .build();
     }
 
     @Override
@@ -37,7 +31,13 @@ public class DriveForwardToIntake implements ActionFunction {
         }
 
         if (!driveTrainController.isBusy()) {
-            driveTrainController.followPath(intakePath, maxPower, true);
+
+            intakePath = driveTrainController.pathBuilder()
+                    .addPath(new BezierLine(driveTrainController::getPosition, intakePose))
+                    .setLinearHeadingInterpolation(driveTrainController.getPosition().getHeading(), intakePose.getHeading())
+                    .build();
+
+            driveTrainController.followPath(intakePath, true);
             lastStatus = Status.SUCCESS;
             return Status.SUCCESS;
         }

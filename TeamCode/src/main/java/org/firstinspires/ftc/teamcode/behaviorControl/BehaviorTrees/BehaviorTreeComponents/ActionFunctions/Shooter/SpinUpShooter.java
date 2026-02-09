@@ -27,8 +27,8 @@ public class SpinUpShooter implements ActionFunction {
         targetVelocity = (double) blackBoard.getValue("TargetShooterRPM");
 
         // Activate the shooter mechanism
-//        shooterController.spinToTargetVelocity(targetVelocity);
-        shooterController.spinToTargetVelocity(20);
+        shooterController.spinToTargetVelocity(targetVelocity);
+//        shooterController.spinToTargetVelocity(20);
 
 
         if (!shooterController.isOnTarget()) {

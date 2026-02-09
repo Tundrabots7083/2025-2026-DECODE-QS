@@ -21,9 +21,9 @@ public class CalculateRPM implements ActionFunction {
     Pose robotPose;
     Position targetPose;
 
-    double a = 1684; //these represent the values
-    double b = 35.3; //a,b,c, and d in the equation
-    double c = -0.105; //velocity = a + bx + cx^2 + dx^3
+    double a = 3811; //these represent the values
+    double b = -4.15; //a,b,c, and d in the equation
+    double c = 0.0587; //velocity = a + bx + cx^2 + dx^3
 
     public CalculateRPM(Telemetry telemetry, ShooterController shooterController, TurretController turretController) {
         this.telemetry = telemetry;

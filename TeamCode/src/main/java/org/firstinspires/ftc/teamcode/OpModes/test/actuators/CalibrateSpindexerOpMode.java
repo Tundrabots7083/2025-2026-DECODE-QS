@@ -4,12 +4,13 @@ package org.firstinspires.ftc.teamcode.opModes.test.actuators;
 import com.bylazar.telemetry.JoinedTelemetry;
 import com.bylazar.telemetry.PanelsTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTree.SpindexerTestBehaviorTree;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.Status;
 
-
+@Disabled
 @Autonomous(name = "Calibrate Spindexer BehaviorTree", group = "test")
 public class CalibrateSpindexerOpMode extends LinearOpMode {
     SpindexerTestBehaviorTree behaviorTree = null;

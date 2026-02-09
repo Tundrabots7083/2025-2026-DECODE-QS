@@ -186,8 +186,8 @@ public class SpindexerController {
         currentTime = System.currentTimeMillis();
         double currentPosition = getPosition();
         double elapsedTime = (currentTime - startTime) / 1000.0;
-//        telemetry.addData("[SPINDEXER] CurrentPos", currentPosition);
-//        telemetry.addData("[SPINDEXER] TargetPose", getTargetPosition());
+        telemetry.addData("[SPINDEXER] CurrentPos", currentPosition);
+        telemetry.addData("[SPINDEXER] TargetPose", getTargetPosition());
 
         // ----- Normal motion -----
         MotionProfiler.MotionState motionState = motionProfiler.getMotionState(elapsedTime);
