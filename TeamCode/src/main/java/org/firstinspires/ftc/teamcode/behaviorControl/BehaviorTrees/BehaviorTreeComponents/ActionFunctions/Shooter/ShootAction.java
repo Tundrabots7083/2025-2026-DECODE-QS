@@ -89,6 +89,7 @@ public class ShootAction implements ActionFunction {
             case IDLE:
                 timesSpun = 0;
                 isShootingThree = false;
+                shooterController.spinToTargetVelocity(0.0);
                 if (wasLeftBumperPressed || wasRightBumperPressed) {
                     state = ShootState.SWITCH_COORDINATES;
                     intakeController.spinToTargetVelocity(200);
@@ -98,7 +99,7 @@ public class ShootAction implements ActionFunction {
                 }
                 return Status.SUCCESS;
             case SWITCH_COORDINATES:
-                spindexerController.setDegreeOffset(0.0);
+                spindexerController.setDegreeOffset(-50.0);
                 spindexerController.moveToPosition(spindexerController.getTargetPosition() - 40);
                 state = ShootState.RUN_TO_ZERO;
                 break;
@@ -132,7 +133,7 @@ public class ShootAction implements ActionFunction {
                     shooterController.spinToTargetVelocity(0.0);
                     intakeController.spinToTargetVelocity(0.0);
                     rampController.store();
-                    spindexerController.setDegreeOffset(40);
+                    spindexerController.setDegreeOffset(-10);
                     if (!rampController.isDeployed()) {
                         state = ShootState.IDLE;
                     }
@@ -150,8 +151,8 @@ public class ShootAction implements ActionFunction {
                 }
                 break;
             case FEED:
-//                driveTrainController.followPath(new Path( new BezierLine(robotPose, robotPose)),true);
                 if (shooterController.isOnTarget()) {
+                    spindexerController.setMaxPower(0.5);
                     intakeController.spinToTargetVelocity(200);
                     int shootSlot = (spindexerController.getSlotPosition() + 1) % 3; // gets the slot currently under the shooter
                     artifactTracker.setArtifact(shootSlot, ArtifactColor.NONE);
@@ -167,6 +168,7 @@ public class ShootAction implements ActionFunction {
 //                driveTrainController.startTeleOpDrive();
                 if (spindexerController.isOnTarget()) {
                     if (timesSpun == 3) {
+                        spindexerController.setMaxPower(1);
                         shooterController.spinToTargetVelocity(0.0);
                         rampController.store();
                     } else {
@@ -185,7 +187,7 @@ public class ShootAction implements ActionFunction {
                 } else {
                     spindexerController.stop();
                     spindexerController.hardwareReset();
-                    spindexerController.setDegreeOffset(40);
+                    spindexerController.setDegreeOffset(-10);
                     spindexerController.moveToPosition(120);
                     intakeController.stop();
                     state = ShootState.IDLE;

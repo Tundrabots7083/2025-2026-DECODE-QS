@@ -199,7 +199,7 @@ public class ShooterController {
         currentFrontVelocity = getFrontCurrentVelocity();
         currentRearVelocity = getRearCurrentVelocity();
 
-        return ((Math.abs(targetVelocity + 50 - currentFrontVelocity) <= TOLERABLE_ERROR)
+        return ((Math.abs(targetVelocity - currentFrontVelocity) <= TOLERABLE_ERROR)
                 && (Math.abs(targetVelocity - currentRearVelocity) <= TOLERABLE_ERROR));
     }
 
@@ -214,7 +214,7 @@ public class ShooterController {
         currentRearVelocity = getRearCurrentVelocity();
 
         // Calculate motor tbhPower using TBH Spinning the front motor faster so that it can keep the right momentum
-        double FRONTtbhPower = frontTbhController.calculate(targetVelocity + 50, currentFrontVelocity);
+        double FRONTtbhPower = frontTbhController.calculate(targetVelocity, currentFrontVelocity);
         double REARtbhPower = rearTbhController.calculate(targetVelocity, currentRearVelocity);
 
         telemetry.addData("[ShooterController] CurrentFrontVelocity", getFrontCurrentVelocity());

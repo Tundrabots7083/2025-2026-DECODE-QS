@@ -37,7 +37,7 @@ public class TraverseTurretToBlueGoal implements ActionFunction {
             return Status.FAILURE;
         }
 
-        turretController.moveToTargetPosition(robotPose, targetPosition, -5);
+        turretController.moveToTargetPosition(robotPose, targetPosition, 7);
 
         return Status.SUCCESS;
     }

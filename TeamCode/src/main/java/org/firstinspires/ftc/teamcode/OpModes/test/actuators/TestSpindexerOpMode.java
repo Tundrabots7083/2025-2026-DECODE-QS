@@ -7,8 +7,10 @@ import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import org.firstinspires.ftc.teamcode.hardwareControl.actuators.Ramp.RampController;
 import org.firstinspires.ftc.teamcode.hardwareControl.actuators.Spindexer.SpindexerController;
 import org.firstinspires.ftc.teamcode.hardwareControl.actuators.intake.IntakeController;
+import org.firstinspires.ftc.teamcode.hardwareControl.actuators.shooter.ShooterController;
 
 import java.util.List;
 
@@ -18,9 +20,13 @@ public class TestSpindexerOpMode extends LinearOpMode {
 
     public static double targetSpindexPosition = 0;
     public static double targetIntakeVel = 0;
+    public static double rampTargetAngle = 0;
+    public static double shooterSpeed = 0;
 
     SpindexerController spindexerController;
     IntakeController intakeController;
+    RampController rampController;
+    ShooterController shooterController;
 
     private long lastTime = System.nanoTime();
 
@@ -64,6 +70,20 @@ public class TestSpindexerOpMode extends LinearOpMode {
         this.intakeController.initialize(hardwareMap, joinedTelemetry);
         /// End Intake
 
+        /// Intake
+        this.rampController = RampController.getInstance();
+
+        this.rampController.reset();
+        this.rampController.initialize(hardwareMap, joinedTelemetry);
+        /// End Intake
+
+        /// Intake
+        this.shooterController = ShooterController.getInstance();
+
+        this.shooterController.reset();
+        this.shooterController.initialize(hardwareMap, joinedTelemetry);
+        /// End Intake
+
 
         while (opModeIsActive()) {
 
@@ -73,6 +93,10 @@ public class TestSpindexerOpMode extends LinearOpMode {
 
             // --- Intake ---
             intakeController.spinToTargetVelocity(targetIntakeVel);
+
+            rampController.setTargetPosition(rampTargetAngle);
+
+            shooterController.spinToTargetVelocity(shooterSpeed);
 
             // --- Telemetry / timing ---
             long currentTime = System.nanoTime();

@@ -33,6 +33,8 @@ public class SpindexerController {
     private double MAX_ACCELERATION;
     private double startTime;
     private double currentTime;
+    private double MINIMUM_POWER;
+    private double MAXIMUM_POWER;
     private double kP;
     private double kI;
     private double kD;
@@ -95,6 +97,8 @@ public class SpindexerController {
         MAX_INTEGRAL_SUM = pidfControllerConstants.maxIntegralSum;
         MAX_VELOCITY = pidfControllerConstants.maxVelocity;
         MAX_ACCELERATION = pidfControllerConstants.maxAcceleration;
+        MINIMUM_POWER = pidfControllerConstants.motorMinPowerLimit;
+        MAXIMUM_POWER = pidfControllerConstants.motorMaxPowerLimit;
 
         kP = pidfControllerConstants.kp;
         kI = pidfControllerConstants.ki;
@@ -194,7 +198,7 @@ public class SpindexerController {
 
         double power = pidfController.calculate(motionState.position, currentPosition);
         double feedForwardPower = power + kF * motionState.velocity;
-        feedForwardPower = Range.clip(feedForwardPower, -0.5, 1);
+        feedForwardPower = Range.clip(feedForwardPower, MINIMUM_POWER, MAXIMUM_POWER);
 
         if (Math.abs(LAST_POWER - feedForwardPower) > 0.08) {
             spindexerMotor.setPower(feedForwardPower);
@@ -262,6 +266,10 @@ public class SpindexerController {
 
     public void setDegreeOffset(double newOffset) {
         this.DEGREE_OFFSET = newOffset;
+    }
+
+    public void setMaxPower(double maxPower) {
+        this.MAXIMUM_POWER = maxPower;
     }
 
     public void testSpindexer(double power) {

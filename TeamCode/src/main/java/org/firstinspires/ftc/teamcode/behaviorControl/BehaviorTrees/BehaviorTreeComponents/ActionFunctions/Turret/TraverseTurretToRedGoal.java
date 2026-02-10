@@ -45,7 +45,7 @@ public class TraverseTurretToRedGoal implements ActionFunction {
         }
 
         if (distanceToTarget(robotPose, targetPosition) > 100) {
-            turretController.moveToTargetPosition(robotPose, targetPosition, 5);
+            turretController.moveToTargetPosition(robotPose, targetPosition, 10);
         } else {
             turretController.moveToTargetPosition(robotPose, targetPosition, 0);
         }
