@@ -7,7 +7,6 @@ import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTree
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.BlackBoard;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.Status;
 import org.firstinspires.ftc.teamcode.hardwareConfig.sensors.gamepad.GamepadSnapshot;
-import org.firstinspires.ftc.teamcode.hardwareControl.sensors.gamepad.GamepadDelta;
 import org.firstinspires.ftc.teamcode.hardwareControl.sensors.limeLight.LimeLightController;
 
 import java.util.LinkedList;
@@ -42,12 +41,6 @@ public class DetectRobotPose implements ActionFunction {
             GamepadSnapshot gamepad2Snapshot =
                     (GamepadSnapshot) blackBoard.getValue("gamepad2Snapshot");
             DpadUpIsPressed = gamepad2Snapshot.dpadUp;
-        }
-
-        if (blackBoard.getValue("gamepad2Delta") != null) {
-            GamepadDelta gamepad2Delta =
-                    (GamepadDelta) blackBoard.getValue("gamepad2Delta");
-            DpadUpIsPressed = gamepad2Delta.dpadUpPressed;
         }
 
         // --- REQUIRED BEHAVIOR 1 ---

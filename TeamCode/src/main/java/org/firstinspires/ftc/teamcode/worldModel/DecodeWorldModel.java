@@ -71,7 +71,7 @@ public class DecodeWorldModel {
 
         /// BLUE ALLIANCE ////////////////////////////////
         /// Blue Alliance Goal
-        WorldObject blueAllianceGoal = new WorldObject("BlueAllianceGoal", "BlueAllianceGoal", new Position(DistanceUnit.INCH, 9.0, 135, 48, 10), null);
+        WorldObject blueAllianceGoal = new WorldObject("BlueAllianceGoal", "BlueAllianceGoal", new Position(DistanceUnit.INCH, 0, 144, 48, 10), null);
 
         /// Blue Alliance Spikes
         WorldObject blueAllianceAudienceSpike = new WorldObject("BlueAllianceAudienceSpike","BlueAllianceAudienceSpike", new Position(DistanceUnit.INCH,24.0, 46.0,0.0,10), null);

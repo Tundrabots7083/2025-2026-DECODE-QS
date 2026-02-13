@@ -67,11 +67,6 @@ public class CalculateRPM implements ActionFunction {
             blackBoard.setValue("TargetShooterRPM", calculateRPM(distanceToGoal));
             blackBoard.setValue("SpindexerPower", calculateSpindexPower(distanceToGoal));
 
-            if (distanceToGoal > 135) {
-                blackBoard.setValue("TargetShooterRPM", calculateRPM(141));
-            }
-
-
             lastStatus = Status.SUCCESS;
             return lastStatus;
 
