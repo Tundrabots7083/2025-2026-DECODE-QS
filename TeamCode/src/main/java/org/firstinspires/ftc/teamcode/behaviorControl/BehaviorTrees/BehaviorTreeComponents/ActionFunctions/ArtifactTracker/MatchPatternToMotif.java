@@ -12,6 +12,8 @@ import org.firstinspires.ftc.teamcode.hardwareControl.actuators.Spindexer.Artifa
 import org.firstinspires.ftc.teamcode.hardwareControl.actuators.Spindexer.SpindexerController;
 import org.firstinspires.ftc.teamcode.hardwareControl.sensors.storageInventoryController.ArtifactColor;
 
+import java.util.Arrays;
+
 public class MatchPatternToMotif implements ActionFunction {
 
     Telemetry telemetry;
@@ -54,11 +56,11 @@ public class MatchPatternToMotif implements ActionFunction {
             createTargetPattern();
         }
 
-        if (currentPattern == targetPattern) {
+        if (Arrays.equals(currentPattern, targetPattern)) {
             blackBoard.setValue("spindexerTurnsToPattern", 0);
-        } else if (currentPattern == rotateArray(targetPattern)) {
+        } else if (Arrays.equals(currentPattern, rotateArray(targetPattern))) {
             blackBoard.setValue("spindexerTurnsToPattern", 1);
-        } else if (currentPattern == rotateArray(rotateArray(targetPattern))) {
+        } else if (Arrays.equals(currentPattern, rotateArray(rotateArray(targetPattern)))) {
             blackBoard.setValue("spindexerTurnsToPattern", 2);
         }
 

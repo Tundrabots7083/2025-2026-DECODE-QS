@@ -15,6 +15,7 @@ public class SortArtifacts implements ActionFunction {
 
     private double currentPosition;
     private double targetPosition;
+    private boolean hasRun = false;
 
     public SortArtifacts(Telemetry telemetry, SpindexerController spindexerController) {
         this.telemetry = telemetry;
@@ -26,7 +27,7 @@ public class SortArtifacts implements ActionFunction {
             return lastStatus;
         }
 
-        if (blackBoard.getValue("spindexerTurnsToPattern") != null) {
+        if (blackBoard.getValue("spindexerTurnsToPattern") != null && !hasRun) {
             if ((int) blackBoard.getValue("spindexerTurnsToPattern") == 1) {
                 currentPosition = spindexerController.getPosition();
                 targetPosition = currentPosition + 120;
@@ -36,8 +37,9 @@ public class SortArtifacts implements ActionFunction {
                 targetPosition = currentPosition + 240;
                 spindexerController.moveToPosition(targetPosition);
             }
+            hasRun = true;
         } else {
-            status = Status.FAILURE;
+            status = Status.RUNNING;
         }
 
 

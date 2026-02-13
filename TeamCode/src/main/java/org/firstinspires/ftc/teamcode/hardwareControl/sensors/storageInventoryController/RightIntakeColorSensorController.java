@@ -92,7 +92,7 @@ public class RightIntakeColorSensorController {
 
         return maxRedOrBlue > 40
                 && minRedOrBlue >= 0.5 * maxRedOrBlue
-                && green < 0.7 * maxRedOrBlue;
+                && green < 0.8 * maxRedOrBlue;
     }
 }
 

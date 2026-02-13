@@ -82,6 +82,10 @@ public class ArtifactTracker {
         return currentPattern;
     }
 
+    public void setCurrentPatternSnapshot(ArtifactColor[] newPattern) {
+        currentPattern = newPattern;
+    }
+
     /** Explicit lifecycle reset */
     public void reset() {
         initialized = false;

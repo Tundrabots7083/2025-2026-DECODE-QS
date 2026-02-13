@@ -18,10 +18,11 @@ import java.util.List;
 @Autonomous(name = "Test Spindexer", group = "test")
 public class TestSpindexerOpMode extends LinearOpMode {
 
-    public static double targetSpindexPosition = 0;
-    public static double targetIntakeVel = 0;
-    public static double rampTargetAngle = 0;
-    public static double shooterSpeed = 0;
+    public static double targetSpindexPosition = 0.0;
+    public static double spindexPower = 0.0;
+    public static double targetIntakeVel = 0.0;
+    public static double rampTargetAngle = 0.0;
+    public static double shooterSpeed = 0.0;
 
     SpindexerController spindexerController;
     IntakeController intakeController;
@@ -77,19 +78,24 @@ public class TestSpindexerOpMode extends LinearOpMode {
         this.rampController.initialize(hardwareMap, joinedTelemetry);
         /// End Intake
 
-        /// Intake
+        /// Shooter
         this.shooterController = ShooterController.getInstance();
 
         this.shooterController.reset();
         this.shooterController.initialize(hardwareMap, joinedTelemetry);
-        /// End Intake
+        /// End Shooter
 
 
         while (opModeIsActive()) {
 
             // --- Spindexer ---
             // Always feed the desired goal; controller decides whether it is honored
-            spindexerController.moveToPosition(targetSpindexPosition);
+            if (spindexPower == 0.0) {
+                spindexerController.stop();
+                spindexerController.moveToPosition(targetSpindexPosition);
+            } else {
+                spindexerController.testSpindexer(spindexPower);
+            }
 
             // --- Intake ---
             intakeController.spinToTargetVelocity(targetIntakeVel);

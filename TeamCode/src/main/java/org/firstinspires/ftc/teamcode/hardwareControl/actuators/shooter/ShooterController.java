@@ -228,14 +228,14 @@ public class ShooterController {
         if ((Math.abs(FRONTtbhPower - FRONTLastPower) >= 0.008)) {
             // Apply FRONTtbhPower to motor
             frontShooterMotor.setPower(FRONTtbhPower);
-//            telemetry.addData("[ShooterController] SentFrontpower:", FRONTtbhPower);
+            telemetry.addData("[ShooterController] SentFrontpower:", FRONTtbhPower);
             FRONTLastPower = FRONTtbhPower;
         }
 
         if ((Math.abs(REARtbhPower - REARLastPower) >= 0.008)) {
             // Apply FRONTtbhPower to motor
             rearShooterMotor.setPower(REARtbhPower);
-//            telemetry.addData("[ShooterController] SentRearpower:", REARtbhPower);
+            telemetry.addData("[ShooterController] SentRearpower:", REARtbhPower);
             REARLastPower = REARtbhPower;
         }
     }

@@ -10,7 +10,8 @@ import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTree
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Shooter.CalculateRPM;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Shooter.SpinUpShooter;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Shooter.StopShooter;
-import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Spindexer.SpinOnePosition;
+import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Spindexer.HasSpindexerSpun;
+import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Spindexer.SpinSpindexerToShoot;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Spindexer.SwitchToIntakeCoordinates;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Spindexer.SwitchToShootCoordinates;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.Action;
@@ -98,13 +99,10 @@ public class ShootSubTree {
                         new Action(new CalculateRPM(telemetry, shooterController, turretController), telemetry),
                         new Action(new SwitchToShootCoordinates(telemetry, spindexerController), telemetry),
                         new Action(new DeployRamp(telemetry, rampController), telemetry),
-                        new Action(new PauseAction(telemetry, 500), telemetry),
+                        new Action(new PauseAction(telemetry, 400), telemetry),
                         new Action(new SpinUpShooter(telemetry, shooterController), telemetry),
-                        new Action(new SpinOnePosition(telemetry, spindexerController), telemetry),
-                        new Action(new SpinUpShooter(telemetry, shooterController), telemetry),
-                        new Action(new SpinOnePosition(telemetry, spindexerController), telemetry),
-                        new Action(new SpinUpShooter(telemetry, shooterController), telemetry),
-                        new Action(new SpinOnePosition(telemetry, spindexerController), telemetry),
+                        new Action(new SpinSpindexerToShoot(telemetry, spindexerController), telemetry),
+                        new Action(new HasSpindexerSpun(telemetry), telemetry),
                         new Action(new StoreRamp(telemetry, rampController), telemetry),
                         new Action(new SwitchToIntakeCoordinates(telemetry, spindexerController), telemetry),
                         new Action(new StopShooter(telemetry, shooterController), telemetry)

@@ -50,6 +50,7 @@ public class ShootAction implements ActionFunction {
 //    Pose robotPose;
 
     public static double shooterRPM = 3500;
+    private double spindexerPower = 0.3;
 
     public ShootAction(Telemetry telemetry) {
         this.telemetry = telemetry;
@@ -75,6 +76,8 @@ public class ShootAction implements ActionFunction {
 
         if (blackBoard.getValue("TargetShooterRPM") != null) {
             shooterRPM = (double) blackBoard.getValue("TargetShooterRPM");
+            spindexerPower = (double) blackBoard.getValue("SpindexerPower");
+
 //            telemetry.addData("[SHOOT ACTION] shooterRPM",shooterRPM);
         }
 
@@ -100,12 +103,12 @@ public class ShootAction implements ActionFunction {
                 return Status.SUCCESS;
             case SWITCH_COORDINATES:
                 spindexerController.setDegreeOffset(-50.0);
-                spindexerController.moveToPosition(spindexerController.getTargetPosition() - 40);
+                spindexerController.moveToPosition(spindexerController.getTargetPosition() - 50);
                 state = ShootState.RUN_TO_ZERO;
                 break;
             case RUN_TO_ZERO:
                 if (spindexerController.isOnTarget()) {
-                    spindexerController.moveToPosition(spindexerController.getTargetPosition() + 40);
+                    spindexerController.moveToPosition(spindexerController.getTargetPosition() + 50);
                     state = ShootState.DEPLOY_RAMP;
                 }
                 break;
@@ -152,29 +155,26 @@ public class ShootAction implements ActionFunction {
                 break;
             case FEED:
                 if (shooterController.isOnTarget()) {
-                    spindexerController.setMaxPower(0.5);
                     intakeController.spinToTargetVelocity(200);
                     int shootSlot = (spindexerController.getSlotPosition() + 1) % 3; // gets the slot currently under the shooter
                     artifactTracker.setArtifact(shootSlot, ArtifactColor.NONE);
                     double currentTarget = spindexerController.getTargetPosition();
-                    double targetPosition = currentTarget + 120;
+                    double targetPosition;
+                    if (isShootingThree) {
+                        artifactTracker.clearPattern();
+                        targetPosition = currentTarget + 360;
+                    } else {
+                        targetPosition = currentTarget + 120;
+                    }
+                    spindexerController.testSpindexer(0.3);
                     spindexerController.moveToPosition(targetPosition);
-                    timesSpun++;
                     state = ShootState.RETRACT;
                 }
                 break;
             case RETRACT:
-//                driveTrainController.breakFollowing();
-//                driveTrainController.startTeleOpDrive();
-                if (spindexerController.isOnTarget()) {
-                    if (timesSpun == 3) {
-                        spindexerController.setMaxPower(1);
+                if (spindexerController.isPastTarget()) {
                         shooterController.spinToTargetVelocity(0.0);
                         rampController.store();
-                    } else {
-                        state = ShootState.SPIN_UP;
-                        break;
-                    }
                 }
                 if (!rampController.isDeployed()) {
                     state = ShootState.CALIBRATE_SPINDEXER;

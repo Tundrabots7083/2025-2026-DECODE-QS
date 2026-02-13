@@ -36,7 +36,6 @@ public class DetectMotifPattern implements ActionFunction {
             blackBoard.setValue("Motif_Pattern", Pattern.PPG);
         } else {
             blackBoard.setValue("Motif_Pattern", Pattern.PPG);
-            telemetry.addData("gaisdfakjldsfklaskjldfkjlaskjldfkjl", "adsilfjladsfkjlfskjlda");
             status = Status.SUCCESS;
             return status;
         }

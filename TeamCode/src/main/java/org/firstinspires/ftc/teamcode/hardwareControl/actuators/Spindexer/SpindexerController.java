@@ -143,6 +143,12 @@ public class SpindexerController {
         return isInDeadband && isVelocityLow && !isRecovering;
     }
 
+    public boolean isPastTarget() {
+        boolean isPastTarget = lastTargetPosition - getPosition() <= TOLERABLE_ERROR;
+        boolean isRecovering = spindexerState == SpindexerState.RECOVERY_BACKOFF || spindexerState == SpindexerState.RECOVERY_RETURN;
+        return isPastTarget && !isRecovering;
+    }
+
     public void spinSlowly() {
         spindexerMotor.setPower(0.3);
         isSpinningSlowly = true;
@@ -274,6 +280,7 @@ public class SpindexerController {
 
     public void testSpindexer(double power) {
         spindexerMotor.setPower(power);
+        isSpinningSlowly = true;
     }
 
     public void setKf(double newkF) {

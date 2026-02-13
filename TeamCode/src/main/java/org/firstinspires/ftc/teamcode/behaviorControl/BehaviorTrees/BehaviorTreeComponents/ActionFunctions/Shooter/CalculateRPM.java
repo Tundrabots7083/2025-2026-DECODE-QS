@@ -21,9 +21,12 @@ public class CalculateRPM implements ActionFunction {
     Pose robotPose;
     Position targetPose;
 
-    double a = 3356; //these represent the values
-    double b = 5.37; //a,b,c, and d in the equation
-    double c = 0.0172; //velocity = a + bx + cx^2 + dx^3
+    double a = 2689;//3356; //these represent the values
+    double b = 12.3;//5.37; //a,b,c, and d in the equation
+    double c = -6.87E-03;//0.0172; //velocity = a + bx + cx^2 + dx^3
+
+    double A = -3.32E-03;
+    double B = 0.732;
 
     public CalculateRPM(Telemetry telemetry, ShooterController shooterController, TurretController turretController) {
         this.telemetry = telemetry;
@@ -62,6 +65,11 @@ public class CalculateRPM implements ActionFunction {
             telemetry.addData("[CalculateRPM] y", robotPose.getY());
 
             blackBoard.setValue("TargetShooterRPM", calculateRPM(distanceToGoal));
+            blackBoard.setValue("SpindexerPower", calculateSpindexPower(distanceToGoal));
+
+            if (distanceToGoal > 135) {
+                blackBoard.setValue("TargetShooterRPM", calculateRPM(141));
+            }
 
 
             lastStatus = Status.SUCCESS;
@@ -91,6 +99,12 @@ public class CalculateRPM implements ActionFunction {
             headingScalar = turretController.getPosition() / 180;
         }
         return baseRpm;//+ 100 * headingScalar;
+    }
+
+    private double calculateSpindexPower(double distance) {
+        double spindexPower = A
+                + B * Math.pow(distance, 1);
+        return spindexPower;
     }
 
     private double distanceToTarget(Pose current, Position target) {

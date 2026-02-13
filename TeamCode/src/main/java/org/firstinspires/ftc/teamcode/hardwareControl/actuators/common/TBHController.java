@@ -44,7 +44,7 @@ public class TBHController {
         // Calculate error
         double error = setpoint - current;
 
-        if (Math.abs(error) > 330) {
+        if (Math.abs(error) > 300) {
             isFirstCross = true;
             return Math.signum(error);
         } else if (isFirstCross && driveAtZero == 0.0) {

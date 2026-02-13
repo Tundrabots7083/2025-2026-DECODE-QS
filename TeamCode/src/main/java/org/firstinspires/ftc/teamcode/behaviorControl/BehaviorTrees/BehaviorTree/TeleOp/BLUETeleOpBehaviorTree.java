@@ -21,6 +21,7 @@ import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTree
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Shooter.CalculateRPM;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Shooter.RunShooter;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Shooter.ShootAction;
+import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Shooter.SortPattern;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Spindexer.RunSpindexer;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Turret.TraverseTurretToBlueGoal;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.Action;
@@ -187,6 +188,7 @@ public class BLUETeleOpBehaviorTree {
                         new Action(new TeleOpDrive(telemetry, driveTrainController), telemetry),
                         new Action(new CalculateRPM(telemetry, shooterController, turretController), telemetry),
                         new Action(new ShootAction(telemetry), telemetry),
+                        new Action(new SortPattern(telemetry, opMode), telemetry),
                         // Press dPadUp on GP1 to start or stop intake
                         new Action(new IntakeAction(telemetry, opMode), telemetry)
                 ), telemetry);

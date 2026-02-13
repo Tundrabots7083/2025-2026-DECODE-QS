@@ -27,7 +27,7 @@ public class UpdateBlackboardPose implements ActionFunction {
 
     public Status perform(BlackBoard blackBoard) {
 
-        if (timer.seconds() > 0.2) {
+        if (timer.seconds() > 0.1) {
             blackBoard.setValue("CurrentPose", driveTrainController.getPosition());
             timer.reset();
         }

@@ -19,6 +19,8 @@ import org.firstinspires.ftc.teamcode.hardwareControl.actuators.shooter.ShooterC
 import org.firstinspires.ftc.teamcode.hardwareControl.sensors.gamepad.GamepadDelta;
 import org.firstinspires.ftc.teamcode.hardwareControl.sensors.storageInventoryController.ArtifactColor;
 
+import java.util.Arrays;
+
 enum SortingState {
     IDLE,
     TAKE_INVENTORY,
@@ -49,7 +51,7 @@ public class SortPattern implements ActionFunction {
     private ArtifactColor[] targetPattern;
     private int numPurple = 0;
     private int numGreen = 0;
-    private boolean isNotFull = true;
+    private boolean isFull = true;
     LinearOpMode opMode;
     private int spinsToPattern = 0;
 
@@ -69,25 +71,18 @@ public class SortPattern implements ActionFunction {
     public Status perform(BlackBoard blackBoard) {
 
         if (blackBoard.getValue("gamepad2Delta") != null) {
-            GamepadDelta gamepad1Delta = (GamepadDelta) blackBoard.getValue("gamepad1Delta");
-            wasAPressed = gamepad1Delta.aPressed;
-            wasBPressed = gamepad1Delta.bPressed;
-            wasXPressed = gamepad1Delta.xPressed;
+            GamepadDelta gamepad2Delta = (GamepadDelta) blackBoard.getValue("gamepad2Delta");
+            wasAPressed = gamepad2Delta.aPressed;
+            wasBPressed = gamepad2Delta.bPressed;
+            wasXPressed = gamepad2Delta.xPressed;
         }
 
-        if (blackBoard.getValue("TargetShooterRPM") != null) {
-            shooterRPM = (double) blackBoard.getValue("TargetShooterRPM");
-//            telemetry.addData("[SHOOT ACTION] shooterRPM",shooterRPM);
-        }
-
-//        telemetry.addData("[SHOOTACTION] Front Speed", shooterController.getFrontCurrentVelocity());
-//        telemetry.addData("[SHOOTACTION] Reare Speed", shooterController.getRearCurrentVelocity());
+        telemetry.addData("[SORTPATTERN]", state);
 
         switch (state) {
             case IDLE:
-                timesSpun = 0;
-                if (!cancelConsumed) {
-                    if (wasAPressed) {
+                targetPattern = null;
+                if (wasAPressed) {
                         state = SortingState.TAKE_INVENTORY;
                         motifPattern = DetectMotifPattern.Pattern.PPG;
                         intakeController.spinToTargetVelocity(200);
@@ -103,36 +98,38 @@ public class SortPattern implements ActionFunction {
                         intakeController.spinToTargetVelocity(200);
                         break;
                     }
-                } else {
-                    cancelConsumed = false;
-                }
                 return Status.SUCCESS;
             case TAKE_INVENTORY:
                 currentPattern = artifactTracker.getCurrentPatternSnapshot();
-                countArtifacts();
+                isFull = isFull();
 
-                if (isNotFull) {
+                if (!isFull) {
                     opMode.gamepad2.rumbleBlips(3);
+                    state = SortingState.IDLE;
                     break;
                 } else if (numPurple != 2) {
                     opMode.gamepad2.rumble(500);
+                    state = SortingState.IDLE;
                     break;
                 }
 
                 if (motifPattern == null) {
+                    state = SortingState.IDLE;
                     break;
                 } else if (targetPattern == null) {
                     createTargetPattern();
+                    artifactTracker.setCurrentPatternSnapshot(targetPattern);
                 }
 
-                if (currentPattern == targetPattern) {
+                if (Arrays.equals(currentPattern, targetPattern)) {
                     spinsToPattern = 0;
-                } else if (currentPattern == rotateArray(targetPattern)) {
+                } else if (Arrays.equals(currentPattern, rotateArray(targetPattern))) {
                     spinsToPattern = 1;
-                } else if (currentPattern == rotateArray(rotateArray(targetPattern))) {
+                } else if (Arrays.equals(currentPattern, rotateArray(rotateArray(targetPattern)))) {
                     spinsToPattern = 2;
                 }
 
+                state = SortingState.RETRACT;
                 break;
             case RETRACT:
                 if (rampController.isDeployed()) {
@@ -142,6 +139,7 @@ public class SortPattern implements ActionFunction {
                 }
                 break;
             case SPIN_SPINDEXER:
+                spindexerController.stop();
                 double targetPosition = spindexerController.getTargetPosition();
                 switch (spinsToPattern) {
                     case 0:
@@ -167,8 +165,11 @@ public class SortPattern implements ActionFunction {
     }
 
 
-    private void countArtifacts() {
-        for (ArtifactColor artifact : currentPattern) {
+    private boolean isFull() {
+        ArtifactColor[] snapshot = artifactTracker.getCurrentPatternSnapshot();
+        numPurple = 0;
+        numGreen = 0;
+        for (ArtifactColor artifact : snapshot) {
             if (artifact == ArtifactColor.PURPLE) {
                 numPurple++;
             } else if (artifact == GREEN) {
@@ -176,7 +177,7 @@ public class SortPattern implements ActionFunction {
             }
         }
 
-        isNotFull = numGreen + numPurple != 3;
+        return (numGreen + numPurple) == 3;
     }
 
     private void createTargetPattern() {
