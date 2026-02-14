@@ -13,6 +13,7 @@ public class DetectMotifPattern implements ActionFunction {
     Telemetry telemetry;
 
     LimeLightController limeLightController;
+    Status status;
 
     protected Status lastStatus = Status.FAILURE;
 
@@ -23,7 +24,9 @@ public class DetectMotifPattern implements ActionFunction {
     }
 
     public Status perform(BlackBoard blackBoard) {
-        Status status;
+        if (status == Status.SUCCESS) {
+            return status;
+        }
 
         Set<Integer> ids = limeLightController.getPresentFiducialIds();
 
@@ -35,8 +38,7 @@ public class DetectMotifPattern implements ActionFunction {
         } else if (ids.contains(23)) {
             blackBoard.setValue("Motif_Pattern", Pattern.PPG);
         } else {
-            blackBoard.setValue("Motif_Pattern", Pattern.PPG);
-            status = Status.SUCCESS;
+            status = Status.RUNNING;
             return status;
         }
 

@@ -26,7 +26,7 @@ public class MatchPatternToMotif implements ActionFunction {
     private ArtifactColor[] targetPattern;
     private int numPurple = 0;
     private int numGreen = 0;
-    private boolean isNotFull = true;
+    private boolean isFull = true;
     private DetectMotifPattern.Pattern motifPattern;
 
 
@@ -38,9 +38,9 @@ public class MatchPatternToMotif implements ActionFunction {
 
     public Status perform(BlackBoard blackBoard) {
         currentPattern = artifactTracker.getCurrentPatternSnapshot();
-        countArtifacts();
+        isFull = isFull();
 
-        if (isNotFull) {
+        if (!isFull) {
             return Status.FAILURE;
         } else if (numPurple != 2) {
             blackBoard.setValue("isPatternConfigurable", false);
@@ -57,18 +57,21 @@ public class MatchPatternToMotif implements ActionFunction {
         }
 
         if (Arrays.equals(currentPattern, targetPattern)) {
-            blackBoard.setValue("spindexerTurnsToPattern", 0);
-        } else if (Arrays.equals(currentPattern, rotateArray(targetPattern))) {
-            blackBoard.setValue("spindexerTurnsToPattern", 1);
-        } else if (Arrays.equals(currentPattern, rotateArray(rotateArray(targetPattern)))) {
             blackBoard.setValue("spindexerTurnsToPattern", 2);
+        } else if (Arrays.equals(currentPattern, rotateArray(targetPattern))) {
+            blackBoard.setValue("spindexerTurnsToPattern", 0);
+        } else if (Arrays.equals(currentPattern, rotateArray(rotateArray(targetPattern)))) {
+            blackBoard.setValue("spindexerTurnsToPattern", 1);
         }
 
             return Status.SUCCESS;
     }
 
-    private void countArtifacts() {
-        for (ArtifactColor artifact : currentPattern) {
+    private boolean isFull() {
+        ArtifactColor[] snapshot = artifactTracker.getCurrentPatternSnapshot();
+        numPurple = 0;
+        numGreen = 0;
+        for (ArtifactColor artifact : snapshot) {
             if (artifact == ArtifactColor.PURPLE) {
                 numPurple++;
             } else if (artifact == GREEN) {
@@ -76,7 +79,7 @@ public class MatchPatternToMotif implements ActionFunction {
             }
         }
 
-        isNotFull = numGreen + numPurple != 3;
+        return (numGreen + numPurple) == 3;
     }
 
     private void createTargetPattern() {

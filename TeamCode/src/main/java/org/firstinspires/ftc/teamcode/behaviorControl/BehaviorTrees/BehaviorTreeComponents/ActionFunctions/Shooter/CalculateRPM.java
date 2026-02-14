@@ -25,8 +25,8 @@ public class CalculateRPM implements ActionFunction {
     double b = 12.3;//5.37; //a,b,c, and d in the equation
     double c = -6.87E-03;//0.0172; //velocity = a + bx + cx^2 + dx^3
 
-    double A = -3.32E-03;
-    double B = 0.732;
+    double A = 0.732;
+    double B = -3.32E-03;
 
     public CalculateRPM(Telemetry telemetry, ShooterController shooterController, TurretController turretController) {
         this.telemetry = telemetry;

@@ -19,7 +19,7 @@ public class DetectRobotPose implements ActionFunction {
     boolean DpadUpIsPressed = false;
 
     // Moving average settings
-    private static final int WINDOW_SIZE = 20;
+    private static final int WINDOW_SIZE = 25;
     private final LinkedList<Pose> poseBuffer = new LinkedList<>();
 
     private Pose averagedPose = null;
@@ -45,7 +45,7 @@ public class DetectRobotPose implements ActionFunction {
 
         // --- REQUIRED BEHAVIOR 1 ---
         // Dpad NOT pressed → return null pose
-        if (!DpadUpIsPressed) {
+        if (!DpadUpIsPressed && !isAutonomous) {
             poseBuffer.clear();  // optional but prevents stale data
             blackBoard.setValue("AprilTag_Pose", null);
             lastStatus = Status.SUCCESS;
@@ -56,8 +56,7 @@ public class DetectRobotPose implements ActionFunction {
 
         if (currentPose == null) {
             blackBoard.setValue("AprilTag_Pose", null);
-            lastStatus = Status.SUCCESS;
-            return lastStatus;
+            return Status.RUNNING;
         }
 
         // Add pose to buffer
@@ -71,7 +70,7 @@ public class DetectRobotPose implements ActionFunction {
         // Buffer NOT full → return null pose
         if (poseBuffer.size() < WINDOW_SIZE) {
             blackBoard.setValue("AprilTag_Pose", null);
-            lastStatus = Status.SUCCESS;
+            lastStatus = Status.RUNNING;
             return lastStatus;
         }
 
