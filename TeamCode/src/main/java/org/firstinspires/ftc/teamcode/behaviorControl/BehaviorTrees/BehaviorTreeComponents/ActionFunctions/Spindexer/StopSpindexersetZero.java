@@ -6,32 +6,20 @@ import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTree
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.Status;
 import org.firstinspires.ftc.teamcode.hardwareControl.actuators.Spindexer.SpindexerController;
 
-public class SpinSpindexerToShoot implements ActionFunction {
+public class StopSpindexersetZero implements ActionFunction {
 
     Telemetry telemetry;
 
     SpindexerController spindexerController;
 
-    Status lastStatus = Status.FAILURE;
-
-    public SpinSpindexerToShoot(Telemetry telemetry, SpindexerController spindexerController) {
+    public StopSpindexersetZero(Telemetry telemetry, SpindexerController spindexerController) {
         this.telemetry = telemetry;
         this.spindexerController = spindexerController;
     }
 
     public Status perform(BlackBoard blackBoard) {
-        if (lastStatus == Status.SUCCESS) {
-            return lastStatus;
-        }
+        spindexerController.testSpindexer(0.0);
 
-//        if (blackBoard.getValue("SpindexerPower") != null) {
-//            spindexerController.moveToPosition(spindexerController.getTargetPosition() + 360);
-//            spindexerController.testSpindexer((double) blackBoard.getValue("SpindexerPower"));
-//            lastStatus = Status.SUCCESS;
-//        }
-
-        spindexerController.testSpindexer(0.3);
-        lastStatus = Status.SUCCESS;
-        return Status.SUCCESS;
+        return Status.RUNNING;
     }
 }

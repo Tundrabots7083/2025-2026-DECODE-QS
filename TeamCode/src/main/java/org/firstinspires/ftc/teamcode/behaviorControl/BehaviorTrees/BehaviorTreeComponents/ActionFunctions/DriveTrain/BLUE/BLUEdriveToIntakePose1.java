@@ -15,7 +15,7 @@ public class BLUEdriveToIntakePose1 implements ActionFunction {
     private DriveTrainController driveTrainController;
     private Telemetry telemetry;
     private Status lastStatus = Status.FAILURE;
-    private final Pose intakePose = new Pose(42, 45, Math.toRadians(180));
+    private final Pose intakePose = new Pose(44, 130, Math.toRadians(180));
     private PathChain intakePath;
 
 
@@ -37,7 +37,7 @@ public class BLUEdriveToIntakePose1 implements ActionFunction {
                     .setLinearHeadingInterpolation(driveTrainController.getPosition().getHeading(), intakePose.getHeading())
                     .build();
 
-            driveTrainController.followPath(intakePath, true);
+            driveTrainController.followPath(intakePath, false);
             lastStatus = Status.SUCCESS;
             return Status.SUCCESS;
         }

@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Intake;
 
 import static org.firstinspires.ftc.teamcode.hardwareControl.sensors.storageInventoryController.ArtifactColor.GREEN;
+import static org.firstinspires.ftc.teamcode.hardwareControl.sensors.storageInventoryController.ArtifactColor.PURPLE;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
@@ -38,6 +39,7 @@ public class IntakeAction implements ActionFunction {
     ArtifactTracker artifactTracker;
     IntakeState state = IntakeState.IDLE;
     boolean wasAPressed = false;
+    boolean wasDPadDownPressed = false;
     double REJECT_VELOCITY = 200;
     double INTAKE_VELOCITY = 300;
     int lastSlot = 0;
@@ -62,6 +64,13 @@ public class IntakeAction implements ActionFunction {
         if (blackBoard.getValue("gamepad1Delta") != null) {
             GamepadDelta gamepad1Delta = (GamepadDelta) blackBoard.getValue("gamepad1Delta");
             wasAPressed = gamepad1Delta.aPressed;
+        } else {
+//            return Status.FAILURE;
+        }
+
+        if (blackBoard.getValue("gamepad2Delta") != null) {
+            GamepadDelta gamepad2Delta = (GamepadDelta) blackBoard.getValue("gamepad2Delta");
+            wasDPadDownPressed = gamepad2Delta.rightTriggerPulling || gamepad2Delta.leftTriggerPulling;
         } else {
 //            return Status.FAILURE;
         }
@@ -112,19 +121,16 @@ public class IntakeAction implements ActionFunction {
 
                 //Ensure intake is still spinning if interrupted
                 intakeController.spinToTargetVelocity(INTAKE_VELOCITY);
-                ArtifactColor rightColor = ArtifactColor.NONE;
-                ArtifactColor leftColor = ArtifactColor.NONE;
-                if (!wasRightReadLast) {
-                    rightColor = rightColorSensorController.getColor();
-                } else {
-                    leftColor = leftColorSensorController.getColor();
-                }
+
+                ArtifactColor rightColor = rightColorSensorController.getColor();
+                ArtifactColor leftColor = leftColorSensorController.getColor();
                 wasRightReadLast = !wasRightReadLast;
 
                 int slotPosition = spindexerController.getSlotPosition();
-                if (rightColor != ArtifactColor.NONE) {
+                if (rightColor != ArtifactColor.NONE || wasDPadDownPressed) {
                     intakeController.spinToTargetVelocity(REJECT_VELOCITY);
-                    artifactTracker.setArtifact(slotPosition, rightColor);
+//                    artifactTracker.setArtifact(slotPosition, rightColor);
+                    artifactTracker.setArtifact(slotPosition, PURPLE);
 
                     if (isSpindexerFull()) {
                         opMode.gamepad1.rumble(200);

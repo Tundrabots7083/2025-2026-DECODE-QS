@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.DriveTrain.RED;
+package org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.DriveTrain.BLUE;
 
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
@@ -11,15 +11,15 @@ import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTree
 import org.firstinspires.ftc.teamcode.hardwareControl.actuators.driveTrain.DriveTrainController;
 
 
-public class REDdriveToIntakePose1 implements ActionFunction {
+public class BLUEdriveToShootPoseFRONT implements ActionFunction {
     private DriveTrainController driveTrainController;
     private Telemetry telemetry;
     private Status lastStatus = Status.FAILURE;
-    private final Pose intakePose = new Pose(92, 135, Math.toRadians(0));
+    private final Pose intakePose = new Pose(55, 87, Math.toRadians(135));
     private PathChain intakePath;
 
 
-    public REDdriveToIntakePose1(Telemetry telemetry, DriveTrainController driveTrainController) {
+    public BLUEdriveToShootPoseFRONT(Telemetry telemetry, DriveTrainController driveTrainController) {
         this.telemetry = telemetry;
         this.driveTrainController = driveTrainController;
     }
@@ -29,8 +29,6 @@ public class REDdriveToIntakePose1 implements ActionFunction {
         if (lastStatus == Status.SUCCESS) {
             return lastStatus;
         }
-
-        driveTrainController.breakFollowing();
 
         if (!driveTrainController.isBusy()) {
 
