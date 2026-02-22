@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.opModes.test;
+package org.firstinspires.ftc.teamcode.opModes.disabled;
 
 
 import com.bylazar.telemetry.JoinedTelemetry;
@@ -11,9 +11,8 @@ import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTree
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.Status;
 
 @Disabled
-@Autonomous(name="Display Motif BehaviorTree", group="test")
-public class PatternDisplayOpMode extends LinearOpMode
-{
+@Autonomous(name = "Display Motif BehaviorTree", group = "test")
+public class PatternDisplayOpMode extends LinearOpMode {
     GenericTestBehaviorTree behaviorTree = null;
 
 
@@ -21,8 +20,7 @@ public class PatternDisplayOpMode extends LinearOpMode
 
 
     @Override
-    public void runOpMode()
-    {
+    public void runOpMode() {
 
         joinedTelemetry = new JoinedTelemetry(PanelsTelemetry.INSTANCE.getFtcTelemetry(), telemetry);
         joinedTelemetry.update();
@@ -30,14 +28,12 @@ public class PatternDisplayOpMode extends LinearOpMode
         waitForStart();
 
 
-        while (opModeIsActive())
-        {
+        while (opModeIsActive()) {
             Status result = this.behaviorTree.tick();
             telemetry.update();
 
 
-
-            if(result == Status.SUCCESS){
+            if (result == Status.SUCCESS) {
                 requestOpModeStop();
             }
 
@@ -45,7 +41,7 @@ public class PatternDisplayOpMode extends LinearOpMode
     }
 
 
-    private void initialize(LinearOpMode opMode){
+    private void initialize(LinearOpMode opMode) {
         this.behaviorTree = new GenericTestBehaviorTree(opMode, joinedTelemetry);
     }
 

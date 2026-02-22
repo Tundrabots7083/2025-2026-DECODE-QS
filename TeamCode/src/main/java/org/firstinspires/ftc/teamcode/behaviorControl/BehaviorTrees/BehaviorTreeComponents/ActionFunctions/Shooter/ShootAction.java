@@ -166,7 +166,7 @@ public class ShootAction implements ActionFunction {
                     } else {
                         targetPosition = currentTarget + 120;
                     }
-                    spindexerController.testSpindexer(0.3);
+                    spindexerController.testSpindexer(0.4);
                     spindexerController.moveToPosition(targetPosition);
                     state = ShootState.RETRACT;
                 }

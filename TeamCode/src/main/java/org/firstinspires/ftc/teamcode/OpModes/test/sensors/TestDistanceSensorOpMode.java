@@ -5,12 +5,14 @@ import com.bylazar.telemetry.JoinedTelemetry;
 import com.bylazar.telemetry.PanelsTelemetry;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.hardwareControl.sensors.storageInventoryController.DistanceSensorController;
 
 import java.util.List;
 
+@Disabled
 @Configurable
 @Autonomous(name = "Test Distance Sensor", group = "test")
 public class TestDistanceSensorOpMode extends LinearOpMode {

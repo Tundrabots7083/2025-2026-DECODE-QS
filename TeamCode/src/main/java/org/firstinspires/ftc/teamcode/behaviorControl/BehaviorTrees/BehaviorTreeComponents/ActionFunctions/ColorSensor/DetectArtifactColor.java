@@ -36,10 +36,10 @@ public class DetectArtifactColor implements ActionFunction {
         ArtifactColor rightColor = rightColorSensorController.getColor();
         ArtifactColor leftColor = leftColorSensorController.getColor();
 
-        if (rightColor != ArtifactColor.NONE) {
-            blackBoard.setValue("ArtifactColor", rightColor);
-        } else if (leftColor != ArtifactColor.NONE) {
-            blackBoard.setValue("ArtifactColor", leftColor);
+        if (rightColor == ArtifactColor.GREEN || leftColor == ArtifactColor.GREEN) {
+            blackBoard.setValue("ArtifactColor", ArtifactColor.GREEN);
+        } else if (rightColor == ArtifactColor.PURPLE || leftColor == ArtifactColor.PURPLE) {
+            blackBoard.setValue("ArtifactColor", ArtifactColor.PURPLE);
         } else {
             blackBoard.setValue("ArtifactColor", ArtifactColor.NONE);
 

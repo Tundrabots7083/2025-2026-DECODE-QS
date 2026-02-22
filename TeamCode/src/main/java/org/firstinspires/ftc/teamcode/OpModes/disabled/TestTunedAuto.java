@@ -1,20 +1,22 @@
-package org.firstinspires.ftc.teamcode.OpModes;
+package org.firstinspires.ftc.teamcode.opModes.disabled;
 
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierCurve;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
+@Disabled
 @Autonomous(name = "Test Auto", group = "Examples")
 public class TestTunedAuto extends OpMode {
     private Follower follower;
     private final Pose startPose = new Pose(6.500, 8.500, Math.toRadians(90));
     private final Pose ctrlPoint1 = new Pose(41.000, 17.100);
-    private final Pose endLine1Pose = new Pose(27.400, 44.600,Math.toRadians(180));
+    private final Pose endLine1Pose = new Pose(27.400, 44.600, Math.toRadians(180));
 
     private PathChain triangle;
 
@@ -44,7 +46,9 @@ public class TestTunedAuto extends OpMode {
         follower.update();
     }
 
-    /** Creates the PathChain for the "triangle".*/
+    /**
+     * Creates the PathChain for the "triangle".
+     */
     @Override
     public void start() {
         follower.setStartingPose(startPose);

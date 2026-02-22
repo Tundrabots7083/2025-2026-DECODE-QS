@@ -71,9 +71,7 @@ public class TurretController {
 
     public void setTurretTargetAngle(double turretTargetAngle) {
 
-        Range.clip(turretTargetAngle, -90, 90);
-
-        turretTargetAngle = turretTargetAngle + 97;
+        turretTargetAngle = turretTargetAngle + 93;
 
         turretTargetAngle = turretTargetAngle % 360;
 

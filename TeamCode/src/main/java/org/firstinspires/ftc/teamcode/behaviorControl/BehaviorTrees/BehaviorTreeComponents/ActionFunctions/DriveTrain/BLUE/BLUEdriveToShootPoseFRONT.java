@@ -15,8 +15,8 @@ public class BLUEdriveToShootPoseFRONT implements ActionFunction {
     private DriveTrainController driveTrainController;
     private Telemetry telemetry;
     private Status lastStatus = Status.FAILURE;
-    private final Pose intakePose = new Pose(40, 100, Math.toRadians(135));
-    private PathChain intakePath;
+    private final Pose shootPose = new Pose(40, 100, Math.toRadians(135));
+    private PathChain shootPath;
 
 
     public BLUEdriveToShootPoseFRONT(Telemetry telemetry, DriveTrainController driveTrainController) {
@@ -32,12 +32,12 @@ public class BLUEdriveToShootPoseFRONT implements ActionFunction {
 
         if (!driveTrainController.isBusy()) {
 
-            intakePath = driveTrainController.pathBuilder()
-                    .addPath(new BezierLine(driveTrainController::getPosition, intakePose))
-                    .setLinearHeadingInterpolation(driveTrainController.getPosition().getHeading(), intakePose.getHeading())
+            shootPath = driveTrainController.pathBuilder()
+                    .addPath(new BezierLine(driveTrainController::getPosition, shootPose))
+                    .setLinearHeadingInterpolation(driveTrainController.getPosition().getHeading(), shootPose.getHeading())
                     .build();
 
-            driveTrainController.followPath(intakePath, true);
+            driveTrainController.followPath(shootPath, true);
             lastStatus = Status.SUCCESS;
             return Status.SUCCESS;
         }
