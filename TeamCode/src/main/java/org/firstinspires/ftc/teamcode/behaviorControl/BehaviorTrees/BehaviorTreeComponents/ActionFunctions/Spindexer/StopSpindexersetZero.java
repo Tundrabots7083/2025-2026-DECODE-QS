@@ -19,7 +19,8 @@ public class StopSpindexersetZero implements ActionFunction {
 
     public Status perform(BlackBoard blackBoard) {
         spindexerController.testSpindexer(0.0);
+        spindexerController.stop();
 
-        return Status.RUNNING;
+        return Status.SUCCESS;
     }
 }

@@ -36,7 +36,7 @@ public class TBHController {
      */
     public double calculate(double setpoint, double current) {
 
-        if (lastSetpoint != setpoint) {
+        if (Math.abs(lastSetpoint - setpoint) > 1e-3) {
             reset();
             lastSetpoint = setpoint;
         }
@@ -44,7 +44,7 @@ public class TBHController {
         // Calculate error
         double error = setpoint - current;
 
-        if (Math.abs(error) > 300) {
+        if (Math.abs(error) > 400) {
             isFirstCross = true;
             return Math.signum(error);
         } else if (isFirstCross && driveAtZero == 0.0) {

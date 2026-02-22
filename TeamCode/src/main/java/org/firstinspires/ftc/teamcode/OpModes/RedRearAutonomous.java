@@ -51,6 +51,10 @@ public class RedRearAutonomous extends LinearOpMode {
         while (opModeIsActive()) {
             Status result = this.mainBehaviorTree.tick();
             joinedTelemetry.update();
+
+            if (result == Status.SUCCESS) {
+                requestOpModeStop();
+            }
         }
     }
 

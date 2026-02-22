@@ -128,9 +128,10 @@ public class SpindexerController {
             startTime = System.currentTimeMillis();
             spindexerState = SpindexerState.MOVING_TO_TARGET;
 
-            // Always store goal
-            lastTargetPosition = targetPosition;
         }
+
+        // Always store goal
+        lastTargetPosition = targetPosition;
 
 
         update();
@@ -145,8 +146,7 @@ public class SpindexerController {
 
     public boolean isPastTarget() {
         boolean isPastTarget = lastTargetPosition - getPosition() <= TOLERABLE_ERROR;
-        boolean isRecovering = spindexerState == SpindexerState.RECOVERY_BACKOFF || spindexerState == SpindexerState.RECOVERY_RETURN;
-        return isPastTarget && !isRecovering;
+        return isPastTarget;
     }
 
     public void spinSlowly() {

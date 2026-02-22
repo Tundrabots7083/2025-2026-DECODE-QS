@@ -57,12 +57,9 @@ public class TestShooterOpMode extends LinearOpMode {
             double loopTimeMs = (currentTime - lastTime) / 1e6;
             lastTime = currentTime;
 
-            joinedTelemetry.addData("Loop Time (ms)", loopTimeMs);
+//            joinedTelemetry.addData("Loop Time (ms)", loopTimeMs);
 
             count++;
-            joinedTelemetry.addData("CurrentFrontVelocity", shooterController.getFrontCurrentVelocity());
-            joinedTelemetry.addData("CurrentRearVelocity", shooterController.getRearCurrentVelocity());
-            joinedTelemetry.addData("TargetVelocity", velocityTargetPosition);
             joinedTelemetry.update();
 
             // Clear the bulk cache for each Lynx module hub. This must be performed once per loop

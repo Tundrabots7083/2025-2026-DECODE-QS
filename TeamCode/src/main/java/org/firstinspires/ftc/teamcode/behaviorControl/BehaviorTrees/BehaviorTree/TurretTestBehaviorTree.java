@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.DriveTrain.RunDrivetrain;
-import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.DriveTrain.UpdateBlackboardPose;
+import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.DriveTrain.UpdateBlackboardRobotPose;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Turret.TraverseTurretToRedGoal;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.Action;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.BehaviorTree;
@@ -137,7 +137,7 @@ public class TurretTestBehaviorTree {
         this.root = new Sequence(
                 Arrays.asList(
                         new Action(new RunDrivetrain(telemetry, driveTrainController), telemetry),
-                        new Action(new UpdateBlackboardPose(telemetry, driveTrainController), telemetry),
+                        new Action(new UpdateBlackboardRobotPose(telemetry, driveTrainController), telemetry),
                         new Action(new TraverseTurretToRedGoal(telemetry, turretController), telemetry)
                 ), telemetry);
 

@@ -10,6 +10,7 @@ import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTree
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.LimitSwitch.ReadSwitch;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Ramp.StoreRamp;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Spindexer.RunSpindexerToReference;
+import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Spindexer.SwitchToIntakeCoordinates;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.Action;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.BehaviorTree;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.BlackBoard;
@@ -89,6 +90,7 @@ public class CalibrateSpindexerSubTree {
                         new Action(new RetainArtifacts(telemetry, intakeController), telemetry),
                         new Action(new ReadSwitch(telemetry, switchController), telemetry),
                         new Action(new RunSpindexerToReference(telemetry, spindexerController), telemetry),
+                        new Action(new SwitchToIntakeCoordinates(telemetry, spindexerController), telemetry),
                         new Action(new StopIntake(telemetry, intakeController), telemetry)
                 ), telemetry);
 

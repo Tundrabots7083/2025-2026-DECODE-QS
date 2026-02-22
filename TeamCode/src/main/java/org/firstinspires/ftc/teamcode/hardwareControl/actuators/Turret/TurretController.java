@@ -71,24 +71,25 @@ public class TurretController {
 
     public void setTurretTargetAngle(double turretTargetAngle) {
 
+        Range.clip(turretTargetAngle, -90, 90);
 
-        double normalizedTarget = turretTargetAngle + 122;
+        turretTargetAngle = turretTargetAngle + 97;
 
-        normalizedTarget = normalizedTarget % 360;
+        turretTargetAngle = turretTargetAngle % 360;
 
-        if (normalizedTarget < 0) {
-            normalizedTarget += 360;
+        if (turretTargetAngle < 0) {
+            turretTargetAngle += 360;
         }
 
-        normalizedTarget = Range.clip(normalizedTarget, MIN_DEGREES, MAX_DEGREES);
+        turretTargetAngle = Range.clip(turretTargetAngle, MIN_DEGREES, MAX_DEGREES);
 
-        TURRET_TARGET_POSITION = normalizedTarget;
+        TURRET_TARGET_POSITION = turretTargetAngle;
 
-        servoPosition = normalizedTarget / 339.267;
+        servoPosition = turretTargetAngle / 339.267;
 
         turretServo.setPosition(servoPosition);
 //        telemetry.addData("Servo Target", servoPosition);
-//        telemetry.addData("Turret Target", this.TURRET_TARGET_POSITION);
+        telemetry.addData("Turret Target", this.TURRET_TARGET_POSITION);
     }
 
     public void moveToTargetPosition(Pose robotPose, Position targetPosition, double scalarAddition) {

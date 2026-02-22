@@ -21,9 +21,9 @@ public class CalculateRPM implements ActionFunction {
     Pose robotPose;
     Position targetPose;
 
-    double a = 2689;//3356; //these represent the values
-    double b = 12.3;//5.37; //a,b,c, and d in the equation
-    double c = -6.87E-03;//0.0172; //velocity = a + bx + cx^2 + dx^3
+    double a = 2101; //these represent the values
+    double b = -3.79; //a,b,c, and d in the equation
+    double c = 0.077; //velocity = a + bx + cx^2 + dx^3
 
     double A = 0.732;
     double B = -3.32E-03;
@@ -76,6 +76,7 @@ public class CalculateRPM implements ActionFunction {
         if (!isAutonomous) {
             status = Status.SUCCESS;
         } else {
+            telemetry.addData("RUNNNNNNNNNNNNNNNNNNNNNNNNNn", "RJRJRJ");
             status = Status.RUNNING;
         }
 

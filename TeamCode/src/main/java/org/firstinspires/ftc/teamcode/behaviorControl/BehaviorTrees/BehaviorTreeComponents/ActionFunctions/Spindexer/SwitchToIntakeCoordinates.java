@@ -21,9 +21,13 @@ public class SwitchToIntakeCoordinates implements ActionFunction {
     }
 
     public Status perform(BlackBoard blackBoard) {
+        if (lastStatus == Status.SUCCESS) {
+            return lastStatus;
+        }
 
         spindexerController.setDegreeOffset(intakeDegreeOffset);
 
-        return Status.SUCCESS;
+        lastStatus = Status.SUCCESS;
+        return lastStatus;
     }
 }

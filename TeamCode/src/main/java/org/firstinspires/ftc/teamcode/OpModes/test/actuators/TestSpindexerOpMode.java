@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.hardwareControl.actuators.Ramp.RampController;
 import org.firstinspires.ftc.teamcode.hardwareControl.actuators.Spindexer.SpindexerController;
+import org.firstinspires.ftc.teamcode.hardwareControl.actuators.Turret.TurretController;
 import org.firstinspires.ftc.teamcode.hardwareControl.actuators.intake.IntakeController;
 import org.firstinspires.ftc.teamcode.hardwareControl.actuators.shooter.ShooterController;
 
@@ -23,11 +24,13 @@ public class TestSpindexerOpMode extends LinearOpMode {
     public static double targetIntakeVel = 0.0;
     public static double rampTargetAngle = 0.0;
     public static double shooterSpeed = 0.0;
+    public static double turretAngle = 0.0;
 
     SpindexerController spindexerController;
     IntakeController intakeController;
     RampController rampController;
     ShooterController shooterController;
+    TurretController turretController;
 
     private long lastTime = System.nanoTime();
 
@@ -85,6 +88,10 @@ public class TestSpindexerOpMode extends LinearOpMode {
         this.shooterController.initialize(hardwareMap, joinedTelemetry);
         /// End Shooter
 
+        this.turretController = TurretController.getInstance();
+
+        this.turretController.reset();
+        this.turretController.initialize(hardwareMap, joinedTelemetry);
 
         while (opModeIsActive()) {
 
@@ -103,6 +110,7 @@ public class TestSpindexerOpMode extends LinearOpMode {
             rampController.setTargetPosition(rampTargetAngle);
 
             shooterController.spinToTargetVelocity(shooterSpeed);
+            turretController.setTurretTargetAngle(turretAngle);
 
             // --- Telemetry / timing ---
             long currentTime = System.nanoTime();

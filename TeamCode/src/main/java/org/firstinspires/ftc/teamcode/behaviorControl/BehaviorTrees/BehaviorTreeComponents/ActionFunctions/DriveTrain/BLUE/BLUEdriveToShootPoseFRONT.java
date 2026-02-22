@@ -15,7 +15,7 @@ public class BLUEdriveToShootPoseFRONT implements ActionFunction {
     private DriveTrainController driveTrainController;
     private Telemetry telemetry;
     private Status lastStatus = Status.FAILURE;
-    private final Pose intakePose = new Pose(55, 87, Math.toRadians(135));
+    private final Pose intakePose = new Pose(40, 100, Math.toRadians(135));
     private PathChain intakePath;
 
 

@@ -10,7 +10,7 @@ import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTree
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.AA_Common.SetAutonomous;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.ArtifactTracker.TrackDetectedArtifact;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.ColorSensor.DetectArtifactColor;
-import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.DriveTrain.RED.REDriveForwardToIntake1;
+import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.DriveTrain.RED.REDriveForwardToIntakeGOAL;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.DriveTrain.RunDrivetrain;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Intake.IntakeArtifacts;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Intake.RunIntake;
@@ -176,7 +176,7 @@ public class AutoIntakeTestBehaviorTree {
                         new Action(new SwitchToShootCoordinates(telemetry, spindexerController), telemetry),
                         new Action(new SpinToZeroPosition(telemetry, spindexerController), telemetry),
                         new Action(new TrackDetectedArtifact(telemetry, spindexerController, artifactTracker), telemetry),
-                        new Action(new REDriveForwardToIntake1(telemetry, driveTrainController), telemetry),
+                        new Action(new REDriveForwardToIntakeGOAL(telemetry, driveTrainController), telemetry),
                         new Action(new IntakeArtifacts(telemetry, intakeController), telemetry),
                         new Action(new DetectArtifactColor(telemetry, rightColorSensorController), telemetry),
                         new Action(new StopIntake(telemetry, intakeController), telemetry),

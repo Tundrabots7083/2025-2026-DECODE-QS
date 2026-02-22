@@ -13,7 +13,7 @@ public class DeployRamp implements ActionFunction {
 
     Telemetry telemetry;
     RampController rampController;
-    public static double DEPLOYED_RAMP = 120; //degrees at which the ramp is deployed
+    public static double DEPLOYED_RAMP = 127; //degrees at which the ramp is deployed
     Status lastStatus = Status.FAILURE;
     boolean isAutonomous;
 

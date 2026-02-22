@@ -12,7 +12,7 @@ public class IntakeArtifacts implements ActionFunction {
     IntakeController intakeController;
     Status status;
     Status lastStatus = Status.FAILURE;
-    private double INTAKE_VELOCITY = 200;
+    private double INTAKE_VELOCITY = 300;
 
     public IntakeArtifacts(Telemetry telemetry, IntakeController intakeController) {
         this.telemetry = telemetry;

@@ -40,7 +40,7 @@ public class DetectRobotPose implements ActionFunction {
         if (blackBoard.getValue("gamepad2Snapshot") != null) {
             GamepadSnapshot gamepad2Snapshot =
                     (GamepadSnapshot) blackBoard.getValue("gamepad2Snapshot");
-            DpadUpIsPressed = gamepad2Snapshot.dpadUp;
+            DpadUpIsPressed = true;//gamepad2Snapshot.dpadUp;
         }
 
         // --- REQUIRED BEHAVIOR 1 ---

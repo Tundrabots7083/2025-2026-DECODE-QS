@@ -31,6 +31,7 @@ public class SpinSpindexerToShoot implements ActionFunction {
 //        }
 
         spindexerController.testSpindexer(0.3);
+        spindexerController.moveToPosition(spindexerController.getTargetPosition() + 358);
         lastStatus = Status.SUCCESS;
         return Status.SUCCESS;
     }

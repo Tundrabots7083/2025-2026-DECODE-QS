@@ -9,7 +9,7 @@ import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTree
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.Status;
 import org.firstinspires.ftc.teamcode.hardwareControl.actuators.driveTrain.DriveTrainController;
 
-public class UpdateBlackboardPose implements ActionFunction {
+public class UpdateBlackboardRobotPose implements ActionFunction {
     Telemetry telemetry;
     DriveTrainController driveTrainController;
 
@@ -18,7 +18,7 @@ public class UpdateBlackboardPose implements ActionFunction {
     private Pose currentPose;
     ElapsedTime timer;
 
-    public UpdateBlackboardPose(Telemetry telemetry, DriveTrainController driveTrainController) {
+    public UpdateBlackboardRobotPose(Telemetry telemetry, DriveTrainController driveTrainController) {
         this.telemetry = telemetry;
         this.driveTrainController = driveTrainController;
         timer = new ElapsedTime();
