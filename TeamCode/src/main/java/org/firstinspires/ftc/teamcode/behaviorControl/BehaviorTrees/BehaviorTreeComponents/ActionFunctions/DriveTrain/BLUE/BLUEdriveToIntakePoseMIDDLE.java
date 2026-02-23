@@ -15,7 +15,7 @@ public class BLUEdriveToIntakePoseMIDDLE implements ActionFunction {
     private DriveTrainController driveTrainController;
     private Telemetry telemetry;
     private Status lastStatus = Status.FAILURE;
-    private final Pose intakePose = new Pose(42, 64, Math.toRadians(180));
+    private final Pose intakePose = new Pose(42, 58, Math.toRadians(180));
     private PathChain intakePath;
 
 

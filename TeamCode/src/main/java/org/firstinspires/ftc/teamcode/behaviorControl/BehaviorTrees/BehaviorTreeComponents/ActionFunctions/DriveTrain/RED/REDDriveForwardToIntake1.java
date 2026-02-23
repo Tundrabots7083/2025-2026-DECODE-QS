@@ -11,22 +11,21 @@ import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTree
 import org.firstinspires.ftc.teamcode.hardwareControl.actuators.driveTrain.DriveTrainController;
 
 
-public class REDdriveForwardToIntake2 implements ActionFunction {
+public class REDDriveForwardToIntake1 implements ActionFunction {
     private DriveTrainController driveTrainController;
     private Telemetry telemetry;
     private Status lastStatus = Status.FAILURE;
-    private double maxPower = 0.35;
-    private final Pose startPose = new Pose(100, 60, Math.toRadians(0)); // Start Pose of our robot.
-    private final Pose intakePose = new Pose(130, 60, Math.toRadians(0));
+    private double maxPower = 0.3;
+    private final Pose intakePose = new Pose(134, 80, Math.toRadians(0));
     private PathChain intakePath;
 
 
-    public REDdriveForwardToIntake2(Telemetry telemetry, DriveTrainController driveTrainController) {
+    public REDDriveForwardToIntake1(Telemetry telemetry, DriveTrainController driveTrainController) {
         this.telemetry = telemetry;
         this.driveTrainController = driveTrainController;
 
         intakePath = driveTrainController.pathBuilder()
-                .addPath(new BezierLine(startPose, intakePose))
+                .addPath(new BezierLine(driveTrainController.getPosition(), intakePose))
                 .build();
     }
 
@@ -37,6 +36,11 @@ public class REDdriveForwardToIntake2 implements ActionFunction {
         }
 
         if (!driveTrainController.isBusy()) {
+            intakePath = driveTrainController.pathBuilder()
+                    .addPath(new BezierLine(driveTrainController::getPosition, intakePose))
+                    .setLinearHeadingInterpolation(driveTrainController.getPosition().getHeading(), intakePose.getHeading())
+                    .build();
+
             driveTrainController.followPath(intakePath, maxPower, true);
             lastStatus = Status.SUCCESS;
             return Status.SUCCESS;

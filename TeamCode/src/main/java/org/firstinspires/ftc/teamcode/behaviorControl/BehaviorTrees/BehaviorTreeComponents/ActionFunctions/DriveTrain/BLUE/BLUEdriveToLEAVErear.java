@@ -11,15 +11,15 @@ import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTree
 import org.firstinspires.ftc.teamcode.hardwareControl.actuators.driveTrain.DriveTrainController;
 
 
-public class BLUEdriveToIntakePoseGOAL implements ActionFunction {
+public class BLUEdriveToLEAVErear implements ActionFunction {
     private DriveTrainController driveTrainController;
     private Telemetry telemetry;
     private Status lastStatus = Status.FAILURE;
-    private final Pose intakePose = new Pose(42, 80, Math.toRadians(180));
+    private final Pose intakePose = new Pose(30, 13, Math.toRadians(90));
     private PathChain intakePath;
 
 
-    public BLUEdriveToIntakePoseGOAL(Telemetry telemetry, DriveTrainController driveTrainController) {
+    public BLUEdriveToLEAVErear(Telemetry telemetry, DriveTrainController driveTrainController) {
         this.telemetry = telemetry;
         this.driveTrainController = driveTrainController;
     }

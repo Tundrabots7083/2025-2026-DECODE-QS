@@ -16,7 +16,7 @@ public class BLUEDriveForwardToIntake1 implements ActionFunction {
     private Telemetry telemetry;
     private Status lastStatus = Status.FAILURE;
     private double maxPower = 0.3;
-    private final Pose intakePose = new Pose(18, 88, Math.toRadians(180));
+    private final Pose intakePose = new Pose(10, 80, Math.toRadians(180));
     private PathChain intakePath;
 
 

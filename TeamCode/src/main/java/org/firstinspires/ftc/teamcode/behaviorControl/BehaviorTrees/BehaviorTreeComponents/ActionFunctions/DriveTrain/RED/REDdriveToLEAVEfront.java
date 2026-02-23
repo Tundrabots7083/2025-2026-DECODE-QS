@@ -15,7 +15,7 @@ public class REDdriveToLEAVEfront implements ActionFunction {
     private DriveTrainController driveTrainController;
     private Telemetry telemetry;
     private Status lastStatus = Status.FAILURE;
-    private final Pose intakePose = new Pose(94, 115, Math.toRadians(35));
+    private final Pose intakePose = new Pose(90, 120, Math.toRadians(25));
     private PathChain intakePath;
 
 

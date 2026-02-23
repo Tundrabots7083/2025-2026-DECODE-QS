@@ -6,12 +6,13 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.AA_Common.SetAllianceColorBlue;
+import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.AA_Common.PauseAction;
+import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.AA_Common.SetAllianceColorRed;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.AA_Common.SetAutonomous;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.ArtifactTracker.MatchPatternToMotif;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.ArtifactTracker.TrackDetectedArtifact;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.ColorSensor.DetectArtifactColor;
-import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.DriveTrain.RED.REDdriveToIntakePoseGOAL;
+import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.DriveTrain.RED.REDdriveToLEAVErear;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.DriveTrain.RED.REDdriveToShootPoseREAR;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.DriveTrain.Relocalize;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.DriveTrain.RunDrivetrain;
@@ -19,7 +20,6 @@ import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTree
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.DriveTrain.WaitForDrivetrainToArrive;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Intake.IntakeArtifacts;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Intake.RunIntake;
-import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Intake.StopIntake;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.LimeLight.DetectMotifPattern;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.LimeLight.DetectRobotPose;
 import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.Shooter.RunShooter;
@@ -167,7 +167,7 @@ public class REDRearAutoBehaviorTree {
         this.root = new Sequence(
                 Arrays.asList(
                         new Action(new SetAutonomous(), telemetry),
-                        new Action(new SetAllianceColorBlue(), telemetry),
+                        new Action(new SetAllianceColorRed(), telemetry),
                         new Action(new RunShooter(telemetry, shooterController), telemetry),
                         new Action(new RunIntake(telemetry, intakeController), telemetry),
                         new Action(new RunSpindexer(telemetry, spindexerController), telemetry),
@@ -191,10 +191,11 @@ public class REDRearAutoBehaviorTree {
                         new Action(new REDdriveToShootPoseREAR(telemetry, driveTrainController), telemetry),
 //                        new Action(new BLUEdriveToShootPoseFRONT(telemetry, driveTrainController), telemetry),
                         new Action(new WaitForDrivetrainToArrive(telemetry, driveTrainController), telemetry),
+                        new Action(new PauseAction(telemetry, 1000), telemetry),
                         new ShootSubTree(opMode, telemetry).getRoot(),
-                        new Action(new REDdriveToIntakePoseGOAL(telemetry, driveTrainController), telemetry),
-                        new CalibrateSpindexerSubTree(opMode, telemetry).getRoot(),
-                        new Action(new WaitForDrivetrainToArrive(telemetry, driveTrainController), telemetry),
+                        new Action(new REDdriveToLEAVErear(telemetry, driveTrainController), telemetry),
+//                        new CalibrateSpindexerSubTree(opMode, telemetry).getRoot(),
+                        new Action(new WaitForDrivetrainToArrive(telemetry, driveTrainController), telemetry)
 //                        new Action(new IntakeArtifacts(telemetry, intakeController), telemetry),
 //                        new Action(new REDriveForwardToIntakeGOAL(telemetry, driveTrainController), telemetry),
 //                        new Action(new DetectArtifactColor(telemetry, rightColorSensorController), telemetry),
@@ -221,7 +222,7 @@ public class REDRearAutoBehaviorTree {
 //                        new Action(new SpinOnePosition(telemetry, spindexerController), telemetry),
 //                        new Action(new DetectArtifactColor(telemetry, rightColorSensorController), telemetry),
 //                        new Action(new TrackDetectedArtifact(telemetry, spindexerController, artifactTracker), telemetry)
-                        new Action(new StopIntake(telemetry, intakeController), telemetry)
+//                        new Action(new StopIntake(telemetry, intakeController), telemetry)
                 ), telemetry);
 
         this.tree = new BehaviorTree(root, blackBoard);

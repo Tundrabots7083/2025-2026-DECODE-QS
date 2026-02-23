@@ -15,7 +15,7 @@ public class REDdriveToIntakePoseGOAL implements ActionFunction {
     private DriveTrainController driveTrainController;
     private Telemetry telemetry;
     private Status lastStatus = Status.FAILURE;
-    private final Pose intakePose = new Pose(100, 84, Math.toRadians(0));
+    private final Pose intakePose = new Pose(100, 80, Math.toRadians(0));
     private PathChain intakePath;
 
 

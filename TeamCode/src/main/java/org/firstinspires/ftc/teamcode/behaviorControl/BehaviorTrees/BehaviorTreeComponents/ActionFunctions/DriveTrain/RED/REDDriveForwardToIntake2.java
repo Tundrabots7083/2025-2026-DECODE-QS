@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.DriveTrain.BLUE;
+package org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTreeComponents.ActionFunctions.DriveTrain.RED;
 
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
@@ -11,17 +11,22 @@ import org.firstinspires.ftc.teamcode.behaviorControl.BehaviorTrees.BehaviorTree
 import org.firstinspires.ftc.teamcode.hardwareControl.actuators.driveTrain.DriveTrainController;
 
 
-public class BLUEdriveToIntakePoseGOAL implements ActionFunction {
+public class REDDriveForwardToIntake2 implements ActionFunction {
     private DriveTrainController driveTrainController;
     private Telemetry telemetry;
     private Status lastStatus = Status.FAILURE;
-    private final Pose intakePose = new Pose(42, 80, Math.toRadians(180));
+    private double maxPower = 0.3;
+    private final Pose intakePose = new Pose(134, 58, Math.toRadians(0));
     private PathChain intakePath;
 
 
-    public BLUEdriveToIntakePoseGOAL(Telemetry telemetry, DriveTrainController driveTrainController) {
+    public REDDriveForwardToIntake2(Telemetry telemetry, DriveTrainController driveTrainController) {
         this.telemetry = telemetry;
         this.driveTrainController = driveTrainController;
+
+        intakePath = driveTrainController.pathBuilder()
+                .addPath(new BezierLine(driveTrainController.getPosition(), intakePose))
+                .build();
     }
 
     @Override
@@ -31,13 +36,12 @@ public class BLUEdriveToIntakePoseGOAL implements ActionFunction {
         }
 
         if (!driveTrainController.isBusy()) {
-
             intakePath = driveTrainController.pathBuilder()
                     .addPath(new BezierLine(driveTrainController::getPosition, intakePose))
                     .setLinearHeadingInterpolation(driveTrainController.getPosition().getHeading(), intakePose.getHeading())
                     .build();
 
-            driveTrainController.followPath(intakePath, true);
+            driveTrainController.followPath(intakePath, maxPower, true);
             lastStatus = Status.SUCCESS;
             return Status.SUCCESS;
         }
